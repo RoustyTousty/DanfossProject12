@@ -31,7 +31,7 @@ public class HourlyChartProvider : IHourlyChartProvider
         }
         catch (Exception e)
         {
-            // tbd
+            //  TBD Proper error handling
             Console.WriteLine($"Error reading {path}: {e.Message}");
         }
 

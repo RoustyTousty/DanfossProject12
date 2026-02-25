@@ -4,17 +4,17 @@ public class AssetManager
 {
     private IProductionUnitLibraryProvider _productionUnitLibraryProvider;
     private IHourlyChartProvider _hourlyChartProvider;
-    private Dictionary<DateTime, double> _hourlyElectricityPrices = [];
-    private Dictionary<DateTime, double> _hourlyHeatDemand = [];
-    private List<ProductionUnit> _productionUnits = [];
+    public readonly Dictionary<DateTime, double> HourlyElectricityPrices = [];
+    public readonly Dictionary<DateTime, double> HourlyHeatDemand = [];
+    public readonly List<ProductionUnit> ProductionUnits = [];
 
     public AssetManager (IHourlyChartProvider hourlyChartProvider, IProductionUnitLibraryProvider productionUnitLibraryProvider, List<string> productionUnits)
     {
         _productionUnitLibraryProvider = productionUnitLibraryProvider;
         _hourlyChartProvider = hourlyChartProvider;
 
-        _hourlyElectricityPrices = _hourlyChartProvider.GetElectricityPrices();
-        _hourlyHeatDemand = _hourlyChartProvider.GetHeatDemand();
-        _productionUnits = _productionUnitLibraryProvider.GetProductionUnits(productionUnits);
+        HourlyElectricityPrices = _hourlyChartProvider.GetElectricityPrices();
+        HourlyHeatDemand = _hourlyChartProvider.GetHeatDemand();
+        ProductionUnits = _productionUnitLibraryProvider.GetProductionUnits(productionUnits);
     }
 }

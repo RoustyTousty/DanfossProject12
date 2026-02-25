@@ -40,7 +40,7 @@ public class ProductionUnitLibraryProvider: IProductionUnitLibraryProvider
         }
         catch (Exception e)
         {
-            // tbd
+            // TBD Proper error handling``
             Console.WriteLine($"Error reading productionUnits.csv: {e.Message}");
         }
 
