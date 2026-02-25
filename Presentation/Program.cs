@@ -23,7 +23,7 @@ sealed class Program
     {   
         HourlyChartProvider hourlyChartProvider = new();
         ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
-        Optimizer optimizer = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]);
+        AssetManager assetManager = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]);
     }
 
 }

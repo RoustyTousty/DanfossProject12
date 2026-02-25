@@ -5,10 +5,10 @@ namespace HeatOptimization.Presentation.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     public string Greeting { get; } = "Welcome to Avalonia!";
-    public Optimizer? Optimizer { get; }
+    public AssetManager? AssetManager { get; }
 
-    public MainWindowViewModel(Optimizer optimizer) 
+    public MainWindowViewModel(AssetManager optimizer) 
     {  
-       Optimizer = optimizer;
+       AssetManager = optimizer;
     }
 }

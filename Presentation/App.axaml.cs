@@ -28,11 +28,11 @@ public partial class App : Application
             
             HourlyChartProvider hourlyChartProvider = new();
             ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
-            Optimizer optimizer = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]);
+            AssetManager assetManager = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]);
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(optimizer),
+                DataContext = new MainWindowViewModel(assetManager),
             };
         }
 

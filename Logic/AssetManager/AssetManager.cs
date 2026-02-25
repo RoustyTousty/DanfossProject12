@@ -1,6 +1,6 @@
 namespace HeatOptimization.Logic;
 
-public class Optimizer
+public class AssetManager
 {
     private IProductionUnitLibraryProvider _productionUnitLibraryProvider;
     private IHourlyChartProvider _hourlyChartProvider;
@@ -8,7 +8,7 @@ public class Optimizer
     private Dictionary<DateTime, double> _hourlyHeatDemand = [];
     private List<ProductionUnit> _productionUnits = [];
 
-    public Optimizer (IHourlyChartProvider hourlyChartProvider, IProductionUnitLibraryProvider productionUnitLibraryProvider, List<string> productionUnits)
+    public AssetManager (IHourlyChartProvider hourlyChartProvider, IProductionUnitLibraryProvider productionUnitLibraryProvider, List<string> productionUnits)
     {
         _productionUnitLibraryProvider = productionUnitLibraryProvider;
         _hourlyChartProvider = hourlyChartProvider;
@@ -17,6 +17,4 @@ public class Optimizer
         _hourlyHeatDemand = _hourlyChartProvider.GetHeatDemand();
         _productionUnits = _productionUnitLibraryProvider.GetProductionUnits(productionUnits);
     }
-
-    // optimizer be optimizing, TBD
 }
