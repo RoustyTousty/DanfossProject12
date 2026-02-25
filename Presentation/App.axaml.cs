@@ -2,12 +2,14 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
-using HeatOptimizationG12.ViewModels;
-using HeatOptimizationG12.Views;
+using HeatOptimization.Presentation.ViewModels;
+using HeatOptimization.Presentation.Views;
 
-namespace HeatOptimizationG12;
+using HeatOptimization.Logic;
+using HeatOptimization.Data;
+
+namespace HeatOptimization.Presentation;
 
 public partial class App : Application
 {
@@ -23,11 +25,17 @@ public partial class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
+            
+            HourlyChartProvider hourlyChartProvider = new();
+            ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
+            Optimizer optimizer = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]);
+
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = new MainWindowViewModel(optimizer),
             };
         }
+
 
         base.OnFrameworkInitializationCompleted();
     }
