@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace HeatOptimizationG12.Views;
+namespace HeatOptimization.Presentation.Views;
 
 public partial class MainWindow : Window
 {

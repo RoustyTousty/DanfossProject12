@@ -2,9 +2,9 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using HeatOptimizationG12.ViewModels;
+using HeatOptimization.Presentation.ViewModels;
 
-namespace HeatOptimizationG12;
+namespace HeatOptimization.Presentation;
 
 /// <summary>
 /// Given a view model, returns the corresponding view if possible.
