@@ -17,4 +17,17 @@ public class AssetManager
         HourlyHeatDemand = _hourlyChartProvider.GetHeatDemand();
         ProductionUnits = _productionUnitLibraryProvider.GetProductionUnits(productionUnits);
     }
+
+    public double? GetElectricityPriceByTime(DateTime dateTime)
+    {
+        try
+        {
+            return HourlyElectricityPrices[dateTime];
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error retrieving hourly electricity price for {dateTime}: {e.Message}");
+            return null;
+        }
+    }
 }
