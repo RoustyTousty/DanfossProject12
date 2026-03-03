@@ -20,7 +20,7 @@ public class AssetManager
 
 
 
-    public ProductionUnit? GetProductionUnit(string name)
+    public ProductionUnit? GetProductionUnitByName(string name)
     {
         try
         {
@@ -33,7 +33,7 @@ public class AssetManager
         }
     }
 
-    public double? GetHourlyHeatDemand(DateTime dateTime)
+    public double? GetHeatDemandByTime(DateTime dateTime)
     {
         try
         {
@@ -46,7 +46,7 @@ public class AssetManager
         }
     }
 
-    public double? GetHourlyElectricityPrice(DateTime dateTime)
+    public double? GetElectricityPriceByTime(DateTime dateTime)
     {
         try
         {
