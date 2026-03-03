@@ -45,4 +45,17 @@ public class AssetManager
             return null;
         }
     }
+
+        public double? GetElectricityPriceByTime(DateTime dateTime)
+    {
+        try
+        {
+            return HourlyElectricityPrices[dateTime];
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error retrieving hourly electricity price for {dateTime}: {e.Message}");
+            return null;
+        }
+    }
 }
