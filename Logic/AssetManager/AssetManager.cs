@@ -18,13 +18,16 @@ public class AssetManager
         ProductionUnits = _productionUnitLibraryProvider.GetProductionUnits(productionUnits);
     }
 
-    public double GetElectricityPriceByTime(DateTime dateTime)
+    public double? GetElectricityPriceByTime(DateTime dateTime)
     {
-        if (HourlyElectricityPrices.TryGetValue(dateTime, out var price))
+        try
         {
-            return price;
+            return HourlyElectricityPrices[dateTime];
         }
-        
-        return 0;
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error retrieving hourly electricity price for {dateTime}: {e.Message}");
+            return null;
+        }
     }
 }
