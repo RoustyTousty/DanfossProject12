@@ -65,6 +65,26 @@ public class AssetManager
     //         return null;
     //     }
     // }
+    
+    public HourlyData? GetHourlyData(DateTime dateTime)
+    {
+        //  TBD
+        try
+        {
+            HourlyData? data = _hourlyData.Find(x => x.TimeFrom < dateTime && x.TimeTo > dateTime);
+            if (data != null)
+            {
+                return data;
+            } else {
+                Console.WriteLine($"Error while retrieving hourly data at {dateTime}");
+                return null;
+            }
+        } catch (Exception e)
+        {
+            Console.WriteLine($"Error retrieving hourly data for {dateTime}: {e.Message}");
+            return null;
+        }
+    }
 }
 
 
