@@ -6,7 +6,6 @@ public class ProductionUnit
     public UnitType Type { get; set; }
     public double MaxHeatMW { get; set; }
     public double? MaxElectricityMW { get; set; }
-    public double? ElectricityCoeficient { get; set; }
     public int BaseProductionCostsDKK { get; set; } 
     public int? CO2EmissionsKg { get; set; } 
     public double? GasConsumptionMWh { get; set; } 

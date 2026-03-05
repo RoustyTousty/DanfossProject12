@@ -6,9 +6,9 @@ using System.Globalization;
 public class HourlyChartProvider : IHourlyChartProvider
 {
 
-    private static Dictionary<DateTime, double> GetHourlyData(string? fname, int valueColumnIndex)
+    public List<HourlyData> GetHourlyData(string? fname)
     {
-        var dict = new Dictionary<DateTime, double>();
+        var hourlyData = new List<HourlyData>();
         var path = $"./Data/InputData/HourlyData/{fname}";
 
         try
@@ -20,13 +20,20 @@ public class HourlyChartProvider : IHourlyChartProvider
             {
                 var valueArr = line.Split(",");
 
-                DateTime dt = DateTime.ParseExact(
-                    valueArr[0],
-                    "dd.MM.yyyy HH:mm",
-                    CultureInfo.InvariantCulture
-                );
-
-                dict[dt] = double.Parse(valueArr[valueColumnIndex], CultureInfo.InvariantCulture);
+                hourlyData.Add(new HourlyData {
+                    TimeFrom = DateTime.ParseExact(
+                        valueArr[0],
+                        "dd.MM.yyyy HH:mm",
+                        CultureInfo.InvariantCulture
+                    ),
+                    TimeTo = DateTime.ParseExact(
+                        valueArr[1],
+                        "dd.MM.yyyy HH:mm",
+                        CultureInfo.InvariantCulture
+                    ),
+                    HeatDemandMWh = double.Parse(valueArr[2]),
+                    ElectricityPriceDKK = double.Parse(valueArr[3]),
+                });
             }
         }
         catch (Exception e)
@@ -35,10 +42,6 @@ public class HourlyChartProvider : IHourlyChartProvider
             Console.WriteLine($"Error reading {path}: {e.Message}");
         }
 
-        return dict;
+        return hourlyData;
     }
-
-    public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv") => GetHourlyData(fname, 3);
-
-    public Dictionary<DateTime, double> GetHeatDemand(string fname = "summerSeason.csv") => GetHourlyData(fname, 2);
 }

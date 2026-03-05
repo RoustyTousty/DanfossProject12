@@ -39,7 +39,6 @@ public class ProductionUnitLibraryProvider: IProductionUnitLibraryProvider
                         OilConsumptionMWh = string.IsNullOrWhiteSpace(valueArr[7])
                             ? null
                             : double.Parse(valueArr[7]),
-                        ElectricityCoeficient = string.IsNullOrWhiteSpace(valueArr[3]) ? null : double.Parse(valueArr[3]) / double.Parse(valueArr[2])
                     }); 
                 }
             }
