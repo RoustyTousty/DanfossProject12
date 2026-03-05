@@ -46,7 +46,7 @@ public class AssetManager
         }
     }
 
-        public double? GetElectricityPriceByTime(DateTime dateTime)
+    public double? GetElectricityPriceByTime(DateTime dateTime)
     {
         try
         {
