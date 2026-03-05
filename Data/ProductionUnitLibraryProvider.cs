@@ -18,15 +18,18 @@ public class ProductionUnitLibraryProvider: IProductionUnitLibraryProvider
                 
                 
                 if (names.Contains(valueArr[0]))
+                {
+                    Enum.TryParse(valueArr[1], true, out UnitType type);
+                
                     units.Add(new ProductionUnit
                     {
                         Name = valueArr[0],
-                        UnitType = valueArr[1],
+                        Type = type,
                         MaxHeatMW = double.Parse(valueArr[2]),
                         MaxElectricityMW = string.IsNullOrWhiteSpace(valueArr[3])
                             ? null
                             : double.Parse(valueArr[3]),
-                        ProductionCostsDKK = int.Parse(valueArr[4]),
+                        BaseProductionCostsDKK = int.Parse(valueArr[4]),
                         CO2EmissionsKg = string.IsNullOrWhiteSpace(valueArr[5])
                             ? null
                             : int.Parse(valueArr[5]),                  
@@ -36,7 +39,9 @@ public class ProductionUnitLibraryProvider: IProductionUnitLibraryProvider
                         OilConsumptionMWh = string.IsNullOrWhiteSpace(valueArr[7])
                             ? null
                             : double.Parse(valueArr[7]),
+                        ElectricityCoeficient = string.IsNullOrWhiteSpace(valueArr[3]) ? null : double.Parse(valueArr[3]) / double.Parse(valueArr[2])
                     }); 
+                }
             }
         }
         catch (Exception e)

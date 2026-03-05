@@ -16,13 +16,13 @@ public class Optimizer
         Dictionary<DateTime, double> hourlyCostsPerMWh = [];
         foreach (KeyValuePair<DateTime, double> entry in _assetManager.HourlyElectricityPrices)
         {
-            switch (unit.UnitType)
+            switch (unit.Type)
             {
-                case "Gas Boiler":
-                case "Oil Boiler":
-                    hourlyCostsPerMWh.Add(entry.Key, Math.Round(unit.ProductionCostsDKK/unit.MaxHeatMW, 2));
+                case UnitType.GasBoiler:
+                case UnitType.OilBoiler:
+                    hourlyCostsPerMWh.Add(entry.Key, Math.Round(unit.BaseProductionCostsDKK/unit.MaxHeatMW, 2));
                     break;
-                case "Gas Motor":
+                case UnitType.GasMotor:
                     double? electricityPrice = _assetManager.GetElectricityPriceByTime(entry.Key);
                     if (electricityPrice == null)
                     {
@@ -32,12 +32,12 @@ public class Optimizer
                     if (unit.MaxElectricityMW == null)
                     {
                         Console.WriteLine($"Warning! No electricity parameter specified for {unit.Name}!");
-                        Console.WriteLine($"Units of type {unit.UnitType} must have MaxElectricityMW specified!");
+                        Console.WriteLine($"Units of type {unit.Type} must have MaxElectricityMW specified!");
                         return null;
                     }
                     // hourlyCostsPerMWh.Add(entry.Key, unit.MaxHeatMW/unit.ProductionCostsDKK + unit.MaxElectricityMW/electricityPrice);
                     break;
-                case "Electric Boiler":
+                case UnitType.ElectricBoiler:
                     
                     break;
                 default: 
