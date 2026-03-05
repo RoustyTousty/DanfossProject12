@@ -29,7 +29,7 @@ public class ProductionUnitLibraryProvider: IProductionUnitLibraryProvider
                         MaxElectricityMW = string.IsNullOrWhiteSpace(valueArr[3])
                             ? null
                             : double.Parse(valueArr[3]),
-                        BaseProductionCostsDKK = int.Parse(valueArr[4]),
+                        BaseProductionCostDKK = int.Parse(valueArr[4]),
                         CO2EmissionsKg = string.IsNullOrWhiteSpace(valueArr[5])
                             ? null
                             : int.Parse(valueArr[5]),                  

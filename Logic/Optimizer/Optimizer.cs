@@ -11,38 +11,32 @@ public class Optimizer
         _resultDataManager = resultDataManager;
     }
 
-    public Dictionary<DateTime, double>? GetHourlyProcutionCostsForUnit(ProductionUnit unit)
+    public List<UnitProductionCost> GetUnitHourlyProcutionCostsForHour(HourlyData data)
     {
-        Dictionary<DateTime, double> hourlyCostsPerMWh = [];
-        foreach (HourlyData data in _assetManager.GetHourlyData())
+        List<UnitProductionCost> costs = [];
+        foreach (ProductionUnit unit in _assetManager.ProductionUnits)
         {
-            switch (unit.Type)
-            {
-                case UnitType.GasBoiler:
-                case UnitType.OilBoiler:
-                    
-                    break;
-                case UnitType.GasMotor:
-                    
-                    break;
-                case UnitType.ElectricBoiler:
-                    
-                    break;
-                default: 
-                    Console.WriteLine($"Warning! Wrong data type of production unit {unit.Name}!");
-                    return null;
-            }
-            // hourlyCostsPerMWh.Add(entry, );
-        }
-        return hourlyCostsPerMWh;
-    }
-    // public Dictionary<DateTime, double> GetHourlyProcutionCosts()
-    // {
-    //     Dictionary<DateTime, double> unitProductionCosts = [];
-    //     foreach (ProductionUnit unit in _assetManager.ProductionUnits)
-    //     {
-    //         unitProductionCosts[]
-    //     }
-    // }
+            if (unit.MaxElectricityMW == null)
+                costs.Add(new UnitProductionCost(unit.Name, unit.BaseProductionCostDKK));
 
+            if (unit.MaxElectricityMW != null)
+            {
+                double electricityPerHeatRatio = unit.MaxElectricityMW.Value / unit.MaxHeatMW;
+                costs.Add(new UnitProductionCost(unit.Name, unit.BaseProductionCostDKK
+                    - electricityPerHeatRatio * data.ElectricityPriceDKK));
+            }
+        }
+        return costs;
+    }
+}
+
+public class UnitProductionCost {
+    public string Name { get; set; }
+    public double ProductionCostDKK {get; set; }
+
+    public UnitProductionCost(string name, double productionCostDKK)
+    {
+        Name = name;
+        ProductionCostDKK = productionCostDKK;
+    }
 }
