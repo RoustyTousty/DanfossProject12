@@ -9,7 +9,18 @@ public class CsvResultRepository : IResultRepository
 
     public async Task SaveAsync(ResultData resultData)
     {
-        // TBD (save results to csv here)
+
+        StreamWriter writer = new StreamWriter(_filePath);
+
+        if (!File.Exists(_filePath))
+        {
+            writer.WriteLine("TimeFrom,TimeTo,HeatDemandMWh,ElectricityPriceDKK,HeatProductionMWh,ElectricityProductionMWh,ElectricityConsumptionMWh,ConsumptionOfPrimaryEnegryMWh,CO2ProductionKG,ExpensesDKK,ProfitDKK");
+        }
+
+        string line = string.Join(',', resultData.TimeFrom, resultData.TimeTo, resultData.HeatDemandMWh, resultData.ElectricityPriceDKK, resultData.HeatProductionMWh, resultData.ElectricityProductionMWh, resultData.ElectricityConsumptionMWh, resultData.ConsumptionOfPrimaryEnegryMWh, resultData.CO2ProductionKG, resultData.ExpensesDKK, resultData.ProfitDKK);
+
+        await writer.WriteLineAsync(line);
+
     }
 
     public async Task SaveManyAsync(List<ResultData> resultDataList)
