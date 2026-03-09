@@ -1,4 +1,4 @@
-interface IResultRepository
+public interface IResultRepository
 {
     Task SaveAsync(ResultData result);
     Task SaveManyAsync(List<ResultData> results);
