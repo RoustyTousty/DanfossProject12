@@ -22,13 +22,13 @@ public class ResultDataManager
         // TBD
     }
 
-    public async Task<List<ResultData>> GetResultsAsync()
-    {
-        // TBD
-    }
+    // public async Task<List<ResultData>> GetResultsAsync()
+    // {
+    //     // TBD
+    // }
 
-    public async Task<List<ResultData>> GetResultsInPeriod(DateTime timeFrom, DateTime timeTo)
-    {
-        // TBD
-    }
+    // public async Task<List<ResultData>> GetResultsInPeriod(DateTime timeFrom, DateTime timeTo)
+    // {
+    //     // TBD
+    // }
 }
