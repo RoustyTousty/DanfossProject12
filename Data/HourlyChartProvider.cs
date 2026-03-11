@@ -20,13 +20,14 @@ public class HourlyChartProvider : IHourlyChartProvider
 
             using (StreamReader reader = new StreamReader(path))
             {
-                string? line = reader.ReadLine();
+                reader.ReadLine();
+
+                string? line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    if (line == null)
-                        continue;
-
+                    
                     var parts = line.Split(",");
+
                     if (parts.Length > valueColumnIndex)
                     {
                         try
@@ -35,18 +36,22 @@ public class HourlyChartProvider : IHourlyChartProvider
                                 parts[0],
                                 "dd.MM.yyyy HH:mm",
                                 CultureInfo.InvariantCulture);
-                            double val = value;
+
+                            double val = double.Parse(parts[valueColumnIndex], CultureInfo.InvariantCulture);
                             result[time] = val;
                         }
-                        catch
+                        catch(FormatException e)
                         {
-                            Console.WriteLine("Problem reading line:" + line);
+                            Console.WriteLine($"Format error in line: {line} | {e.Message}");
                         }
+                        catch(IndexOutOfRangeException e)
+                        {
+                            Console.WriteLine($"Index error in line: {line} | {e.Message}");
                     }
                 }
             }
         }
-        catch (Exception e)
+        catch (IOException e)
         {
             Console.WriteLine("Error reading file: " + e.Message);
         }
