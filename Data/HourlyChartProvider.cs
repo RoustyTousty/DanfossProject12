@@ -20,33 +20,34 @@ public class HourlyChartProvider : IHourlyChartProvider
 
             using (StreamReader reader = new StreamReader(path))
             {
-                reader.ReadLine();
+                reader.ReadLine(); 
 
                 string? line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    
-                    var parts = line.Split(",");
+                    var parts = line.Split(',');
 
                     if (parts.Length > valueColumnIndex)
                     {
-                        try
-                        {
-                            DateTime time = DateTime.ParseExact(
+                        if (DateTime.TryParseExact(
                                 parts[0],
                                 "dd.MM.yyyy HH:mm",
-                                CultureInfo.InvariantCulture);
-
-                            double val = double.Parse(parts[valueColumnIndex], CultureInfo.InvariantCulture);
-                            result[time] = val;
-                        }
-                        catch(FormatException e)
+                                CultureInfo.InvariantCulture,
+                                DateTimeStyles.None,
+                                out DateTime time)
+                            &&
+                            double.TryParse(
+                                parts[valueColumnIndex],
+                                NumberStyles.Any,
+                                CultureInfo.InvariantCulture,
+                                out double val))
                         {
-                            Console.WriteLine($"Format error in line: {line} | {e.Message}");
+                            dict[time] = val;
                         }
-                        catch(IndexOutOfRangeException e)
+                        else
                         {
-                            Console.WriteLine($"Index error in line: {line} | {e.Message}");
+                            Console.WriteLine($"Invalid data in line: {line}");
+                        }
                     }
                 }
             }
