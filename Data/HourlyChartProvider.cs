@@ -5,40 +5,58 @@ using System.Globalization;
 
 public class HourlyChartProvider : IHourlyChartProvider
 {
-
     private static Dictionary<DateTime, double> GetHourlyData(string? fname, int valueColumnIndex)
     {
         var dict = new Dictionary<DateTime, double>();
-        var path = $"./Data/InputData/HourlyData/{fname}";
+        string path = "./Data/InputData/HourlyData/" + fname;
 
         try
         {
-            StreamReader sr = new(path);
-
-            string? line = sr.ReadLine();
-            while ((line = sr.ReadLine()) != null)
+            if (!File.Exists(path))
             {
-                var valueArr = line.Split(",");
+                Console.WriteLine("File does not exist: " + path);
+                return dict;
+            }
 
-                DateTime dt = DateTime.ParseExact(
-                    valueArr[0],
-                    "dd.MM.yyyy HH:mm",
-                    CultureInfo.InvariantCulture
-                );
+            using (StreamReader reader = new StreamReader(path))
+            {
+                string? line = reader.ReadLine();
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line == null)
+                        continue;
 
-                dict[dt] = double.Parse(valueArr[valueColumnIndex], CultureInfo.InvariantCulture);
+                    var parts = line.Split(",");
+                    if (parts.Length > valueColumnIndex)
+                    {
+                        try
+                        {
+                            DateTime time = DateTime.ParseExact(
+                                parts[0],
+                                "dd.MM.yyyy HH:mm",
+                                CultureInfo.InvariantCulture);
+                            double val = value;
+                            result[time] = val;
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Problem reading line:" + line);
+                        }
+                    }
+                }
             }
         }
         catch (Exception e)
         {
-            //  TBD Proper error handling
-            Console.WriteLine($"Error reading {path}: {e.Message}");
+            Console.WriteLine("Error reading file: " + e.Message);
         }
 
         return dict;
     }
 
-    public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv") => GetHourlyData(fname, 3);
+    public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv")
+        => GetHourlyData(fname, 3);
 
-    public Dictionary<DateTime, double> GetHeatDemand(string fname = "summerSeason.csv") => GetHourlyData(fname, 2);
+    public Dictionary<DateTime, double> GetHeatDemand(string fname = "summerSeason.csv")
+        => GetHourlyData(fname, 2);
 }
