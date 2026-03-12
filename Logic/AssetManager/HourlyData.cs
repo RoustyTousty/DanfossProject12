@@ -1,3 +1,5 @@
+namespace HeatOptimization.Logic;
+
 public class HourlyData
 {
     public DateTime TimeFrom { get; set; }

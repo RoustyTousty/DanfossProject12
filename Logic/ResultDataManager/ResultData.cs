@@ -1,3 +1,5 @@
+namespace HeatOptimization.Logic;
+
 public class ResultData : HourlyData
 {
     public double HeatProductionMWh { get; set; }
