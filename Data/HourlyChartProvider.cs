@@ -5,43 +5,64 @@ using System.Globalization;
 
 public class HourlyChartProvider : IHourlyChartProvider
 {
-
-    public List<HourlyData> GetHourlyData(string? fname)
+    private static Dictionary<DateTime, double> GetHourlyData(string? fname, int valueColumnIndex)
     {
-        var hourlyData = new List<HourlyData>();
-        var path = $"./Data/InputData/HourlyData/{fname}";
+        var dict = new Dictionary<DateTime, double>();
+        string path = "./Data/InputData/HourlyData/" + fname;
 
         try
         {
-            StreamReader sr = new(path);
-
-            string? line = sr.ReadLine();
-            while ((line = sr.ReadLine()) != null)
+            if (!File.Exists(path))
             {
-                var valueArr = line.Split(",");
+                Console.WriteLine("File does not exist: " + path);
+                return dict;
+            }
 
-                hourlyData.Add(new HourlyData {
-                    TimeFrom = DateTime.ParseExact(
-                        valueArr[0],
-                        "dd.MM.yyyy HH:mm",
-                        CultureInfo.InvariantCulture
-                    ),
-                    TimeTo = DateTime.ParseExact(
-                        valueArr[1],
-                        "dd.MM.yyyy HH:mm",
-                        CultureInfo.InvariantCulture
-                    ),
-                    HeatDemandMWh = double.Parse(valueArr[2]),
-                    ElectricityPriceDKK = double.Parse(valueArr[3]),
-                });
+            using (StreamReader reader = new StreamReader(path))
+            {
+                reader.ReadLine(); 
+
+                string? line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    var parts = line.Split(',');
+
+                    if (parts.Length > valueColumnIndex)
+                    {
+                        if (DateTime.TryParseExact(
+                                parts[0],
+                                "dd.MM.yyyy HH:mm",
+                                CultureInfo.InvariantCulture,
+                                DateTimeStyles.None,
+                                out DateTime time)
+                            &&
+                            double.TryParse(
+                                parts[valueColumnIndex],
+                                NumberStyles.Any,
+                                CultureInfo.InvariantCulture,
+                                out double val))
+                        {
+                            dict[time] = val;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Invalid data in line: {line}");
+                        }
+                    }
+                }
             }
         }
-        catch (Exception e)
+        catch (IOException e)
         {
-            //  TBD Proper error handling
-            Console.WriteLine($"Error reading {path}: {e.Message}");
+            Console.WriteLine("Error reading file: " + e.Message);
         }
 
-        return hourlyData;
+        return dict;
     }
+
+    public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv")
+        => GetHourlyData(fname, 3);
+
+    public Dictionary<DateTime, double> GetHeatDemand(string fname = "summerSeason.csv")
+        => GetHourlyData(fname, 2);
 }
