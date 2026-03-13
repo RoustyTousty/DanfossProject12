@@ -5,64 +5,64 @@ using System.Globalization;
 
 public class HourlyChartProvider : IHourlyChartProvider
 {
-    private static Dictionary<DateTime, double> GetHourlyData(string? fname, int valueColumnIndex)
+    public List<HourlyData> GetHourlyData(string fname)
     {
-        var dict = new Dictionary<DateTime, double>();
+        List<HourlyData> hourlyData = [];
         string path = "./Data/InputData/HourlyData/" + fname;
-
-        try
+       
+        if (!File.Exists(path))
         {
-            if (!File.Exists(path))
+            throw new FileNotFoundException($"No file found with name {path}");
+        }
+
+        using (StreamReader reader = new(path))
+        {
+            reader.ReadLine(); 
+
+            string? line;
+            while ((line = reader.ReadLine()) != null)
             {
-                Console.WriteLine("File does not exist: " + path);
-                return dict;
-            }
+                var parts = line.Split(',');
 
-            using (StreamReader reader = new StreamReader(path))
-            {
-                reader.ReadLine(); 
-
-                string? line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    var parts = line.Split(',');
-
-                    if (parts.Length > valueColumnIndex)
+                // add parts length check - check if variable parts has exactly 4 rows with data
+                
+                if (!DateTime.TryParseExact(
+                        parts[0],
+                        "dd.MM.yyyy HH:mm",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out DateTime from) ||
+                    !DateTime.TryParseExact(
+                        parts[1],
+                        "dd.MM.yyyy HH:mm",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out DateTime to) ||
+                    !double.TryParse(
+                        parts[2],
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out double heatDemand) ||
+                    !double.TryParse(
+                            parts[2],
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out double electricityPrice))
                     {
-                        if (DateTime.TryParseExact(
-                                parts[0],
-                                "dd.MM.yyyy HH:mm",
-                                CultureInfo.InvariantCulture,
-                                DateTimeStyles.None,
-                                out DateTime time)
-                            &&
-                            double.TryParse(
-                                parts[valueColumnIndex],
-                                NumberStyles.Any,
-                                CultureInfo.InvariantCulture,
-                                out double val))
-                        {
-                            dict[time] = val;
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Invalid data in line: {line}");
-                        }
+                        // TBD: display the line (SCRUM-73)
+                        throw new Exception("Error while reading line ");
                     }
-                }
+
+                hourlyData.Add(new HourlyData
+                {
+                    TimeFrom = from,
+                    TimeTo = to,
+                    HeatDemandMWh = heatDemand,
+                    ElectricityPriceDKK = electricityPrice,
+                });
             }
         }
-        catch (IOException e)
-        {
-            Console.WriteLine("Error reading file: " + e.Message);
-        }
 
-        return dict;
+        return hourlyData;
     }
-
-    public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv")
-        => GetHourlyData(fname, 3);
-
-    public Dictionary<DateTime, double> GetHeatDemand(string fname = "summerSeason.csv")
-        => GetHourlyData(fname, 2);
 }
