@@ -5,7 +5,7 @@ using System.Globalization;
 
 public class HourlyChartProvider : IHourlyChartProvider
 {
-    private static Dictionary<DateTime, double> GetHourlyData(string? fname, int valueColumnIndex)
+    public List<HourlyData> GetHourlyData(string fname)
     {
         var dict = new Dictionary<DateTime, double>();
         string path = "./Data/InputData/HourlyData/" + fname;
@@ -60,9 +60,9 @@ public class HourlyChartProvider : IHourlyChartProvider
         return dict;
     }
 
-    public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv")
-        => GetHourlyData(fname, 3);
+    // public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv")
+    //     => GetHourlyData(fname, 3);
 
-    public Dictionary<DateTime, double> GetHeatDemand(string fname = "summerSeason.csv")
-        => GetHourlyData(fname, 2);
+    // public Dictionary<DateTime, double> GetHeatDemand(string fname = "summerSeason.csv")
+    //     => GetHourlyData(fname, 2);
 }
