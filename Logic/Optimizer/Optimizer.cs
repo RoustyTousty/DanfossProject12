@@ -17,26 +17,30 @@ public class Optimizer
         foreach (ProductionUnit unit in _assetManager.ProductionUnits)
         {
             if (unit.MaxElectricityMW == null)
-                costs.Add(new UnitProductionCost(unit.Name, unit.BaseProductionCostDKK));
+                costs.Add(new UnitProductionCost(data, unit.Name, unit.BaseProductionCostDKK));
 
             if (unit.MaxElectricityMW != null)
             {
                 double electricityPerHeatRatio = unit.MaxElectricityMW.Value / unit.MaxHeatMW;
-                costs.Add(new UnitProductionCost(unit.Name, unit.BaseProductionCostDKK
+                costs.Add(new UnitProductionCost(data, unit.Name, unit.BaseProductionCostDKK
                     - electricityPerHeatRatio * data.ElectricityPriceDKK));
             }
         }
         return costs;
     }
+
+
 }
 
 public class UnitProductionCost {
+    public HourlyData HourlyData;
     public string Name { get; set; }
     public double ProductionCostDKK {get; set; }
 
-    public UnitProductionCost(string name, double productionCostDKK)
+    public UnitProductionCost(HourlyData hourlyData, string name, double productionCostDKK)
     {
         Name = name;
         ProductionCostDKK = productionCostDKK;
+        HourlyData = hourlyData;
     }
 }
