@@ -11,11 +11,14 @@ public class CsvResultRepository : IResultRepository
         _filePath = filePath;
     }
 
+
+
     public async Task SaveAsync(ResultData resultData)
     {
         List<ResultData> resultDataList = new List<ResultData> {resultData};
         await SaveManyAsync(resultDataList);
     }
+
 
     public async Task SaveManyAsync(List<ResultData> resultDataList)
     {
@@ -52,14 +55,16 @@ public class CsvResultRepository : IResultRepository
         }
     }
 
+
     public async Task<List<ResultData>> GetAllAsync()
     {
-        List<ResultData> resultData = new List<ResultData>();
+        List<ResultData> resultDataList = new List<ResultData>();
 
 
 
-        return resultData;
+        return resultDataList;
     }
+
 
     public async Task<List<ResultData>> GetByTimeRangeAsync(DateTime from, DateTime to)
     {

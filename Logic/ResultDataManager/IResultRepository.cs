@@ -1,3 +1,5 @@
+namespace HeatOptimization.Logic;
+
 public interface IResultRepository
 {
     public Task SaveAsync(ResultData result);
