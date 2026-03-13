@@ -9,85 +9,59 @@ public class HourlyChartProvider : IHourlyChartProvider
     {
         List<HourlyData> hourlyData = [];
         string path = "./Data/InputData/HourlyData/" + fname;
+       
+    if (!File.Exists(path))
+    {
+        Console.WriteLine("File does not exist: " + path);
+        return [];
+    }
 
-        try
+    using (StreamReader reader = new StreamReader(path))
+    {
+        reader.ReadLine(); 
+
+        string? line;
+        while ((line = reader.ReadLine()) != null)
         {
-            if (!File.Exists(path))
-            {
-                Console.WriteLine("File does not exist: " + path);
-                return [];
-            }
+            var parts = line.Split(',');
 
-            using (StreamReader reader = new StreamReader(path))
-            {
-                reader.ReadLine(); 
-
-                string? line;
-                while ((line = reader.ReadLine()) != null)
+            // add parts length check
+            
+            if (!DateTime.TryParseExact(
+                    parts[0],
+                    "dd.MM.yyyy HH:mm",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime from) ||
+                !DateTime.TryParseExact(
+                    parts[1],
+                    "dd.MM.yyyy HH:mm",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime to) ||
+                !double.TryParse(
+                    parts[2],
+                    NumberStyles.Any,
+                    CultureInfo.InvariantCulture,
+                    out double heatDemand) ||
+                !double.TryParse(
+                        parts[2],
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out double electricityPrice))
                 {
-                    var parts = line.Split(',');
-
-                    DateTime.TryParseExact(
-                        parts[0],
-                        "dd.MM.yyyy HH:mm",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.None,
-                        out DateTime from);
-
-                    DateTime.TryParseExact(
-                        parts[1],
-                        "dd.MM.yyyy HH:mm",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.None,
-                        out DateTime to);
-
-                    double.TryParse(
-                            parts[2],
-                            NumberStyles.Any,
-                            CultureInfo.InvariantCulture,
-                            out double heatDemand);
-                    
-                    double.TryParse(
-                            parts[2],
-                            NumberStyles.Any,
-                            CultureInfo.InvariantCulture,
-                            out double electricityPrice);
-
-                    hourlyData.Add(new HourlyData
-                    {
-                        TimeFrom = from,
-                        TimeTo = to,
-                        HeatDemandMWh = heatDemand,
-                        ElectricityPriceDKK = electricityPrice,
-                    });
-                    // if (parts.Length > valueColumnIndex)
-                    // {
-                    //     if (DateTime.TryParseExact(
-                    //             parts[0],
-                    //             "dd.MM.yyyy HH:mm",
-                    //             CultureInfo.InvariantCulture,
-                    //             DateTimeStyles.None,
-                    //             out DateTime time)
-                    //         &&
-                    //         double.TryParse(
-                    //             parts[valueColumnIndex],
-                    //             NumberStyles.Any,
-                    //             CultureInfo.InvariantCulture,
-                    //             out double val))
-                    //     {
-                    //         dict[time] = val;
-                    //     }
-                    //     else
-                    //     {
-                    //         Console.WriteLine($"Invalid data in line: {line}");
-                    //     }
-                    // }
+                    // TBD: display the line SCRUM-73
+                    throw new Exception("Error while reading line ");
                 }
+
+            hourlyData.Add(new HourlyData
+            {
+                TimeFrom = from,
+                TimeTo = to,
+                HeatDemandMWh = heatDemand,
+                ElectricityPriceDKK = electricityPrice,
+            });
             }
-        }
-        catch (IOException e)
-        {
-            Console.WriteLine("Error reading file: " + e.Message);
         }
 
         return hourlyData;
