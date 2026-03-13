@@ -7,7 +7,7 @@ public class HourlyChartProvider : IHourlyChartProvider
 {
     public List<HourlyData> GetHourlyData(string fname)
     {
-        var dict = new Dictionary<DateTime, double>();
+        List<HourlyData> hourlyData = [];
         string path = "./Data/InputData/HourlyData/" + fname;
 
         try
