@@ -15,7 +15,7 @@ public class HourlyChartProvider : IHourlyChartProvider
             if (!File.Exists(path))
             {
                 Console.WriteLine("File does not exist: " + path);
-                return dict;
+                return [];
             }
 
             using (StreamReader reader = new StreamReader(path))
@@ -27,28 +27,61 @@ public class HourlyChartProvider : IHourlyChartProvider
                 {
                     var parts = line.Split(',');
 
-                    if (parts.Length > valueColumnIndex)
+                    DateTime.TryParseExact(
+                        parts[0],
+                        "dd.MM.yyyy HH:mm",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out DateTime from);
+
+                    DateTime.TryParseExact(
+                        parts[1],
+                        "dd.MM.yyyy HH:mm",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out DateTime to);
+
+                    double.TryParse(
+                            parts[2],
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out double heatDemand);
+                    
+                    double.TryParse(
+                            parts[2],
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out double electricityPrice);
+
+                    hourlyData.Add(new HourlyData
                     {
-                        if (DateTime.TryParseExact(
-                                parts[0],
-                                "dd.MM.yyyy HH:mm",
-                                CultureInfo.InvariantCulture,
-                                DateTimeStyles.None,
-                                out DateTime time)
-                            &&
-                            double.TryParse(
-                                parts[valueColumnIndex],
-                                NumberStyles.Any,
-                                CultureInfo.InvariantCulture,
-                                out double val))
-                        {
-                            dict[time] = val;
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Invalid data in line: {line}");
-                        }
-                    }
+                        TimeFrom = from,
+                        TimeTo = to,
+                        HeatDemandMWh = heatDemand,
+                        ElectricityPriceDKK = electricityPrice,
+                    });
+                    // if (parts.Length > valueColumnIndex)
+                    // {
+                    //     if (DateTime.TryParseExact(
+                    //             parts[0],
+                    //             "dd.MM.yyyy HH:mm",
+                    //             CultureInfo.InvariantCulture,
+                    //             DateTimeStyles.None,
+                    //             out DateTime time)
+                    //         &&
+                    //         double.TryParse(
+                    //             parts[valueColumnIndex],
+                    //             NumberStyles.Any,
+                    //             CultureInfo.InvariantCulture,
+                    //             out double val))
+                    //     {
+                    //         dict[time] = val;
+                    //     }
+                    //     else
+                    //     {
+                    //         Console.WriteLine($"Invalid data in line: {line}");
+                    //     }
+                    // }
                 }
             }
         }
@@ -57,7 +90,7 @@ public class HourlyChartProvider : IHourlyChartProvider
             Console.WriteLine("Error reading file: " + e.Message);
         }
 
-        return dict;
+        return hourlyData;
     }
 
     // public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv")
