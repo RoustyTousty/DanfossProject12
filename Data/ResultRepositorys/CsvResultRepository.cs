@@ -1,8 +1,6 @@
 namespace HeatOptimization.Data;
 
-using System.ComponentModel;
 using HeatOptimization.Logic;
-using Microsoft.VisualBasic;
 
 public class CsvResultRepository : IResultRepository
 {
