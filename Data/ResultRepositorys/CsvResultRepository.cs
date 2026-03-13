@@ -1,6 +1,8 @@
 namespace HeatOptimization.Data;
 
+using System.ComponentModel;
 using HeatOptimization.Logic;
+using Microsoft.VisualBasic;
 
 public class CsvResultRepository : IResultRepository
 {
@@ -60,16 +62,77 @@ public class CsvResultRepository : IResultRepository
     {
         List<ResultData> resultDataList = new List<ResultData>();
 
+        try
+        {
+            using (StreamReader streamReader = new StreamReader(_filePath))
+            {
+                await streamReader.ReadLineAsync();
 
+                while (!streamReader.EndOfStream)
+                {
+                    string? line = await streamReader.ReadLineAsync();
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        continue;
+                    }
 
-        return resultDataList;
+                    string[] values = line.Split(",");
+
+                    try
+                    {
+                        resultDataList.Add(MapResultDataToValues(values));
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            return resultDataList;
+        }
+        catch(IOException ex)
+        {
+            throw new Exception($"Failed to read results from CSV file: {_filePath}", ex);
+        }
     }
 
 
-    public async Task<List<ResultData>> GetByTimeRangeAsync(DateTime from, DateTime to)
+    public async Task<List<ResultData>> GetByTimeRangeAsync(DateTime timeFrom, DateTime timeTo)
     {
-        List<ResultData> all = await GetAllAsync();
+        if (timeFrom > timeTo)
+        {
+            throw new Exception("TimeFrom must be erlier than TimeTo");
+        }
 
-        return all;
+        List<ResultData> resultDataList = await GetAllAsync();
+
+        return resultDataList
+            .Where(
+                resultData => 
+                resultData.TimeFrom >= timeFrom
+                &&
+                resultData.TimeTo <= timeTo
+            ).ToList();
+    }
+
+
+
+    private ResultData MapResultDataToValues(string[] values)
+    {
+        return new ResultData
+        {
+            TimeFrom = DateTime.Parse(values[0]),
+            TimeTo = DateTime.Parse(values[1]),
+            HeatDemandMWh = double.Parse(values[2]),
+            ElectricityPriceDKK = double.Parse(values[3]),
+            HeatProductionMWh = double.Parse(values[4]),
+            ElectricityProductionMWh = double.Parse(values[5]),
+            ElectricityConsumptionMWh = double.Parse(values[6]),
+            ExpensesDKK = double.Parse(values[7]),
+            ProfitDKK = double.Parse(values[8]),
+            ConsumptionOfPrimaryEnegryMWh = double.Parse(values[9]),
+            CO2ProductionKG = double.Parse(values[10])
+        };
     }
 }

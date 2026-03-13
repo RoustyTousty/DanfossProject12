@@ -9,20 +9,25 @@ public class ResultDataManager
         _repository = repository;
     }
 
+
+
     public async Task StoreResultAsync(ResultData resultData)
     {
         await _repository.SaveAsync(resultData);
     }
+
 
     public async Task StoreResultsAsync(List<ResultData> resultDataList)
     {
         await _repository.SaveManyAsync(resultDataList);
     }
 
+
     public async Task<List<ResultData>> GetResultsAsync()
     {
         return await _repository.GetAllAsync();
     }
+
 
     public async Task<List<ResultData>> GetResultsInPeriod(DateTime from, DateTime to)
     {
