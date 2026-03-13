@@ -30,7 +30,7 @@ public class CsvResultRepository : IResultRepository
 
             if (!File.Exists(_filePath))
             {
-                await writer.WriteLineAsync("TimeFrom,TimeTo,HeatDemandMWh,ElectricityPriceDKK,HeatProductionMWh,ElectricityProductionMWh,ElectricityConsumptionMWh,ConsumptionOfPrimaryEnegryMWh,CO2ProductionKG,ExpensesDKK,ProfitDKK");
+                await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),HeatProduction (MWh),ElectricityProduction (MWh),ElectricityConsumption (MWh),ConsumptionOfPrimaryEnegry (MWh),CO2Production (KG),Expenses (DKK),Profit (DKK)");
             }
 
             foreach (ResultData resultData in resultDataList)
