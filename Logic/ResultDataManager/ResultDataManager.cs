@@ -1,5 +1,3 @@
-using System.Xml.Linq;
-
 namespace HeatOptimization.Logic;
 
 public class ResultDataManager

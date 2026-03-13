@@ -1,3 +1,7 @@
+namespace HeatOptimization.Data;
+
+using HeatOptimization.Logic;
+
 public class CsvResultRepository : IResultRepository
 {
     private readonly string _filePath;
