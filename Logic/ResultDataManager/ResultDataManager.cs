@@ -4,23 +4,23 @@ namespace HeatOptimization.Logic;
 
 public class ResultDataManager
 {
-    private readonly IResultRepository _repository;
+    // private readonly IResultRepository _repository;
 
-    public ResultDataManager(IResultRepository repository)
-    {
-        _repository = repository;
-    }
+    // public ResultDataManager(IResultRepository repository)
+    // {
+    //     _repository = repository;
+    // }
 
-    // Async because we are saving files which might take time on larger stress test operations
-    public async Task StoreResultAsync(ResultData resultData)
-    {
-        await _repository.SaveAsync(resultData);
-    }
+    // // Async because we are saving files which might take time on larger stress test operations
+    // public async Task StoreResultAsync(ResultData resultData)
+    // {
+    //     await _repository.SaveAsync(resultData);
+    // }
 
-    public async Task StoreResultsAsync(List<ResultData> resultsData)
-    {
-        // TBD
-    }
+    // public async Task StoreResultsAsync(List<ResultData> resultsData)
+    // {
+    //     // TBD
+    // }
 
     // public async Task<List<ResultData>> GetResultsAsync()
     // {
