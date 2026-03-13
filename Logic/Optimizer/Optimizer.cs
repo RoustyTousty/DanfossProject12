@@ -11,7 +11,7 @@ public class Optimizer
         _resultDataManager = resultDataManager;
     }
 
-    public List<UnitProductionCost> GetUnitHourlyProcutionCostsForHour(HourlyData data)
+    public List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data)
     {
         List<UnitProductionCost> costs = [];
         foreach (ProductionUnit unit in _assetManager.ProductionUnits)
