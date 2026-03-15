@@ -7,59 +7,85 @@ public class HourlyChartProvider : IHourlyChartProvider
 {
     public List<HourlyData> GetHourlyData(string fname)
     {
-        List<HourlyData> hourlyData = [];
+        List<HourlyData> hourlyData = new();
         string path = "./Data/InputData/HourlyData/" + fname;
-       
+
         if (!File.Exists(path))
         {
-            throw new FileNotFoundException($"No file found with name {path}");
+            throw new FileNotFoundException($"Input file not found: {path}");
         }
 
-        using (StreamReader reader = new(path))
-        {
-            reader.ReadLine(); 
+        using StreamReader reader = new(path);
 
-            string? line;
-            while ((line = reader.ReadLine()) != null)
+        reader.ReadLine(); 
+        int lineNumber = 1;
+
+        string? line;
+        while ((line = reader.ReadLine()) != null)
+        {
+            lineNumber++;
+
+            try
             {
                 var parts = line.Split(',');
 
-                // add parts length check - check if variable parts has exactly 4 rows with data
-                
+                if (parts.Length < 4)
+                {
+                    throw new FormatException(
+                        $"Expected 4 columns but found {parts.Length}.");
+                }
+
                 if (!DateTime.TryParseExact(
                         parts[0],
                         "dd.MM.yyyy HH:mm",
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.None,
-                        out DateTime from) ||
-                    !DateTime.TryParseExact(
+                        out DateTime from))
+                {
+                    throw new FormatException("Invalid 'TimeFrom' value.");
+                }
+
+                if (!DateTime.TryParseExact(
                         parts[1],
                         "dd.MM.yyyy HH:mm",
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.None,
-                        out DateTime to) ||
-                    !double.TryParse(
+                        out DateTime to))
+                {
+                    throw new FormatException("Invalid 'TimeTo' value.");
+                }
+
+                if (!double.TryParse(
                         parts[2],
                         NumberStyles.Any,
                         CultureInfo.InvariantCulture,
-                        out double heatDemand) ||
-                    !double.TryParse(
-                            parts[2],
-                            NumberStyles.Any,
-                            CultureInfo.InvariantCulture,
-                            out double electricityPrice))
-                    {
-                        // TBD: display the line (SCRUM-73)
-                        throw new Exception("Error while reading line ");
-                    }
+                        out double heatDemand))
+                {
+                    throw new FormatException("Invalid 'HeatDemandMWh' value.");
+                }
+
+                if (!double.TryParse(
+                        parts[3],
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out double electricityPrice))
+                {
+                    throw new FormatException("Invalid 'ElectricityPriceDKK' value.");
+                }
 
                 hourlyData.Add(new HourlyData
                 {
                     TimeFrom = from,
                     TimeTo = to,
                     HeatDemandMWh = heatDemand,
-                    ElectricityPriceDKK = electricityPrice,
+                    ElectricityPriceDKK = electricityPrice
                 });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    $"Error parsing file '{fname}' at line {lineNumber}: {line}. {ex.Message}",
+                    ex);  // here I solved Scrum-73
             }
         }
 
