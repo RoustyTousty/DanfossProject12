@@ -7,14 +7,15 @@ public class HourlyChartProvider : IHourlyChartProvider
 {
     public List<HourlyData> GetHourlyData(string fname)
     {
-        List<HourlyData> hourlyData = [];
+        List<HourlyData> hourlyData = new();
         string path = "./Data/InputData/HourlyData/" + fname;
 
         if (!File.Exists(path))
         {
             throw new FileNotFoundException($"Input file not found: {path}");
         }
-        using StreamReader reader = new StreamReader(path);
+
+        using StreamReader reader = new(path);
 
         reader.ReadLine(); 
         int lineNumber = 1;
@@ -64,7 +65,7 @@ public class HourlyChartProvider : IHourlyChartProvider
                 }
 
                 if (!double.TryParse(
-                        parts[3], 
+                        parts[3],
                         NumberStyles.Any,
                         CultureInfo.InvariantCulture,
                         out double electricityPrice))
@@ -84,8 +85,8 @@ public class HourlyChartProvider : IHourlyChartProvider
             {
                 throw new Exception(
                     $"Error parsing file '{fname}' at line {lineNumber}: {line}. {ex.Message}",
-                    ex);   // Here I solved Scrum-73 or 71 I don't remember exactly :))
-            }// update, it was scrum-73 :)
+                    ex);  // here I solved Scrum-73
+            }
         }
 
         return hourlyData;
