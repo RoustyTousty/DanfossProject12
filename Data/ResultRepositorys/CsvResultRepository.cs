@@ -15,13 +15,6 @@ public class CsvResultRepository : IResultRepository
 
     public async Task SaveAsync(ResultData resultData)
     {
-        List<ResultData> resultDataList = new List<ResultData> {resultData};
-        await SaveManyAsync(resultDataList);
-    }
-
-
-    public async Task SaveManyAsync(List<ResultData> resultDataList)
-    {
         try 
         {
             StreamWriter writer = new StreamWriter(_filePath);
@@ -31,28 +24,31 @@ public class CsvResultRepository : IResultRepository
                 await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),HeatProduction (MWh),ElectricityProduction (MWh),ElectricityConsumption (MWh),ConsumptionOfPrimaryEnegry (MWh),CO2Production (KG),Expenses (DKK),Profit (DKK)");
             }
 
-            foreach (ResultData resultData in resultDataList)
-            {
-                string line = string.Join(',', 
-                    resultData.TimeFrom, 
-                    resultData.TimeTo, 
-                    resultData.HeatDemandMWh, 
-                    resultData.ElectricityPriceDKK, 
-                    resultData.HeatProductionMWh, 
-                    resultData.ElectricityProductionMWh, 
-                    resultData.ElectricityConsumptionMWh, 
-                    resultData.ConsumptionOfPrimaryEnegryMWh, 
-                    resultData.CO2ProductionKG, 
-                    resultData.ExpensesDKK, 
-                    resultData.ProfitDKK
-                );
-                await writer.WriteLineAsync(line);
-            }
+            string line = string.Join(',', 
+                resultData.TimeFrom, 
+                resultData.TimeTo, 
+                resultData.HeatDemandMWh, 
+                resultData.ElectricityPriceDKK, 
+                resultData.HeatProductionMWh, 
+                resultData.ElectricityProductionMWh, 
+                resultData.ElectricityConsumptionMWh, 
+                resultData.ConsumptionOfPrimaryEnegryMWh, 
+                resultData.CO2ProductionKG, 
+                resultData.ExpensesDKK, 
+                resultData.ProfitDKK
+            );
+            await writer.WriteLineAsync(line);
         }
         catch (IOException ex)
         {
             throw new Exception($"Failed to write results to CSV file: {_filePath}", ex);
         }
+    }
+
+
+    public async Task SaveManyAsync(List<ResultData> resultDataList)
+    {
+        // Andrei save multiple at the same time
     }
 
 
@@ -98,20 +94,7 @@ public class CsvResultRepository : IResultRepository
 
     public async Task<List<ResultData>> GetByTimeRangeAsync(DateTime timeFrom, DateTime timeTo)
     {
-        if (timeFrom > timeTo)
-        {
-            throw new Exception("TimeFrom must be erlier than TimeTo");
-        }
-
-        List<ResultData> resultDataList = await GetAllAsync();
-
-        return resultDataList
-            .Where(
-                resultData => 
-                resultData.TimeFrom >= timeFrom
-                &&
-                resultData.TimeTo <= timeTo
-            ).ToList();
+        // Martina filter and find by time
     }
 
 
