@@ -5,64 +5,90 @@ using System.Globalization;
 
 public class HourlyChartProvider : IHourlyChartProvider
 {
-    private static Dictionary<DateTime, double> GetHourlyData(string? fname, int valueColumnIndex)
+    public List<HourlyData> GetHourlyData(string fname)
     {
-        var dict = new Dictionary<DateTime, double>();
+        List<HourlyData> hourlyData = new();
         string path = "./Data/InputData/HourlyData/" + fname;
 
-        try
+        if (!File.Exists(path))
         {
-            if (!File.Exists(path))
-            {
-                Console.WriteLine("File does not exist: " + path);
-                return dict;
-            }
+            throw new FileNotFoundException($"Input file not found: {path}");
+        }
 
-            using (StreamReader reader = new StreamReader(path))
-            {
-                reader.ReadLine(); 
+        using StreamReader reader = new(path);
 
-                string? line;
-                while ((line = reader.ReadLine()) != null)
+        reader.ReadLine(); 
+        int lineNumber = 1;
+
+        string? line;
+        while ((line = reader.ReadLine()) != null)
+        {
+            lineNumber++;
+
+            try
+            {
+                var parts = line.Split(',');
+
+                if (parts.Length < 4)
                 {
-                    var parts = line.Split(',');
-
-                    if (parts.Length > valueColumnIndex)
-                    {
-                        if (DateTime.TryParseExact(
-                                parts[0],
-                                "dd.MM.yyyy HH:mm",
-                                CultureInfo.InvariantCulture,
-                                DateTimeStyles.None,
-                                out DateTime time)
-                            &&
-                            double.TryParse(
-                                parts[valueColumnIndex],
-                                NumberStyles.Any,
-                                CultureInfo.InvariantCulture,
-                                out double val))
-                        {
-                            dict[time] = val;
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Invalid data in line: {line}");
-                        }
-                    }
+                    throw new FormatException(
+                        $"Expected 4 columns but found {parts.Length}.");
                 }
+
+                if (!DateTime.TryParseExact(
+                        parts[0],
+                        "dd.MM.yyyy HH:mm",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out DateTime from))
+                {
+                    throw new FormatException("Invalid 'TimeFrom' value.");
+                }
+
+                if (!DateTime.TryParseExact(
+                        parts[1],
+                        "dd.MM.yyyy HH:mm",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out DateTime to))
+                {
+                    throw new FormatException("Invalid 'TimeTo' value.");
+                }
+
+                if (!double.TryParse(
+                        parts[2],
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out double heatDemand))
+                {
+                    throw new FormatException("Invalid 'HeatDemandMWh' value.");
+                }
+
+                if (!double.TryParse(
+                        parts[3],
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out double electricityPrice))
+                {
+                    throw new FormatException("Invalid 'ElectricityPriceDKK' value.");
+                }
+
+                hourlyData.Add(new HourlyData
+                {
+                    TimeFrom = from,
+                    TimeTo = to,
+                    HeatDemandMWh = heatDemand,
+                    ElectricityPriceDKK = electricityPrice
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    $"Error parsing file '{fname}' at line {lineNumber}: {line}. {ex.Message}",
+                    ex);  // here I solved Scrum-73
             }
         }
-        catch (IOException e)
-        {
-            Console.WriteLine("Error reading file: " + e.Message);
-        }
 
-        return dict;
+        return hourlyData;
     }
-
-    public Dictionary<DateTime, double> GetElectricityPrices(string fname = "summerSeason.csv")
-        => GetHourlyData(fname, 3);
-
-    public Dictionary<DateTime, double> GetHeatDemand(string fname = "summerSeason.csv")
-        => GetHourlyData(fname, 2);
 }
