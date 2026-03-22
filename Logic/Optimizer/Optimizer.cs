@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace HeatOptimization.Logic;
 
 public class Optimizer
@@ -29,31 +31,38 @@ public class Optimizer
         return costs;
     }
 
+    public class UnitWithCost
+    {
+        public required ProductionUnit Unit {get; set;}
+        public double Cost {get; set;}
+    }
+
 
     public List<(string unitName, double heatProduced)>
         DistributeHeatLoad(HourlyData data)
     {
         double remainingDemand = data.HeatDemandMWh;
         
-        var costs = GetUnitHourlyProdutionCostsForOneMWh(data);
+        List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data);
 
-        var sortedUnits = _assetManager.ProductionUnits
-            .Join(costs,
-                  unit => unit.Name,
-                  cost => cost.Name,
-
-                  (unit, cost) =>
-                   new {
-                      Unit = unit,
-                      Cost = cost.ProductionCostDKK
-                  })
-
-            .OrderBy(x => x.Cost)
-            .ToList();
+        List<UnitWithCost> sortedUnits = _assetManager.ProductionUnits
+        .Join(
+            costs,
+            unit => unit.Name,
+            cost => cost.Name,
+            (unit, cost) => new UnitWithCost
+            {
+                Unit = unit,
+                Cost = cost.ProductionCostDKK
+            }
+        )
+        .OrderBy(x => x.Cost)
+        .ToList();
 
         
-        var result = new List<(string UnitName, double HeatProduced)>();
+        List<(string UnitName, double HeatProduced)> result = new List<(string UnitName, double HeatProduced)>();
 
+        double totalProducedHeat = 0;
 
         foreach (var entry in sortedUnits)
         {
@@ -62,23 +71,19 @@ public class Optimizer
                 break;
             }
 
-            double maxHeat = entry.Unit.MaxHeatMW ?? 0.0;
+            double maxHeat = entry.Unit.MaxHeatMW ;
 
             double heatProduced = Math.Min(maxHeat, remainingDemand);
 
             result.Add((entry.Unit.Name, heatProduced));
             
             remainingDemand -= heatProduced;
+            totalProducedHeat += heatProduced;
         }
-
-
-        // I am not sure if we need this, but if demand for heat
-        // was not met, we can check it. It may help with detecting
-        // that system is under-supplying heat.
 
         if (remainingDemand > 0)
         {
-            throw new Exception("Heat demand cannot be met");
+            throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {totalProducedHeat} MWh heat was produced.");
         }
         return result;
 
