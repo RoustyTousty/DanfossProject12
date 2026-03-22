@@ -1,4 +1,5 @@
 # Problems that I see with our current design: 
+
 1. Asset manager only loads production units that are specified in the list on Asset manager initialization. 
 It is bad, because then it will be impossible to choose diffrent units in the app's interface. 
 
@@ -21,3 +22,5 @@ var resultData = optimizer.process(data, units);
 resultDataManager.SetResultData(resultData);
 // line above would trigger UI update, because resultData in the resultDataManager is an ObservableProperty.
 ```
+
+8. Since there is a specific order of actions, maybe it would be useful to create a facade which does those things together. 
