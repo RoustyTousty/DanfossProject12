@@ -1,5 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-
 namespace HeatOptimization.Logic;
 
 public class Optimizer
@@ -19,12 +17,12 @@ public class Optimizer
         foreach (ProductionUnit unit in _assetManager.ProductionUnits)
         {
             if (unit.MaxElectricityMW == null)
-                costs.Add(new UnitProductionCost(data, unit.Name, unit.BaseProductionCostDKK));
+                costs.Add(new UnitProductionCost(data, unit, unit.BaseProductionCostDKK));
 
             if (unit.MaxElectricityMW != null)
             {
                 double electricityPerHeatRatio = unit.MaxElectricityMW.Value / unit.MaxHeatMW;
-                costs.Add(new UnitProductionCost(data, unit.Name, unit.BaseProductionCostDKK
+                costs.Add(new UnitProductionCost(data, unit, unit.BaseProductionCostDKK
                     - electricityPerHeatRatio * data.ElectricityPriceDKK));
             }
         }
@@ -90,12 +88,12 @@ public class Optimizer
 
 public class UnitProductionCost {
     public HourlyData HourlyData;
-    public string Name { get; set; }
+    public ProductionUnit Unit { get; set; }
     public double ProductionCostDKK {get; set; }
 
-    public UnitProductionCost(HourlyData hourlyData, string name, double productionCostDKK)
+    public UnitProductionCost(HourlyData hourlyData, ProductionUnit unit, double productionCostDKK)
     {
-        Name = name;
+        Unit = unit;
         ProductionCostDKK = productionCostDKK;
         HourlyData = hourlyData;
     }
