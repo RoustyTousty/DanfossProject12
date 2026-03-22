@@ -11,3 +11,13 @@ It is bad, because then it will be impossible to choose diffrent units in the ap
 5. Remember YAGNI principles when designing the app. We seem to create a variety of methods, but not all of them might actually necessary.
 
 6. Optimizer should not depend on a ResultManager or even IResultManager I think, because then it is hard to make it reusable for anything else. 
+
+7. Perhaps, we shouldn't even have AssetManager injected into the optimizer. It creates unnecessary coupling, while it doesn't really provide any benefits. Why wouldn't I simply call a method in the Opmizer in a form of 
+
+```cs
+var units = assetManager.getProductionUnits(["GB1", "GB2", "GB3", "OB1"]);
+var data = assetManager.getHourlyData();
+var resultData = optimizer.process(data, units);
+resultDataManager.SetResultData(resultData);
+// line above would trigger UI update, because resultData in the resultDataManager is an ObservableProperty.
+```
