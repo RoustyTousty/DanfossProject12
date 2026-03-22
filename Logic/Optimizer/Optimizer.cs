@@ -38,10 +38,10 @@ public class Optimizer
     }
 
 
-    public List<(string unitName, double heatProduced)>
-        DistributeHeatLoad(HourlyData data)
+    public List<(string unitName, double heatProduced)> DistributeHeatLoad(HourlyData data)
     {
         double remainingDemand = data.HeatDemandMWh;
+        
         
         List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data);
 
@@ -71,7 +71,7 @@ public class Optimizer
                 break;
             }
 
-            double maxHeat = entry.Unit.MaxHeatMW ;
+            double maxHeat = entry.Unit.MaxHeatMW;
 
             double heatProduced = Math.Min(maxHeat, remainingDemand);
 
@@ -83,7 +83,7 @@ public class Optimizer
 
         if (remainingDemand > 0)
         {
-            throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {totalProducedHeat} MWh heat was produced.");
+            throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {totalProducedHeat} MWh heat can be produced with existing generators.");
         }
         return result;
 
