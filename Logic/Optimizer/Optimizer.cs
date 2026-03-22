@@ -29,38 +29,20 @@ public class Optimizer
         return costs;
     }
 
-    public class UnitWithCost
-    {
-        public required ProductionUnit Unit {get; set;}
-        public double Cost {get; set;}
-    }
-
 
     public List<(string unitName, double heatProduced)> DistributeHeatLoad(HourlyData data)
     {
         double remainingDemand = data.HeatDemandMWh;
         
         
-        List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data);
-
-        List<UnitWithCost> sortedUnits = _assetManager.ProductionUnits
-        .Join(
-            costs,
-            unit => unit.Name,
-            cost => cost.Name,
-            (unit, cost) => new UnitWithCost
-            {
-                Unit = unit,
-                Cost = cost.ProductionCostDKK
-            }
-        )
-        .OrderBy(x => x.Cost)
+        List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data)
+        .OrderBy(x => x.ProductionCostDKK)
         .ToList();
 
         
-        List<(string UnitName, double HeatProduced)> result = new List<(string UnitName, double HeatProduced)>();
+        List<(string UnitName, double HeatProduced)> result = new();
 
-        foreach (var entry in sortedUnits)
+        foreach (UnitProductionCost entry in costs)
         {
             if(remainingDemand <= 0)
             {
@@ -83,7 +65,6 @@ public class Optimizer
         return result;
 
     }
-
 }
 
 public class UnitProductionCost {
