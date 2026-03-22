@@ -3,12 +3,10 @@ namespace HeatOptimization.Logic;
 public class Optimizer
 {
     private AssetManager _assetManager;
-    private ResultDataManager _resultDataManager;
 
-    public Optimizer(AssetManager assetManager, ResultDataManager resultDataManager)
+    public Optimizer(AssetManager assetManager)
     {
         _assetManager = assetManager;
-        _resultDataManager = resultDataManager;
     }
 
     private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data)
@@ -65,6 +63,8 @@ public class Optimizer
         return result;
 
     }
+
+    // we need a function that goes over the whole HourlyData list and applies DistributeHeatLoad() to it. Then DistributeHeatLoad can become private instead. 
 }
 
 public class UnitProductionCost {
