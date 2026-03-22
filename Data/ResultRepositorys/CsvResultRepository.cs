@@ -1,30 +1,32 @@
-public class CsvResultRepository : IResultRepository
-{
-    private readonly string _filePath;
+// namespace HeatOptimization.Data;
 
-    public CsvResultRepository(string filePath)
-    {
-        _filePath = filePath;
-    }
+// public class CsvResultRepository : IResultRepository
+// {
+//     private readonly string _filePath;
 
-    public async Task SaveAsync(ResultData resultData)
-    {
+//     public CsvResultRepository(string filePath)
+//     {
+//         _filePath = filePath;
+//     }
 
-        StreamWriter writer = new StreamWriter(_filePath);
+//     public async Task SaveAsync(ResultData resultData)
+//     {
 
-        if (!File.Exists(_filePath))
-        {
-            writer.WriteLine("TimeFrom,TimeTo,HeatDemandMWh,ElectricityPriceDKK,HeatProductionMWh,ElectricityProductionMWh,ElectricityConsumptionMWh,ConsumptionOfPrimaryEnegryMWh,CO2ProductionKG,ExpensesDKK,ProfitDKK");
-        }
+//         StreamWriter writer = new StreamWriter(_filePath);
 
-        string line = string.Join(',', resultData.TimeFrom, resultData.TimeTo, resultData.HeatDemandMWh, resultData.ElectricityPriceDKK, resultData.HeatProductionMWh, resultData.ElectricityProductionMWh, resultData.ElectricityConsumptionMWh, resultData.ConsumptionOfPrimaryEnegryMWh, resultData.CO2ProductionKG, resultData.ExpensesDKK, resultData.ProfitDKK);
+//         if (!File.Exists(_filePath))
+//         {
+//             writer.WriteLine("TimeFrom,TimeTo,HeatDemandMWh,ElectricityPriceDKK,HeatProductionMWh,ElectricityProductionMWh,ElectricityConsumptionMWh,ConsumptionOfPrimaryEnegryMWh,CO2ProductionKG,ExpensesDKK,ProfitDKK");
+//         }
 
-        await writer.WriteLineAsync(line);
+//         string line = string.Join(',', resultData.TimeFrom, resultData.TimeTo, resultData.HeatDemandMWh, resultData.ElectricityPriceDKK, resultData.HeatProductionMWh, resultData.ElectricityProductionMWh, resultData.ElectricityConsumptionMWh, resultData.ConsumptionOfPrimaryEnegryMWh, resultData.CO2ProductionKG, resultData.ExpensesDKK, resultData.ProfitDKK);
 
-    }
+//         await writer.WriteLineAsync(line);
 
-    public async Task SaveManyAsync(List<ResultData> resultDataList)
-    {
-        // TBD (save multiple results to csv here)
-    }
-}
+//     }
+
+//     public async Task SaveManyAsync(List<ResultData> resultDataList)
+//     {
+//         // TBD (save multiple results to csv here)
+//     }
+// }

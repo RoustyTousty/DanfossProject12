@@ -1,11 +1,7 @@
-public class ResultData
+namespace HeatOptimization.Logic;
+
+public class ResultData : HourlyData
 {
-    public DateTime TimeFrom { get; set; }
-    public DateTime TimeTo { get; set; }
-
-    public double HeatDemandMWh { get; set; }
-    public double ElectricityPriceDKK { get; set; }
-
     public double HeatProductionMWh { get; set; }
     public double ElectricityProductionMWh { get; set; }
     public double ElectricityConsumptionMWh { get; set; }
