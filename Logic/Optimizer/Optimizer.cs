@@ -62,8 +62,6 @@ public class Optimizer
         
         List<(string UnitName, double HeatProduced)> result = new List<(string UnitName, double HeatProduced)>();
 
-        double totalProducedHeat = 0;
-
         foreach (var entry in sortedUnits)
         {
             if(remainingDemand <= 0)
@@ -78,12 +76,11 @@ public class Optimizer
             result.Add((entry.Unit.Name, heatProduced));
             
             remainingDemand -= heatProduced;
-            totalProducedHeat += heatProduced;
         }
 
         if (remainingDemand > 0)
         {
-            throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {totalProducedHeat} MWh heat can be produced with existing generators.");
+            throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {data.HeatDemandMWh - remainingDemand} MWh heat can be produced with existing generators.");
         }
         return result;
 
