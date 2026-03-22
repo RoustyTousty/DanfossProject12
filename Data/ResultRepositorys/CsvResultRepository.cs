@@ -6,10 +6,9 @@ public class CsvResultRepository : IResultRepository
 {
     private readonly string _filePath;
 
-    public CsvResultRepository(string filePath)
-    {
-        _filePath = filePath;
-    }
+// public class CsvResultRepository : IResultRepository
+// {
+//     private readonly string _filePath;
 
 
 

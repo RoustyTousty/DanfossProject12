@@ -2,12 +2,12 @@ namespace HeatOptimization.Logic;
 
 public class ResultDataManager
 {
-    private readonly IResultRepository _repository;
+    // private readonly IResultRepository _repository;
 
-    public ResultDataManager(IResultRepository repository)
-    {
-        _repository = repository;
-    }
+    // public ResultDataManager(IResultRepository repository)
+    // {
+    //     _repository = repository;
+    // }
 
 
 
