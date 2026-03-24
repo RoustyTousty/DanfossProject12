@@ -22,3 +22,5 @@ resultDataManager.SetResultData(resultData);
 ```
 
 8. Since there is a specific order of actions, maybe it would be useful to create a facade object which does those things together. 
+
+9. In RDM, we have an async method SaveMany(). How is it going to work when Save() is an async function and it also handles the parsing? I think that parsing should be a separate non-async function, and then Save() and SaveMany() should save strings provided by that method and write it down. Actually, why do we need Save() if we can do SaveMany() on a single piece of resultData, achieving the same results?
