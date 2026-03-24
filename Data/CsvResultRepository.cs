@@ -5,7 +5,7 @@ using HeatOptimization.Logic;
 public class CsvResultRepository : IResultRepository
 {
     private readonly string _filePath;
-    
+
     public CsvResultRepository(string filePath)
     {
         _filePath = filePath;
