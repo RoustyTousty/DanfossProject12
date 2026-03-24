@@ -5,12 +5,11 @@ using HeatOptimization.Logic;
 public class CsvResultRepository : IResultRepository
 {
     private readonly string _filePath;
-
-// public class CsvResultRepository : IResultRepository
-// {
-//     private readonly string _filePath;
-
-
+    
+    public CsvResultRepository(string filePath)
+    {
+        _filePath = filePath;
+    }
 
     public async Task SaveAsync(ResultData resultData)
     {
@@ -20,7 +19,7 @@ public class CsvResultRepository : IResultRepository
 
             if (!File.Exists(_filePath))
             {
-                await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),HeatProduction (MWh),ElectricityProduction (MWh),ElectricityConsumption (MWh),ConsumptionOfPrimaryEnegry (MWh),CO2Production (KG),Expenses (DKK),Profit (DKK)");
+                await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG)");
             }
 
             string line = string.Join(',', 
@@ -28,13 +27,9 @@ public class CsvResultRepository : IResultRepository
                 resultData.TimeTo, 
                 resultData.HeatDemandMWh, 
                 resultData.ElectricityPriceDKK, 
-                resultData.HeatProductionMWh, 
                 resultData.ElectricityProductionMWh, 
                 resultData.ElectricityConsumptionMWh, 
-                resultData.ConsumptionOfPrimaryEnegryMWh, 
-                resultData.CO2ProductionKG, 
-                resultData.ExpensesDKK, 
-                resultData.ProfitDKK
+                resultData.CO2ProductionKG
             );
             await writer.WriteLineAsync(line);
         }
@@ -106,13 +101,9 @@ public class CsvResultRepository : IResultRepository
             TimeTo = DateTime.Parse(values[1]),
             HeatDemandMWh = double.Parse(values[2]),
             ElectricityPriceDKK = double.Parse(values[3]),
-            HeatProductionMWh = double.Parse(values[4]),
-            ElectricityProductionMWh = double.Parse(values[5]),
-            ElectricityConsumptionMWh = double.Parse(values[6]),
-            ExpensesDKK = double.Parse(values[7]),
-            ProfitDKK = double.Parse(values[8]),
-            ConsumptionOfPrimaryEnegryMWh = double.Parse(values[9]),
-            CO2ProductionKG = double.Parse(values[10])
+            ElectricityProductionMWh = double.Parse(values[4]),
+            ElectricityConsumptionMWh = double.Parse(values[5]),
+            CO2ProductionKG = double.Parse(values[6])
         };
     }
 }
