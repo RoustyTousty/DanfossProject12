@@ -2,11 +2,11 @@ namespace HeatOptimization.Logic;
 
 public interface IResultRepository
 {
-    Task SaveAsync(ResultData result);
+    public Task SaveAsync(ResultData result);
 
-    Task SaveManyAsync(List<ResultData> results);
+    public Task SaveManyAsync(List<ResultData> results);
 
-    // Task<List<ResultData>> GetAllAsync();
+    public Task<List<ResultData>> GetAllAsync();
 
-    // Task<List<ResultData>> GetByTimeRangeAsync(DateTime from, DateTime to);
+    public Task<List<ResultData>> GetByTimeRangeAsync(DateTime from, DateTime to);
 }
