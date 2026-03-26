@@ -1,5 +1,11 @@
 namespace HeatOptimization.Logic;
 
+public class HeatDistribution
+{
+    public DateTime TimeFrom { get; set; }
+    public DateTime TimeTo { get; set; }
+    public List<(string unitName, double heatProduced)> Units { get; set; }
+}
 public class Optimizer
 {
 
@@ -22,7 +28,7 @@ public class Optimizer
     }
 
 
-    public List<(string unitName, double heatProduced)> DistributeHeatLoad(HourlyData data, List<ProductionUnit> units)
+    private List<(string unitName, double heatProduced)> DistributeHeatLoad(HourlyData data, List<ProductionUnit> units)
     {
         double remainingDemand = data.HeatDemandMWh;
         
@@ -57,8 +63,27 @@ public class Optimizer
         return result;
 
     }
+    public List<HeatDistribution> OptimizeMany(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits) 
+     {
+         List<HeatDistribution> results = new();
 
-    // we need a function that goes over the whole HourlyData list and applies DistributeHeatLoad() to it. Then DistributeHeatLoad can become private instead. 
+         foreach (var data in hourlyDataList)
+         {
+             var distribution = DistributeHeatLoad(data, productionUnits);
+
+             HeatDistribution heatDistribution = new HeatDistribution
+             {
+                 TimeFrom = data.TimeFrom,
+                 TimeTo = data.TimeTo,
+                 Units = distribution
+             };
+
+             results.Add(heatDistribution);
+         }
+
+         return results;
+     }
+    
 }
 
 public class UnitProductionCost {
