@@ -42,9 +42,36 @@ public class CsvResultRepository : IResultRepository
 
     public async Task SaveManyAsync(List<ResultData> resultDataList)
     {
-        // Andrei save multiple at the same time
-    }
+        try
+        {
+            using (StreamWriter writer = new StreamWriter(_filePath, true))
+            {
+                if (!File.Exists(_filePath) || new FileInfo(_filePath).Length == 0)
+                {
+                    await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG)");
+                }
 
+                foreach (var resultData in resultDataList)
+                {
+                    string line = string.Join(',',
+                        resultData.TimeFrom,
+                        resultData.TimeTo,
+                        resultData.HeatDemandMWh,
+                        resultData.ElectricityPriceDKK,
+                        resultData.ElectricityProductionMWh,
+                        resultData.ElectricityConsumptionMWh,
+                        resultData.CO2ProductionKG
+                    );
+
+                    await writer.WriteLineAsync(line);
+                }
+            }
+        }
+        catch (IOException ex)
+        {
+            throw new Exception($"Failed to write multiple results to CSV file: {_filePath}", ex);
+        }
+    }
 
     public async Task<List<ResultData>> GetAllAsync()
     {
