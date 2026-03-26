@@ -116,6 +116,7 @@ public class CsvResultRepository : IResultRepository
     public async Task<List<ResultData>> GetByTimeRangeAsync(DateTime timeFrom, DateTime timeTo)
     {
         // Martina filter and find by time
+        return [];
     }
 
 

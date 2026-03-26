@@ -24,7 +24,7 @@ sealed class Program
         HourlyChartProvider hourlyChartProvider = new();
         ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
         AssetManager assetManager = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]); 
-        ResultDataManager resultDataManager = new();
+        // ResultDataManager resultDataManager = new();
         Optimizer optimizer = new();
         // var result = optimizer.DistributeHeatLoad();
         // resultDataManager.Add(result);
