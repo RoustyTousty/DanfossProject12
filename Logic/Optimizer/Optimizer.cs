@@ -2,19 +2,11 @@ namespace HeatOptimization.Logic;
 
 public class Optimizer
 {
-    private AssetManager _assetManager;
-    private ResultDataManager _resultDataManager;
 
-    public Optimizer(AssetManager assetManager, ResultDataManager resultDataManager)
-    {
-        _assetManager = assetManager;
-        _resultDataManager = resultDataManager;
-    }
-
-    private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data)
+    private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data, List<ProductionUnit> units)
     {
         List<UnitProductionCost> costs = [];
-        foreach (ProductionUnit unit in _assetManager.ProductionUnits)
+        foreach (ProductionUnit unit in units)
         {
             if (unit.MaxElectricityMW == null)
                 costs.Add(new UnitProductionCost(data, unit, unit.BaseProductionCostDKK));
@@ -30,12 +22,12 @@ public class Optimizer
     }
 
 
-    public List<(string unitName, double heatProduced)> DistributeHeatLoad(HourlyData data)
+    public List<(string unitName, double heatProduced)> DistributeHeatLoad(HourlyData data, List<ProductionUnit> units)
     {
         double remainingDemand = data.HeatDemandMWh;
         
         
-        List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data)
+        List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data, units)
         .OrderBy(x => x.ProductionCostDKK)
         .ToList();
 
@@ -65,6 +57,8 @@ public class Optimizer
         return result;
 
     }
+
+    // we need a function that goes over the whole HourlyData list and applies DistributeHeatLoad() to it. Then DistributeHeatLoad can become private instead. 
 }
 
 public class UnitProductionCost {
