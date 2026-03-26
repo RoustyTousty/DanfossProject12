@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\aungu\\Desktop\\new project\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D2ADF1BD-78E1-4079-995A-66DD49DFF93D}|Logic\\Logic.csproj|c:\\users\\aungu\\desktop\\new project\\logic\\optimizer\\optimizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2ADF1BD-78E1-4079-995A-66DD49DFF93D}|Logic\\Logic.csproj|solutionrelative:logic\\optimizer\\optimizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Optimizer.cs",
+              "DocumentMoniker": "C:\\Users\\aungu\\Desktop\\new project\\Logic\\Optimizer\\Optimizer.cs",
+              "RelativeDocumentMoniker": "Logic\\Optimizer\\Optimizer.cs",
+              "ToolTip": "C:\\Users\\aungu\\Desktop\\new project\\Logic\\Optimizer\\Optimizer.cs*",
+              "RelativeToolTip": "Logic\\Optimizer\\Optimizer.cs*",
+              "ViewState": "AgIAADUAAAAAAAAAAAAswFcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-26T18:04:34.754Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
