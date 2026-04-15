@@ -6,15 +6,11 @@ public class CsvResultRepository : IResultRepository
 {
     private readonly string _filePath;
 
-    public CsvResultRepository(string filePath)
+    public CsvResultRepository(string fileName)
     {
-        if (string.IsNullOrWhiteSpace(filePath))
-        throw new ArgumentException("filePath is empty");
-
-        if (Directory.Exists(filePath))
-            throw new ArgumentException("filePath points to a directory, not a file");
-
-        _filePath = filePath;
+        // no validation here!
+        string baseDir = @"D:\danfoss-heat\Data\OutputData";
+        _filePath = Path.Combine(baseDir, fileName);
     }
 
     public async Task SaveAsync(IResultData resultData)
@@ -43,6 +39,8 @@ public class CsvResultRepository : IResultRepository
         {
             throw new Exception($"Failed to write results to CSV file: {_filePath}", ex);
         }
+
+        Console.WriteLine($"Successfully saved results to {_filePath}");
     }
 
 
@@ -69,7 +67,7 @@ public class CsvResultRepository : IResultRepository
                         resultData.CO2ProductionKG
                     );
 
-                    await writer.WriteLineAsync(line);
+                    Console.WriteLine(resultData.ElectricityPriceDKK);
                 }
             }
         }
