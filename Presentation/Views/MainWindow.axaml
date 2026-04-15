@@ -1,20 +1,63 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:HeatOptimization.Presentation.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="HeatOptimization.Presentation.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="HeatOptimization">
+        Title="Danfoss Heat Optimization Grid"
+        Background="#121216"
+        Width="1100" Height="700">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+    <Grid ColumnDefinitions="280, *">
+        
+        <Border Grid.Column="0" Background="#1E1E24">
+            <DockPanel>
+                <Image Source="avares://Presentation/Assets/danfoss-logo.png" 
+                       Height="50" 
+                       Margin="0,40,0,40" 
+                       DockPanel.Dock="Top"
+                       HorizontalAlignment="Center"/>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ListBox ItemsSource="{Binding Pages}" 
+                         SelectedItem="{Binding CurrentPage}" 
+                         Background="Transparent"
+                         Margin="15,0">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="20,15"/>
+                            <Setter Property="Background" Value="#3E4452"/> <Setter Property="CornerRadius" Value="12"/>
+                            <Setter Property="Margin" Value="0,8"/>
+                        </Style>
+                        
+                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#4E5462"/>
+                        </Style>
 
+                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#E30613"/> </Style>
+                    </ListBox.Styles>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="15">
+                                <Image Source="{Binding Icon}" 
+                                       Width="24" Height="24"
+                                       RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                                
+                                <TextBlock Text="{Binding Title}" 
+                                           Foreground="White" 
+                                           FontSize="16" 
+                                           FontWeight="SemiBold" 
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Column="1" Background="#121216">
+            <TransitioningContentControl Content="{Binding CurrentPage}" Padding="40" />
+        </Border>
+
+    </Grid>
 </Window>

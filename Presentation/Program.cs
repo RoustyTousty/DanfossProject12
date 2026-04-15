@@ -1,39 +1,17 @@
 ﻿using Avalonia;
-using HeatOptimization.Data;
-using HeatOptimization.Logic;
+using System;
 
 namespace HeatOptimization.Presentation;
 
 sealed class Program
 {
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
-    // [STAThread]
-    // public static void Main(string[] args) => BuildAvaloniaApp()
-    //     .StartWithClassicDesktopLifetime(args);
+    [STAThread]
+    public static void Main(string[] args) => BuildAvaloniaApp()
+        .StartWithClassicDesktopLifetime(args);
 
-    // // Avalonia configuration, don't remove; also used by visual designer.
-    // public static AppBuilder BuildAvaloniaApp()
-    //     => AppBuilder.Configure<App>()
-    //         .UsePlatformDetect()
-    //         .WithInterFont()
-    //         .LogToTrace();
-    public static async Task Main()
-    {   
-        HourlyChartProvider hourlyChartProvider = new();
-        ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
-        AssetManager assetManager = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]); 
-
-
-        IResultRepository repo = new CsvResultRepository("result.csv");
-        ResultDataManager resultDataManager = new(repo);
-        Optimizer optimizer = new();
-        var data = assetManager.GetHourlyDatas();
-        var units = assetManager.GetProductionUnits();
-
-        var results = optimizer.OptimizeMany(data, units);
-        await resultDataManager.StoreResultsAsync(results);
-    }
-
+    public static AppBuilder BuildAvaloniaApp()
+        => AppBuilder.Configure<App>()
+            .UsePlatformDetect()
+            .WithInterFont()
+            .LogToTrace();
 }
