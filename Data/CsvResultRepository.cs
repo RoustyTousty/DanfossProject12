@@ -8,6 +8,12 @@ public class CsvResultRepository : IResultRepository
 
     public CsvResultRepository(string filePath)
     {
+        if (string.IsNullOrWhiteSpace(filePath))
+        throw new ArgumentException("filePath is empty");
+
+        if (Directory.Exists(filePath))
+            throw new ArgumentException("filePath points to a directory, not a file");
+
         _filePath = filePath;
     }
 

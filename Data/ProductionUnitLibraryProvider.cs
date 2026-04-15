@@ -58,7 +58,7 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine($"Error: Could not parse numeric values in line -> {line}");
+                    Console.WriteLine($"Error: Could not parse numeric values in line -> {line} in ./Data/InputData/PruductionUnits/productionUnits.csv");
                 }
                 catch (IndexOutOfRangeException)
                 {
