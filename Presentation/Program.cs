@@ -34,6 +34,19 @@ sealed class Program
 
         var results = optimizer.OptimizeMany(data, units);
         await resultDataManager.StoreResultsAsync(results);
+
+        var unitSeries = results
+            .SelectMany(r => r.UnitProduction)
+            .Select(u => u.unitName)
+            .Distinct()
+            .ToDictionary(
+                unit => unit,
+                unit => results.Select(r =>
+                    r.UnitProduction.FirstOrDefault(u => u.unitName == unit)?.heatProduced ?? 0
+                ).ToList()
+            );
+
+        
     }
 
 }
