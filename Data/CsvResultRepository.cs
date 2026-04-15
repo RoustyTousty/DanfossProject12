@@ -11,7 +11,7 @@ public class CsvResultRepository : IResultRepository
         _filePath = filePath;
     }
 
-    public async Task SaveAsync(ResultData resultData)
+    public async Task SaveAsync(IResultData resultData)
     {
         try 
         {
@@ -40,7 +40,7 @@ public class CsvResultRepository : IResultRepository
     }
 
 
-    public async Task SaveManyAsync(List<ResultData> resultDataList)
+    public async Task SaveManyAsync(List<IResultData> resultDataList)
     {
         try
         {
@@ -73,9 +73,9 @@ public class CsvResultRepository : IResultRepository
         }
     }
 
-    public async Task<List<ResultData>> GetAllAsync()
+    public async Task<List<IResultData>> GetAllAsync()
     {
-        List<ResultData> resultDataList = new List<ResultData>();
+        List<IResultData> resultDataList = new List<IResultData>();
 
         try
         {
@@ -113,7 +113,7 @@ public class CsvResultRepository : IResultRepository
     }
 
 
-    public async Task<List<ResultData>> GetByTimeRangeAsync(DateTime timeFrom, DateTime timeTo)
+    public async Task<List<IResultData>> GetByTimeRangeAsync(DateTime timeFrom, DateTime timeTo)
     {
         // Martina filter and find by time
         return [];
@@ -121,7 +121,7 @@ public class CsvResultRepository : IResultRepository
 
 
 
-    private ResultData MapResultDataToValues(string[] values)
+    private IResultData MapResultDataToValues(string[] values)
     {
         return new ResultData
         {

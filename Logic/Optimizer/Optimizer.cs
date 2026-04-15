@@ -63,26 +63,57 @@ public class Optimizer
         return result;
 
     }
-    public List<HeatDistribution> OptimizeMany(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits) 
+
+
+    public List<IResultData> OptimizeMany(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits) 
      {
-         List<HeatDistribution> results = new();
+        List<IResultData> results = new();
 
-         foreach (var data in hourlyDataList)
-         {
-             var distribution = DistributeHeatLoad(data, productionUnits);
+        foreach (var data in hourlyDataList)
+        {
+            var distribution = DistributeHeatLoad(data, productionUnits);
 
-             HeatDistribution heatDistribution = new HeatDistribution
-             {
-                 TimeFrom = data.TimeFrom,
-                 TimeTo = data.TimeTo,
-                 Units = distribution
-             };
+            double totalCO2 = 0;
+            double totalElectricityProduced = 0;
+            double totalElectricityConsumed = 0;
 
-             results.Add(heatDistribution);
-         }
+            foreach (var (unitName, heatProduced) in distribution)
+            {
+                var unit = productionUnits.First(u => u.Name == unitName);
 
-         return results;
-     }
+                if (unit.CO2EmissionsKg != null)
+                {
+                    totalCO2 += heatProduced * unit.CO2EmissionsKg.Value;
+                }
+
+                if (unit.MaxElectricityMW != null)
+                {
+                    double ratio = unit.MaxElectricityMW.Value / unit.MaxHeatMW;
+                    totalElectricityProduced += heatProduced * ratio;
+                }
+
+                if (unit.Type == UnitType.ElectricBoiler)
+                {
+                    totalElectricityConsumed += heatProduced;
+                }
+            }
+
+            ResultData result = new ResultData
+            {
+                TimeFrom = data.TimeFrom,
+                TimeTo = data.TimeTo,
+                HeatDemandMWh = data.HeatDemandMWh,
+
+                CO2ProductionKG = totalCO2,
+                ElectricityProductionMWh = totalElectricityProduced,
+                ElectricityConsumptionMWh = totalElectricityConsumed
+            };
+
+            results.Add(result);
+        }
+
+        return results;
+    }
     
 }
 

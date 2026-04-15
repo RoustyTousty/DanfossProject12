@@ -1,7 +1,7 @@
 namespace HeatOptimization.Logic;
 
 
-public class ResultData : HourlyData
+public class ResultData : HourlyData, IResultData
 {
     public double CO2ProductionKG { get; set; }
     public double ElectricityProductionMWh { get; set; }
