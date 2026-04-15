@@ -1,11 +1,5 @@
 namespace HeatOptimization.Logic;
 
-public class HeatDistribution
-{
-    public DateTime TimeFrom { get; set; }
-    public DateTime TimeTo { get; set; }
-    public List<(string unitName, double heatProduced)> Units { get; set; }
-}
 public class Optimizer
 {
 

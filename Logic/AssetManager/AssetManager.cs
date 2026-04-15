@@ -4,7 +4,7 @@ public class AssetManager
 {
     private IProductionUnitLibraryProvider _productionUnitLibraryProvider;
     private IHourlyChartProvider _hourlyChartProvider;
-    public readonly List<HourlyData> hourlyData;
+    public readonly List<HourlyData> HourlyData;
     public readonly List<ProductionUnit> ProductionUnits = [];
 
     public AssetManager (IHourlyChartProvider hourlyChartProvider, IProductionUnitLibraryProvider productionUnitLibraryProvider, List<string> productionUnits)
@@ -12,7 +12,7 @@ public class AssetManager
         _productionUnitLibraryProvider = productionUnitLibraryProvider;
         _hourlyChartProvider = hourlyChartProvider;
 
-        hourlyData = _hourlyChartProvider.GetHourlyData();
+        HourlyData = _hourlyChartProvider.GetHourlyData();
         ProductionUnits = _productionUnitLibraryProvider.GetProductionUnits(productionUnits);
     }
 
@@ -70,7 +70,7 @@ public class AssetManager
     {
         try
         {
-            HourlyData? data = hourlyData.Find(x => x.TimeFrom < dateTime && x.TimeTo > dateTime);
+            HourlyData? data = HourlyData.Find(x => x.TimeFrom < dateTime && x.TimeTo > dateTime);
             if (data != null)
             {
                 return data;

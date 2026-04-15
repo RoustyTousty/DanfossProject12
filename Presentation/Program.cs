@@ -19,16 +19,18 @@ sealed class Program
     //         .UsePlatformDetect()
     //         .WithInterFont()
     //         .LogToTrace();
-    public static void Main()
+    public static async Task Main()
     {   
         HourlyChartProvider hourlyChartProvider = new();
         ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
         AssetManager assetManager = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]); 
-        // ResultDataManager resultDataManager = new();
+        IResultRepository repo = new CsvResultRepository("/");
+        ResultDataManager resultDataManager = new(repo);
         Optimizer optimizer = new();
-        // var result = optimizer.DistributeHeatLoad();
-        // resultDataManager.Add(result);
-        // resultDataManager.SaveCSV();
+        var data = assetManager.HourlyData;
+        var units = assetManager.ProductionUnits;
+        var result = optimizer.OptimizeMany(data, units);
+        await resultDataManager.StoreResultsAsync(result);
     }
 
 }

@@ -25,7 +25,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Logic\Logic.csproj" />
-
     <ProjectReference Include="..\Data\Data.csproj" />
+
+    <None Include="..\Data\InputData\HourlyData\**\*">
+      <Link>Data\InputData\HourlyData\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
   </ItemGroup>
 </Project>
