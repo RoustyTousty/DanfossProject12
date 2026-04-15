@@ -47,20 +47,20 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
                         {
                             Name = valueArr[0],
                             Type = type,
-                            MaxHeatMW = double.Parse(valueArr[2]),
+                            MaxHeatMW = double.Parse(valueArr[2], System.Globalization.CultureInfo.InvariantCulture),
                             MaxElectricityMW = string.IsNullOrWhiteSpace(valueArr[3])
                                 ? null
-                                : double.Parse(valueArr[3]),
-                            BaseProductionCostDKK = int.Parse(valueArr[4]),
+                                : double.Parse(valueArr[3], System.Globalization.CultureInfo.InvariantCulture),
+                            BaseProductionCostDKK = int.Parse(valueArr[4], System.Globalization.CultureInfo.InvariantCulture),
                             CO2EmissionsKg = string.IsNullOrWhiteSpace(valueArr[5])
                                 ? null
-                                : int.Parse(valueArr[5]),
+                                : int.Parse(valueArr[5], System.Globalization.CultureInfo.InvariantCulture),
                             GasConsumptionMWh = string.IsNullOrWhiteSpace(valueArr[6])
                                 ? null
-                                : double.Parse(valueArr[6]),
+                                : double.Parse(valueArr[6], System.Globalization.CultureInfo.InvariantCulture),
                             OilConsumptionMWh = string.IsNullOrWhiteSpace(valueArr[7])
                                 ? null
-                                : double.Parse(valueArr[7]),
+                                : double.Parse(valueArr[7], System.Globalization.CultureInfo.InvariantCulture),
                         });
                     }
                 }
