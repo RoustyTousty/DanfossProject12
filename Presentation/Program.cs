@@ -1,52 +1,17 @@
 ﻿using Avalonia;
-using HeatOptimization.Data;
-using HeatOptimization.Logic;
 
 namespace HeatOptimization.Presentation;
 
 sealed class Program
 {
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
-    // [STAThread]
-    // public static void Main(string[] args) => BuildAvaloniaApp()
-    //     .StartWithClassicDesktopLifetime(args);
+    [STAThread]
+    public static void Main(string[] args) => BuildAvaloniaApp()
+        .StartWithClassicDesktopLifetime(args);
 
-    // // Avalonia configuration, don't remove; also used by visual designer.
-    // public static AppBuilder BuildAvaloniaApp()
-    //     => AppBuilder.Configure<App>()
-    //         .UsePlatformDetect()
-    //         .WithInterFont()
-    //         .LogToTrace();
-    public static async Task Main()
-    {   
-        HourlyChartProvider hourlyChartProvider = new();
-        ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
-        AssetManager assetManager = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]); 
-
-
-        IResultRepository repo = new CsvResultRepository("result.csv");
-        ResultDataManager resultDataManager = new(repo);
-        Optimizer optimizer = new();
-        var data = assetManager.GetHourlyDatas();
-        var units = assetManager.GetProductionUnits();
-
-        var results = optimizer.OptimizeMany(data, units);
-        await resultDataManager.StoreResultsAsync(results);
-
-        var unitSeries = results
-            .SelectMany(r => r.UnitProduction)
-            .Select(u => u.unitName)
-            .Distinct()
-            .ToDictionary(
-                unit => unit,
-                unit => results.Select(r =>
-                    r.UnitProduction.FirstOrDefault(u => u.unitName == unit)?.heatProduced ?? 0
-                ).ToList()
-            );
-
-        
-    }
-
+    
+    public static AppBuilder BuildAvaloniaApp()
+        => AppBuilder.Configure<App>()
+            .UsePlatformDetect()
+            .WithInterFont()
+            .LogToTrace();
 }
