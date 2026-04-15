@@ -27,8 +27,11 @@
     <ProjectReference Include="..\Logic\Logic.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
 
-    <None Include="..\Data\InputData\HourlyData\**\*">
+    <None Include="..\Data\InputData\ProductionUnits\**\*">
       <Link>Data\InputData\HourlyData\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\InputData\ProductionUnits\productionUnits.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 

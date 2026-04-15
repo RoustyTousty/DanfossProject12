@@ -12,12 +12,14 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
             AppContext.BaseDirectory,
             "Data",
             "InputData",
-            "PruductionUnits",
+            "ProductionUnits",
             "productionUnits.csv"
         );
 
         try
         {
+            Console.WriteLine(path);
+
             if (!File.Exists(path))
             {
                 Console.WriteLine("Error: productionUnits.csv file could not be found.");
@@ -66,7 +68,7 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
                 }
                 catch (FormatException e)
                 {
-                    Console.WriteLine($"Error: Could not parse numeric values in line -> {line} in ./Data/InputData/PruductionUnits/productionUnits.csv");
+                    Console.WriteLine($"Error: Could not parse numeric values in line -> {line} in ./Data/InputData/ProductionUnits/productionUnits.csv");
                     Console.WriteLine(e);
                 }
                 catch (IndexOutOfRangeException)
