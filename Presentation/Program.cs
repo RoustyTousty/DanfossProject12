@@ -24,13 +24,16 @@ sealed class Program
         HourlyChartProvider hourlyChartProvider = new();
         ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
         AssetManager assetManager = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1"]); 
+
+
         IResultRepository repo = new CsvResultRepository("result.csv");
         ResultDataManager resultDataManager = new(repo);
         Optimizer optimizer = new();
-        var data = assetManager.HourlyData;
-        var units = assetManager.ProductionUnits;
-        var result = optimizer.OptimizeMany(data, units);
-        await resultDataManager.StoreResultsAsync(result);
+        var data = assetManager.GetHourlyDatas();
+        var units = assetManager.GetProductionUnits();
+
+        var results = optimizer.OptimizeMany(data, units);
+        await resultDataManager.StoreResultsAsync(results);
     }
 
 }

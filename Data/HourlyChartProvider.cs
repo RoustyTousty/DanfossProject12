@@ -97,7 +97,7 @@ public class HourlyChartProvider : IHourlyChartProvider
                     ex);  // here I solved Scrum-73
             }
         }
-
+        
         return hourlyData;
     }
 }

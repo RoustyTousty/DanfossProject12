@@ -6,10 +6,15 @@ public class CsvResultRepository : IResultRepository
 {
     private readonly string _filePath;
 
+    // no path validation here! besides, there should be a better way to specify a path name for saving the file in general
     public CsvResultRepository(string fileName)
     {
-        // no validation here!
-        string baseDir = AppContext.BaseDirectory;
+        string appRoot = AppContext.BaseDirectory;
+        appRoot = Path.GetFullPath(Path.Combine(appRoot, "..", "..", "..", ".."));
+        string baseDir = Path.Combine(appRoot, "Data", "OutputData");
+
+        // Directory.CreateDirectory(baseDir);
+
         _filePath = Path.Combine(baseDir, fileName);
     }
 
@@ -25,10 +30,10 @@ public class CsvResultRepository : IResultRepository
             }
 
             string line = string.Join(',', 
-                resultData.TimeFrom, 
-                resultData.TimeTo, 
-                resultData.HeatDemandMWh, 
-                resultData.ElectricityPriceDKK, 
+                resultData.HourlyData.TimeFrom, 
+                resultData.HourlyData.TimeTo, 
+                resultData.HourlyData.HeatDemandMWh, 
+                resultData.HourlyData.ElectricityPriceDKK, 
                 resultData.ElectricityProductionMWh, 
                 resultData.ElectricityConsumptionMWh, 
                 resultData.CO2ProductionKG
@@ -48,33 +53,35 @@ public class CsvResultRepository : IResultRepository
     {
         try
         {
-            using (StreamWriter writer = new StreamWriter(_filePath, true))
+            StreamWriter writer = new StreamWriter(_filePath, true);
+            
+            if (!File.Exists(_filePath) || new FileInfo(_filePath).Length == 0)
             {
-                if (!File.Exists(_filePath) || new FileInfo(_filePath).Length == 0)
-                {
-                    await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG)");
-                }
-
-                foreach (var resultData in resultDataList)
-                {
-                    string line = string.Join(',',
-                        resultData.TimeFrom,
-                        resultData.TimeTo,
-                        resultData.HeatDemandMWh,
-                        resultData.ElectricityPriceDKK,
-                        resultData.ElectricityProductionMWh,
-                        resultData.ElectricityConsumptionMWh,
-                        resultData.CO2ProductionKG
-                    );
-
-                    Console.WriteLine(resultData.ElectricityPriceDKK);
-                }
+                await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG)");
             }
+
+            foreach (var resultData in resultDataList)
+            {
+                string line = string.Join(',',
+                    resultData.HourlyData.TimeFrom,
+                    resultData.HourlyData.TimeTo,
+                    resultData.HourlyData.HeatDemandMWh,
+                    resultData.HourlyData.ElectricityPriceDKK,
+                    resultData.ElectricityProductionMWh,
+                    resultData.ElectricityConsumptionMWh,
+                    resultData.CO2ProductionKG
+                );
+
+                await writer.WriteLineAsync(line);
+            }
+            
         }
         catch (IOException ex)
         {
             throw new Exception($"Failed to write multiple results to CSV file: {_filePath}", ex);
         }
+
+        Console.WriteLine($"Saved data successfully into {_filePath}");
     }
 
     public async Task<List<IResultData>> GetAllAsync()
@@ -127,12 +134,19 @@ public class CsvResultRepository : IResultRepository
 
     private IResultData MapResultDataToValues(string[] values)
     {
-        return new ResultData
+        HourlyData hourlyData = new()
         {
             TimeFrom = DateTime.Parse(values[0]),
             TimeTo = DateTime.Parse(values[1]),
             HeatDemandMWh = double.Parse(values[2]),
             ElectricityPriceDKK = double.Parse(values[3]),
+        };
+
+        return new ResultData
+        {
+            // TBD!
+            UnitProduction = new(),
+            HourlyData = hourlyData,
             ElectricityProductionMWh = double.Parse(values[4]),
             ElectricityConsumptionMWh = double.Parse(values[5]),
             CO2ProductionKG = double.Parse(values[6])

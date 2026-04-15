@@ -18,8 +18,6 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
 
         try
         {
-            Console.WriteLine(path);
-
             if (!File.Exists(path))
             {
                 Console.WriteLine("Error: productionUnits.csv file could not be found.");
