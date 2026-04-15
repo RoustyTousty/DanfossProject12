@@ -9,7 +9,7 @@ public class CsvResultRepository : IResultRepository
     public CsvResultRepository(string fileName)
     {
         // no validation here!
-        string baseDir = @"D:\danfoss-heat\Data\OutputData";
+        string baseDir = AppContext.BaseDirectory;
         _filePath = Path.Combine(baseDir, fileName);
     }
 

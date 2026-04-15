@@ -8,15 +8,23 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
     {
         List<ProductionUnit> units = [];
 
+        string path = Path.Combine(
+            AppContext.BaseDirectory,
+            "Data",
+            "InputData",
+            "PruductionUnits",
+            "productionUnits.csv"
+        );
+
         try
         {
-            if (!File.Exists("./Data/InputData/PruductionUnits/productionUnits.csv"))
+            if (!File.Exists(path))
             {
                 Console.WriteLine("Error: productionUnits.csv file could not be found.");
                 return units;
             }
 
-            StreamReader sr = new("./Data/InputData/PruductionUnits/productionUnits.csv");
+            StreamReader sr = new(path);
             string? line = sr.ReadLine();
 
             while ((line = sr.ReadLine()) != null)
