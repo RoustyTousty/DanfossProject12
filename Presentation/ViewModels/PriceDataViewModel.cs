@@ -14,8 +14,11 @@ public partial class PriceDataViewModel : ViewModelBase
 
     [ObservableProperty]
     private ISeries[] series = [];
-    public Axis[] XAxes { get; set; } = [];
-    public Axis[] YAxes { get; set; } = [];
+    [ObservableProperty]
+    private Axis[] xAxes = [];
+
+    [ObservableProperty]
+    private Axis[] yAxes = [];
 
 
     public async Task LoadAsync()
@@ -32,17 +35,15 @@ public partial class PriceDataViewModel : ViewModelBase
             }
         ).ToArray();
 
-        // 👇 HERE: build X axis from real data
         var labels = results
-            .Select(r => r.HourlyData.TimeFrom.ToString("HH:mm"))
+            .Select(r => r.HourlyData.TimeFrom.ToString("yyyy-MM-dd HH:mm"))
             .ToArray();
 
-        XAxes = [
-            new Axis {
-                Labels = labels
-            }
-        ];
+        XAxes = [ new Axis { Labels = labels } ];
+
+        YAxes = [ new Axis { Name = "Energy (MWh)" } ];
     }
+    
     public PriceDataViewModel(ResultService resultService, ChartService chartService)
     {
         _resultService = resultService;

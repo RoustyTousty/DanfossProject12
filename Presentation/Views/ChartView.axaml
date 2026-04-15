@@ -5,6 +5,9 @@
     x:Class="HeatOptimization.Presentation.Views.ChartView"
     x:CompileBindings="False">
 
-    <lvc:CartesianChart Series="{Binding Series}" />
+    <lvc:CartesianChart
+    Series="{Binding Series}"
+    XAxes="{Binding XAxes}"
+    YAxes="{Binding YAxes}" />
 
 </UserControl>
