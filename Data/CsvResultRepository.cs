@@ -20,32 +20,7 @@ public class CsvResultRepository : IResultRepository
 
     public async Task SaveAsync(IResultData resultData)
     {
-        try 
-        {
-            StreamWriter writer = new StreamWriter(_filePath);
-
-            if (!File.Exists(_filePath))
-            {
-                await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG)");
-            }
-
-            string line = string.Join(',', 
-                resultData.HourlyData.TimeFrom, 
-                resultData.HourlyData.TimeTo, 
-                resultData.HourlyData.HeatDemandMWh, 
-                resultData.HourlyData.ElectricityPriceDKK, 
-                resultData.ElectricityProductionMWh, 
-                resultData.ElectricityConsumptionMWh, 
-                resultData.CO2ProductionKG
-            );
-            await writer.WriteLineAsync(line);
-        }
-        catch (IOException ex)
-        {
-            throw new Exception($"Failed to write results to CSV file: {_filePath}", ex);
-        }
-
-        Console.WriteLine($"Successfully saved results to {_filePath}");
+        await SaveManyAsync(new List<IResultData> { resultData });
     }
 
 
@@ -57,11 +32,13 @@ public class CsvResultRepository : IResultRepository
             
             if (!File.Exists(_filePath) || new FileInfo(_filePath).Length == 0)
             {
-                await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG)");
+                await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG),UnitLoadDistribution(MWh)");
             }
 
             foreach (var resultData in resultDataList)
             {
+                string unitsString = SerializeUnitProduction(resultData.UnitProduction);
+
                 string line = string.Join(',',
                     resultData.HourlyData.TimeFrom,
                     resultData.HourlyData.TimeTo,
@@ -69,7 +46,8 @@ public class CsvResultRepository : IResultRepository
                     resultData.HourlyData.ElectricityPriceDKK,
                     resultData.ElectricityProductionMWh,
                     resultData.ElectricityConsumptionMWh,
-                    resultData.CO2ProductionKG
+                    resultData.CO2ProductionKG,
+                    unitsString
                 );
 
                 await writer.WriteLineAsync(line);
@@ -126,8 +104,16 @@ public class CsvResultRepository : IResultRepository
 
     public async Task<List<IResultData>> GetByTimeRangeAsync(DateTime timeFrom, DateTime timeTo)
     {
-        // Martina filter and find by time
-        return [];
+        var allResults = await GetAllAsync();
+    
+        return allResults
+            .Where(
+                r => 
+                r.HourlyData.TimeFrom >= timeFrom 
+                && 
+                r.HourlyData.TimeTo <= timeTo
+            )
+            .ToList();
     }
 
 
@@ -144,12 +130,43 @@ public class CsvResultRepository : IResultRepository
 
         return new ResultData
         {
-            // TBD UnitProduction!
-            UnitProduction = new(),
             HourlyData = hourlyData,
             ElectricityProductionMWh = double.Parse(values[4]),
             ElectricityConsumptionMWh = double.Parse(values[5]),
-            CO2ProductionKG = double.Parse(values[6])
+            CO2ProductionKG = double.Parse(values[6]),
+            UnitProduction = DeserializeUnitProduction(values.Length > 7 ? values[7] : "")
         };
+    }
+
+
+
+    private string SerializeUnitProduction(List<UnitProduction> units)
+    {
+        if (units == null || !units.Any()) return string.Empty;
+        
+        return string.Join("|", units.Select(u => $"{u.unitName}:{u.heatProduced}"));
+    }
+
+
+
+    private List<UnitProduction> DeserializeUnitProduction(string data)
+    {
+        var result = new List<UnitProduction>();
+        if (string.IsNullOrWhiteSpace(data)) return result;
+
+        var unitStrings = data.Split('|');
+        foreach (var unitString in unitStrings)
+        {
+            var parts = unitString.Split(':');
+            if (parts.Length == 2)
+            {
+                result.Add(new UnitProduction
+                {
+                    unitName = parts[0],
+                    heatProduced = double.Parse(parts[1])
+                });
+            }
+        }
+        return result;
     }
 }
