@@ -88,7 +88,9 @@ public class CsvResultRepository : IResultRepository
 
     public async Task<List<ResultData>> GetByTimeRangeAsync(DateTime timeFrom, DateTime timeTo)
     {
-        // Martina filter and find by time
+        List<ResultData> Data = await GetAllAsync();
+
+        return Data.Where(r => r.TimeFrom < timeTo && r.TimeTo > timeFrom).ToList();
     }
 
 
