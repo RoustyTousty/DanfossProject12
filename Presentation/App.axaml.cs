@@ -29,7 +29,7 @@ public partial class App : Application
             AssetManager assetManager = new AssetManager(
                 new HourlyChartProvider(),
                 new ProductionUnitLibraryProvider(),
-                [ "GB1", "GB2", "GB3", "OB1" ]
+                [ "GB1", "GB2", "GB3", "OB1", "GM1", "EB1" ]
             );
 
             var optimizationService = new OptimizationService(assetManager);

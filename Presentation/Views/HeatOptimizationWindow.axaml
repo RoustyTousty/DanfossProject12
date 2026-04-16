@@ -1,9 +1,113 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:HeatOptimization.Presentation.ViewModels"
-             x:Class="HeatOptimization.Presentation.Views.HeatOptimizationView"
-             x:DataType="vm:HeatOptimizationViewModel">
-    
-    <TextBlock Text="This is the Heat Optimization View!" />
+			 x:Class="HeatOptimization.Presentation.Views.HeatOptimizationView"
+			 x:DataType="vm:HeatOptimizationViewModel">
 
-</UserControl>
+    <Border Background="#0B0F14" Padding="20">
+		<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="280" />
+		</Grid.ColumnDefinitions>
+
+           <!-- LEFT -->
+			<Grid Grid.Column="0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<TextBlock Grid.Row="0" Text="Dashboard"
+						   FontSize="24"
+						   FontWeight="Bold"
+						   Foreground="White"/>
+
+				<Border Grid.Row="1" Background="#11161C"
+						CornerRadius="20"
+						Padding="20">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+                    <ListBox ItemsSource="{Binding Boilers}" Grid.Row="0" BorderThickness="0" Background="Transparent" x:Name="BoilerListBox">
+						<ListBox.ItemTemplate>
+							<DataTemplate x:DataType="vm:BoilerItemViewModel">
+								<Border Background="#3A4048" CornerRadius="20" Padding="15" Margin="0,0,0,10">
+									<Grid ColumnDefinitions="120,*">
+                                        <Border Grid.Column="0" Width="100" Height="100" Background="#D9D9D9" CornerRadius="10">
+											<!-- More detailed vector boiler icon drawn with shapes -->
+											<Viewbox Stretch="Uniform">
+												<Canvas Width="64" Height="64">
+													<!-- Boiler body -->
+													<Rectangle Canvas.Left="8" Canvas.Top="18" Width="40" Height="28" RadiusX="4" RadiusY="4" Fill="#E6E6E6" Stroke="#CFCFCF"/>
+
+													<!-- Dome / top -->
+													<Ellipse Canvas.Left="16" Canvas.Top="8" Width="24" Height="20" Fill="#EDEDED" Stroke="#CFCFCF"/>
+
+													<!-- Gauge circle -->
+													<Ellipse Canvas.Left="34" Canvas.Top="26" Width="12" Height="12" Fill="#FFFFFF" Stroke="#BDBDBD"/>
+													<!-- Gauge needle -->
+													<Path Data="M40,32 L42,30" Stroke="#A33" StrokeThickness="1.5" Canvas.Left="0" Canvas.Top="0" />
+
+													<!-- Pipe on right -->
+													<Rectangle Canvas.Left="50" Canvas.Top="28" Width="8" Height="6" Fill="#CFCFCF" RadiusX="2" RadiusY="2"/>
+													<Rectangle Canvas.Left="58" Canvas.Top="26" Width="6" Height="10" Fill="#CFCFCF" RadiusX="2" RadiusY="2"/>
+
+													<!-- Flame indicator (decorative) -->
+													<Path Data="M18,40 C20,36 24,36 24,32 C24,28 18,30 18,26 C18,30 14,32 14,36 C14,38 16,40 18,40 Z" Fill="#FF8A00" Opacity="0.9"/>
+												</Canvas>
+											</Viewbox>
+										</Border>
+										<StackPanel Grid.Column="1" Spacing="5">
+											<TextBlock Text="{Binding Name}" Foreground="White" FontWeight="Bold" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding Type}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding DisplayMaxHeat}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding MaxElectricityMW, StringFormat='Max Electricity (MW) - {0}'}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding BaseProductionCostDKK, StringFormat='Base production cost (DKK) - {0}'}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding DisplayBaseProductionCost}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding CO2EmissionsKg, StringFormat='CO2 Emissions (Kg) - {0}'}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding GasConsumptionMWh, StringFormat='Gas Consumption (MWh) - {0}'}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding OilConsumptionMWh, StringFormat='Oil Consumption (MWh) - {0}'}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding TotalHeatProduced, StringFormat='Total Heat Produced (MWh) - {0:F2}'}" Foreground="White" TextWrapping="Wrap"/>
+										</StackPanel>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</Grid>
+               </Border>
+
+			</Grid>
+
+		<!-- RIGHT -->
+		<Border Grid.Column="1"
+                Background="#11161C"
+                CornerRadius="20"
+                Padding="20"
+                Margin="20,40,0,0">
+
+			<StackPanel Spacing="10">
+
+				<TextBlock Text="Unit Settings"
+                           Foreground="White"
+                           FontWeight="Bold"/>
+
+                  <StackPanel Orientation="Horizontal" Spacing="10">
+						<TextBlock Text="Currency" Foreground="White"/>
+                      <ComboBox Width="120" ItemsSource="{Binding CurrencyOptions}" SelectedItem="{Binding SelectedCurrencyOption}" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<TextBlock Text="Units" Foreground="White"/>
+                      <ComboBox Width="120" ItemsSource="{Binding UnitOptions}" SelectedItem="{Binding SelectedUnitOption}" />
+					</StackPanel>
+
+				</StackPanel>
+		</Border>
+
+     </Grid>
+	</Border>
+	</UserControl>
