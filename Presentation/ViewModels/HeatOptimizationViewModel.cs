@@ -81,7 +81,14 @@ public partial class HeatOptimizationViewModel : ViewModelBase
             Boilers.Add(new BoilerItemViewModel
             {
                 Name = unit.Name,
-                Type = unit.Type.ToString(),
+                Type = unit.Type switch
+                {
+                    UnitType.GasBoiler => "Gas Boiler",
+                    UnitType.OilBoiler => "Oil Boiler",
+                    UnitType.GasMotor => "Gas Motor",
+                    UnitType.ElectricBoiler => "Electric Boiler",
+                    _ => unit.Type.ToString()
+                },
                 MaxHeatMW = unit.MaxHeatMW,
                 MaxElectricityMW = unit.MaxElectricityMW,
                 BaseProductionCostDKK = unit.BaseProductionCostDKK,
