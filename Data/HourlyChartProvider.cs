@@ -2,13 +2,22 @@ namespace HeatOptimization.Data;
 
 using HeatOptimization.Logic;
 using System.Globalization;
+using System.IO;
 
 public class HourlyChartProvider : IHourlyChartProvider
 {
     public List<HourlyData> GetHourlyData(string fname)
     {
         List<HourlyData> hourlyData = new();
-        string path = "./Data/InputData/HourlyData/" + fname;
+        
+
+        string path = Path.Combine(
+            AppContext.BaseDirectory,
+            "Data",
+            "InputData",
+            "HourlyData",
+            fname
+        );
 
         if (!File.Exists(path))
         {
@@ -88,7 +97,7 @@ public class HourlyChartProvider : IHourlyChartProvider
                     ex);  // here I solved Scrum-73
             }
         }
-
+        
         return hourlyData;
     }
 }
