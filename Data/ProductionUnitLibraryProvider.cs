@@ -41,10 +41,14 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
 
                     if (names.Contains(valueArr[0]))
                     {
+                        if (!Enum.TryParse(valueArr[1], true, out UnitType type))
+                        {
+                            throw new Exception($"Invalid unit type: {valueArr[1]}");
+                        }
                         units.Add(new ProductionUnit
                         {
                             Name = valueArr[0],
-                            Type = valueArr[1],
+                            Type = type,
                             MaxHeatMW = double.Parse(valueArr[2]),
                             MaxElectricityMW = string.IsNullOrWhiteSpace(valueArr[3])
                                 ? null

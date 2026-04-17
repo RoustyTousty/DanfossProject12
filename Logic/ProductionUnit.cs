@@ -3,7 +3,7 @@ namespace HeatOptimization.Logic;
 public class ProductionUnit
 {
     public string Name { get; set; } = "";
-    public string Type { get; set; } = "";
+    public UnitType Type { get; set; } 
     public double MaxHeatMW { get; set; }
     public double? MaxElectricityMW { get; set; }
     public int BaseProductionCostDKK { get; set; } 
@@ -12,3 +12,10 @@ public class ProductionUnit
     public double? OilConsumptionMWh { get; set; } 
 }
 
+public enum UnitType
+{
+    GasBoiler,
+    OilBoiler,
+    GasMotor,
+    ElectricBoiler
+}
