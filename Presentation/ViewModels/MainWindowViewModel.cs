@@ -31,7 +31,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Pages = new ObservableCollection<ViewModelBase>
         {
             new HomeViewModel(),
-            new HeatOptimizationViewModel(AssetManager),
+            new HeatOptimizationViewModel(AssetManager, OptimizationService),
             new PriceDataViewModel(ResultService, ChartService)
         };
 
