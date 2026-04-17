@@ -67,8 +67,9 @@
 											<TextBlock Text="{Binding Type}" />
 											<TextBlock Text="{Binding TotalHeatProduced, StringFormat='Total Heat Produced (MWh) : {0:F2}'}" Foreground="White" TextWrapping="Wrap"/>
 											<TextBlock Text="{Binding MaxElectricityMW, StringFormat='Max Electricity (MW) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
-											<TextBlock Text="{Binding BaseProductionCostDKK, StringFormat='Base production cost (DKK) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
-											<TextBlock Text="{Binding DisplayBaseProductionCost}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding DisplayBaseProductionCost, StringFormat='Base production cost : {0}'}"
+												 Foreground="White"
+													TextWrapping="Wrap"/>
 											<TextBlock Text="{Binding CO2EmissionsKg, StringFormat='CO2 Emissions (Kg) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
 											<TextBlock Text="{Binding GasConsumptionMWh, StringFormat='Gas Consumption (MWh) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
 											<TextBlock Text="{Binding OilConsumptionMWh, StringFormat='Oil Consumption (MWh) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
