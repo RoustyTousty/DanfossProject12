@@ -41,13 +41,11 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
 
                     if (names.Contains(valueArr[0]))
                     {
-                        Enum.TryParse(valueArr[1], true, out UnitType type);
-
                         units.Add(new ProductionUnit
                         {
                             Name = valueArr[0],
-                            Type = type,
-                            MaxHeatMW = double.Parse(valueArr[2], System.Globalization.CultureInfo.InvariantCulture),
+                            Type = valueArr[1],
+                            MaxHeatMW = double.Parse(valueArr[2]),
                             MaxElectricityMW = string.IsNullOrWhiteSpace(valueArr[3])
                                 ? null
                                 : double.Parse(valueArr[3], System.Globalization.CultureInfo.InvariantCulture),
