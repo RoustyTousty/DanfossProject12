@@ -26,13 +26,23 @@ public partial class App : Application
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
             
-            HourlyChartProvider hourlyChartProvider = new();
-            ProductionUnitLibraryProvider productionUnitLibraryProvider = new();
-            AssetManager assetManager = new(hourlyChartProvider, productionUnitLibraryProvider, ["GB1", "GB2", "GB3", "OB1", "GM1", "EB1"]);
+            AssetManager assetManager = new AssetManager(
+                new HourlyChartProvider(),
+                new ProductionUnitLibraryProvider(),
+                [ "GB1", "GB2", "GB3", "OB1" ]
+            );
+
+            var optimizationService = new OptimizationService(assetManager);
+            var resultRepository = new CsvResultRepository("result.csv");
+
+            var resultService = new ResultService(optimizationService, resultRepository);
+            var chartService = new ChartService();
+
+        
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(assetManager),
+                DataContext = new MainWindowViewModel(assetManager, optimizationService, resultService, chartService),
             };
         }
 

@@ -7,8 +7,11 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.12" />
@@ -21,11 +24,18 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Logic\Logic.csproj" />
-
     <ProjectReference Include="..\Data\Data.csproj" />
+
+   
+    <None Include="..\Data\InputData\**\*">
+      <Link>Data\InputData\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
   </ItemGroup>
 </Project>

@@ -11,6 +11,9 @@ public partial class MainWindowViewModel : ViewModelBase
     public override Bitmap Icon => LoadAsset("danfoss-logo.png");
 
     public AssetManager AssetManager { get; }
+    public OptimizationService OptimizationService { get; }
+    public ResultService ResultService { get; }
+    public ChartService ChartService { get; }
 
     [ObservableProperty]
     private ViewModelBase _currentPage;
@@ -18,15 +21,18 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<ViewModelBase> Pages { get; }
 
-    public MainWindowViewModel(AssetManager assetManager) 
+    public MainWindowViewModel(AssetManager assetManager, OptimizationService optimizationService, ResultService resultService, ChartService chartService) 
     {  
         AssetManager = assetManager;
+        OptimizationService = optimizationService;
+        ResultService = resultService;
+        ChartService = chartService;
 
         Pages = new ObservableCollection<ViewModelBase>
         {
             new HomeViewModel(),
             new HeatOptimizationViewModel(AssetManager),
-            new PriceDataViewModel()
+            new PriceDataViewModel(ResultService, ChartService)
         };
 
         _currentPage = Pages[0]; 
