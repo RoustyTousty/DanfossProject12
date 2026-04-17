@@ -61,18 +61,41 @@
 											</Viewbox>
 										</Border>
 										<StackPanel Grid.Column="1" Spacing="5">
-											<TextBlock Text="{Binding Name}" Foreground="White" FontWeight="Bold" TextWrapping="Wrap"/>
-											
-											<TextBlock Text="{Binding DisplayMaxHeat}" Foreground="White" TextWrapping="Wrap"/>
-											<TextBlock Text="{Binding Type}" />
-											<TextBlock Text="{Binding TotalHeatProduced, StringFormat='Total Heat Produced (MWh) : {0:F2}'}" Foreground="White" TextWrapping="Wrap"/>
-											<TextBlock Text="{Binding MaxElectricityMW, StringFormat='Max Electricity (MW) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
-											<TextBlock Text="{Binding DisplayBaseProductionCost, StringFormat='Base production cost : {0}'}"
-												 Foreground="White"
-													TextWrapping="Wrap"/>
-											<TextBlock Text="{Binding CO2EmissionsKg, StringFormat='CO2 Emissions (Kg) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
-											<TextBlock Text="{Binding GasConsumptionMWh, StringFormat='Gas Consumption (MWh) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
-											<TextBlock Text="{Binding OilConsumptionMWh, StringFormat='Oil Consumption (MWh) : {0}'}" Foreground="White" TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding Name, TargetNullValue='N/A', FallbackValue='N/A'}"
+													   Foreground="White"
+													   FontWeight="Bold"
+													   TextWrapping="Wrap"/>
+
+											<TextBlock Text="{Binding Type, TargetNullValue='N/A', FallbackValue='N/A'}"
+													   Foreground="White"/>
+
+											<TextBlock Text="{Binding DisplayMaxHeat, StringFormat='Max Heat: {0}', TargetNullValue='Max Heat: N/A', FallbackValue='Max Heat: N/A'}"
+													   Foreground="White"
+													   TextWrapping="Wrap"/>
+
+											<TextBlock Text="{Binding TotalHeatProduced, StringFormat='Total Heat Produced (MWh) : {0:F2}', TargetNullValue='Total Heat Produced (MWh) : N/A', FallbackValue='Total Heat Produced (MWh) : N/A'}"
+													   Foreground="White"
+													   TextWrapping="Wrap"/>
+
+											<TextBlock Text="{Binding MaxElectricityMW, StringFormat='Max Electricity (MW) : {0}', TargetNullValue='Max Electricity (MW) : N/A', FallbackValue='Max Electricity (MW) : N/A'}"
+													   Foreground="White"
+													   TextWrapping="Wrap"/>
+
+											<TextBlock Text="{Binding DisplayBaseProductionCost, StringFormat='Production cost : {0}', TargetNullValue='Production cost : N/A', FallbackValue='Production cost : N/A'}"
+													   Foreground="White"
+													   TextWrapping="Wrap"/>
+
+											<TextBlock Text="{Binding CO2EmissionsKg, StringFormat='CO2 Emissions (Kg) : {0}', TargetNullValue='CO2 Emissions (Kg) : N/A', FallbackValue='CO2 Emissions (Kg) : N/A'}"
+													   Foreground="White"
+													   TextWrapping="Wrap"/>
+
+											<TextBlock Text="{Binding GasConsumptionMWh, StringFormat='Gas Consumption (MWh) : {0}', TargetNullValue='Gas Consumption (MWh) : N/A', FallbackValue='Gas Consumption (MWh) : N/A'}"
+													   Foreground="White"
+													   TextWrapping="Wrap"/>
+
+											<TextBlock Text="{Binding OilConsumptionMWh, StringFormat='Oil Consumption (MWh) : {0}', TargetNullValue='Oil Consumption (MWh) : N/A', FallbackValue='Oil Consumption (MWh) : N/A'}"
+													   Foreground="White"
+													   TextWrapping="Wrap"/>
 										</StackPanel>
 									</Grid>
 								</Border>
