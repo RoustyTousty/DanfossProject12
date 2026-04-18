@@ -2,19 +2,11 @@ namespace HeatOptimization.Logic;
 
 public class Optimizer
 {
-    private AssetManager _assetManager;
-    private ResultDataManager _resultDataManager;
 
-    public Optimizer(AssetManager assetManager, ResultDataManager resultDataManager)
-    {
-        _assetManager = assetManager;
-        _resultDataManager = resultDataManager;
-    }
-
-    private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data)
+    private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data, List<ProductionUnit> units)
     {
         List<UnitProductionCost> costs = [];
-        foreach (ProductionUnit unit in _assetManager.ProductionUnits)
+        foreach (ProductionUnit unit in units)
         {
             if (unit.MaxElectricityMW == null)
                 costs.Add(new UnitProductionCost(data, unit, unit.BaseProductionCostDKK));
@@ -30,17 +22,17 @@ public class Optimizer
     }
 
 
-    public List<(string unitName, double heatProduced)> DistributeHeatLoad(HourlyData data)
+    private List<UnitProduction> DistributeHeatLoad(HourlyData data, List<ProductionUnit> units)
     {
         double remainingDemand = data.HeatDemandMWh;
         
         
-        List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data)
+        List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data, units)
         .OrderBy(x => x.ProductionCostDKK)
         .ToList();
 
         
-        List<(string UnitName, double HeatProduced)> result = new();
+        List<UnitProduction> result = new();
 
         foreach (UnitProductionCost entry in costs)
         {
@@ -53,7 +45,10 @@ public class Optimizer
 
             double heatProduced = Math.Min(maxHeat, remainingDemand);
 
-            result.Add((entry.Unit.Name, heatProduced));
+            result.Add(new UnitProduction {
+                unitName = entry.Unit.Name, 
+                heatProduced = heatProduced
+            });
             
             remainingDemand -= heatProduced;
         }
@@ -62,9 +57,58 @@ public class Optimizer
         {
             throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {data.HeatDemandMWh - remainingDemand} MWh heat can be produced with existing generators.");
         }
-        return result;
 
+        return result;
     }
+
+
+    public List<IResultData> OptimizeMany(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits) 
+     {
+        List<IResultData> results = new();
+
+        foreach (HourlyData data in hourlyDataList)
+        {
+            List<UnitProduction> distribution = DistributeHeatLoad(data, productionUnits);
+
+            double totalCO2 = 0;
+            double totalElectricityProduced = 0;
+            double totalElectricityConsumed = 0;
+
+            foreach (UnitProduction production in distribution)
+            {
+                var unit = productionUnits.First(u => u.Name == production.unitName);
+
+                if (unit.CO2EmissionsKg != null)
+                {
+                    totalCO2 += production.heatProduced * unit.CO2EmissionsKg.Value;
+                }
+
+                if (unit.MaxElectricityMW != null)
+                {
+                    double ratio = unit.MaxElectricityMW.Value / unit.MaxHeatMW;
+                    totalElectricityProduced += production.heatProduced * ratio;
+                }
+
+                if (unit.Type == UnitType.ElectricBoiler)
+                {
+                    totalElectricityConsumed += production.heatProduced;
+                }
+            }
+
+            ResultData result = new() {
+                UnitProduction = distribution,
+                HourlyData = data,
+                CO2ProductionKG = totalCO2,
+                ElectricityProductionMWh = totalElectricityProduced,
+                ElectricityConsumptionMWh = totalElectricityConsumed
+            };
+
+            results.Add(result);
+        }
+
+        return results;
+    }
+    
 }
 
 public class UnitProductionCost {

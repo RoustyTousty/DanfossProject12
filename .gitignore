@@ -1,3 +1,4 @@
 # removes binaries from github repo
 bin/
 obj/
+.vs/

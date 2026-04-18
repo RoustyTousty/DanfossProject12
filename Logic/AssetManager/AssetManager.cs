@@ -4,16 +4,16 @@ public class AssetManager
 {
     private IProductionUnitLibraryProvider _productionUnitLibraryProvider;
     private IHourlyChartProvider _hourlyChartProvider;
-    public readonly List<HourlyData> hourlyData;
-    public readonly List<ProductionUnit> ProductionUnits = [];
+    private List<HourlyData> _hourlyData;
+    private List<ProductionUnit> _productionUnits = [];
 
     public AssetManager (IHourlyChartProvider hourlyChartProvider, IProductionUnitLibraryProvider productionUnitLibraryProvider, List<string> productionUnits)
     {
         _productionUnitLibraryProvider = productionUnitLibraryProvider;
         _hourlyChartProvider = hourlyChartProvider;
 
-        hourlyData = _hourlyChartProvider.GetHourlyData();
-        ProductionUnits = _productionUnitLibraryProvider.GetProductionUnits(productionUnits);
+        _hourlyData = _hourlyChartProvider.GetHourlyData();
+        _productionUnits = _productionUnitLibraryProvider.GetProductionUnits(productionUnits);
     }
 
 
@@ -22,7 +22,7 @@ public class AssetManager
     {
         try
         {
-            return ProductionUnits.FirstOrDefault(productionUnit => productionUnit.Name == name);
+            return _productionUnits.FirstOrDefault(productionUnit => productionUnit.Name == name);
         }
         catch (Exception e)
         {
@@ -31,46 +31,12 @@ public class AssetManager
         }
     }
 
-    // Might be useful at some point 
-
-    // public double? GetHeatDemandByTime(DateTime dateTime)
-    // {
-    //     try
-    //     {
-    //         return HourlyHeatDemand[dateTime];
-    //         // HourlyData? data = _hourlyData.Find(x => x.TimeFrom < dateTime && x.TimeTo > dateTime)
-    //         // if (data != null)
-    //         // {
-    //         //     return data.HeatDemandMWh;
-    //         // } else {
-    //         //     Console.WriteLine($"Error while retrieving hourly heat demand at {dateTime}")
-    //         // }
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine($"Error retrieving hourly heat demand for {dateTime}: {e.Message}");
-    //         return null;
-    //     }
-    // }
-
-    // public double? GetElectricityPriceByTime(DateTime dateTime)
-    // {
-    //     try
-    //     {
-    //         return HourlyElectricityPrices[dateTime];
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine($"Error retrieving hourly electricity price for {dateTime}: {e.Message}");
-    //         return null;
-    //     }
-    // }
     
     public HourlyData? GetHourlyData(DateTime dateTime)
     {
         try
         {
-            HourlyData? data = hourlyData.Find(x => x.TimeFrom < dateTime && x.TimeTo > dateTime);
+            HourlyData? data = _hourlyData.Find(x => x.TimeFrom < dateTime && x.TimeTo > dateTime);
             if (data != null)
             {
                 return data;
@@ -83,6 +49,15 @@ public class AssetManager
             Console.WriteLine($"Error retrieving hourly data for {dateTime}: {e.Message}");
             return null;
         }
+    }
+
+    public List<HourlyData> GetHourlyDatas()
+    {
+        return _hourlyData;
+    }
+    public List<ProductionUnit> GetProductionUnits()
+    {
+        return _productionUnits;
     }
 }
 

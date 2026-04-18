@@ -8,15 +8,23 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
     {
         List<ProductionUnit> units = [];
 
+        string path = Path.Combine(
+            AppContext.BaseDirectory,
+            "Data",
+            "InputData",
+            "ProductionUnits",
+            "productionUnits.csv"
+        );
+
         try
         {
-            if (!File.Exists("./Data/InputData/PruductionUnits/productionUnits.csv"))
+            if (!File.Exists(path))
             {
                 Console.WriteLine("Error: productionUnits.csv file could not be found.");
                 return units;
             }
 
-            StreamReader sr = new("./Data/InputData/PruductionUnits/productionUnits.csv");
+            StreamReader sr = new(path);
             string? line = sr.ReadLine();
 
             while ((line = sr.ReadLine()) != null)
@@ -33,8 +41,10 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
 
                     if (names.Contains(valueArr[0]))
                     {
-                        Enum.TryParse(valueArr[1], true, out UnitType type);
-
+                        if (!Enum.TryParse(valueArr[1], true, out UnitType type))
+                        {
+                            throw new Exception($"Invalid unit type: {valueArr[1]}");
+                        }
                         units.Add(new ProductionUnit
                         {
                             Name = valueArr[0],
@@ -42,23 +52,24 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
                             MaxHeatMW = double.Parse(valueArr[2]),
                             MaxElectricityMW = string.IsNullOrWhiteSpace(valueArr[3])
                                 ? null
-                                : double.Parse(valueArr[3]),
-                            BaseProductionCostDKK = int.Parse(valueArr[4]),
+                                : double.Parse(valueArr[3], System.Globalization.CultureInfo.InvariantCulture),
+                            BaseProductionCostDKK = int.Parse(valueArr[4], System.Globalization.CultureInfo.InvariantCulture),
                             CO2EmissionsKg = string.IsNullOrWhiteSpace(valueArr[5])
                                 ? null
-                                : int.Parse(valueArr[5]),
+                                : int.Parse(valueArr[5], System.Globalization.CultureInfo.InvariantCulture),
                             GasConsumptionMWh = string.IsNullOrWhiteSpace(valueArr[6])
                                 ? null
-                                : double.Parse(valueArr[6]),
+                                : double.Parse(valueArr[6], System.Globalization.CultureInfo.InvariantCulture),
                             OilConsumptionMWh = string.IsNullOrWhiteSpace(valueArr[7])
                                 ? null
-                                : double.Parse(valueArr[7]),
+                                : double.Parse(valueArr[7], System.Globalization.CultureInfo.InvariantCulture),
                         });
                     }
                 }
-                catch (FormatException)
+                catch (FormatException e)
                 {
-                    Console.WriteLine($"Error: Could not parse numeric values in line -> {line}");
+                    Console.WriteLine($"Error: Could not parse numeric values in line -> {line} in ./Data/InputData/ProductionUnits/productionUnits.csv");
+                    Console.WriteLine(e);
                 }
                 catch (IndexOutOfRangeException)
                 {
