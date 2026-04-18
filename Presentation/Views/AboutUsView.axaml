@@ -1,0 +1,33 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:HeatOptimization.Presentation.ViewModels"
+    x:Class="HeatOptimization.Presentation.Views.AboutUsView"
+    x:DataType="vm:AboutUsViewModel">
+
+    <StackPanel Spacing="12">
+        <TextBlock Text="About Us"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   Foreground="White"/>
+
+        <TextBlock Text="Overview"
+                   FontSize="18"
+                   Foreground="#E30613"/>
+
+        <TextBlock Text="The application is designed to optimize heat schedules for all available production units, aiming to minimize expenses and maximize profits in the electricity market."
+                   TextWrapping="Wrap"
+                   Foreground="White"/>
+
+        <TextBlock Text="It is meant to help manage heat schedules, allowing users to make informed decisions based on real-time data and market conditions."
+                   TextWrapping="Wrap"
+                   Foreground="White"/>
+
+        <TextBlock Text="It provides users with the ability to input data, run optimization processes, and visualize results."
+                   TextWrapping="Wrap"
+                   Foreground="White"/>
+
+        <TextBlock Text="Version 1.0.0"
+                   Foreground="#888"/>
+    </StackPanel>
+</UserControl>
