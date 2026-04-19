@@ -1,0 +1,75 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:HeatOptimization.Presentation.ViewModels"
+    x:Class="HeatOptimization.Presentation.Views.AboutUsView"
+    x:DataType="vm:AboutUsViewModel">
+
+    <StackPanel Spacing="12">
+        <TextBlock Text="About Us"
+                    FontSize="26"
+                    FontWeight="Bold"
+                    Foreground="White"/>
+
+        <TextBlock Text="Overview"
+                    FontSize="18"
+                    Foreground="#E30613"/>
+
+            <TextBlock Text="The application is designed to optimize heat schedules for all available production units, aiming to minimize expenses and maximize profits in the electricity market."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+            <TextBlock Text="It is meant to help manage heat schedules, allowing users to make informed decisions based on real-time data and market conditions."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+            <TextBlock Text="It provides users with the ability to input data, run optimization processes, and visualize results."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+        <TextBlock Text="Key Features"
+                    FontSize="18"
+                    Foreground="#E30613"/>
+            
+            <TextBlock Text="- Data Input: Users can input data related to production units and/ or market conditions."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+            
+            <TextBlock Text="- Production units overview: The application provides a dashboard where users can view all available production units and information about them in the 'Dashboard' window."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+            
+            <TextBlock Text="- Optimization: The application runs optimization algorithms to determine the best heat schedules."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+            <TextBlock Text="- Visualization: Users can visualize the results of the optimization process through graphs in the 'Price Data' window."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+            <TextBlock Text="- User-Friendly Interface: The application features an intuitive interface that allows users to easily navigate and utilize its functionalities."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+        <TextBlock Text="Modules"
+                    FontSize="18"
+                    Foreground="#E30613"/>
+
+            <TextBlock Text="- Asset Manager: Loads data about production units and hourly data from CSV files."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+            <TextBlock Text="- Optimizer: Optimizes data based on the production cost of 1MW of heat in selected hour. It then distributes the load between production units based on that cost."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+            <TextBlock Text="- Result Data Manager: Saves the results from optimizer to another file and loads them whenever they need to be visualized."
+                    TextWrapping="Wrap"
+                    Foreground="White"/>
+
+        <TextBlock Text="Developers"
+                    FontSize="18"
+                    Foreground="#E30613"/>
+
+    </StackPanel>
+</UserControl>
