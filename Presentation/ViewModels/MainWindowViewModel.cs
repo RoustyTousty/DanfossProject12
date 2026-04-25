@@ -32,7 +32,8 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             new HomeViewModel(),
             new HeatOptimizationViewModel(AssetManager, OptimizationService),
-            new PriceDataViewModel(ResultService, ChartService)
+            new PriceDataViewModel(ResultService, ChartService),
+            new AboutUsViewModel()
         };
 
         _currentPage = Pages[0]; 
