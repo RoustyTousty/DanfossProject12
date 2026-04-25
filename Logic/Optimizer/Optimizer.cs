@@ -193,6 +193,7 @@ public class Optimizer
         return total;
     }
 
+    // costImpact is how much it costs to have a downtime 
     public (List<IResultData>, double costImpact) OptimizeWithMaintenance(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits, string unitToDisable, int durationHours)
     {
         List<IResultData> results = OptimizeMany(hourlyDataList, productionUnits);
