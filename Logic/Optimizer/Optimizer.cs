@@ -108,7 +108,83 @@ public class Optimizer
 
         return results;
     }
+
+
+    public (DateTime from, DateTime to, double costImpact)? FindMaintenanceWindow(List<HourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
+    {
+        List<IResultData> baselineResults = OptimizeMany(data, units);
+        var baselineCosts = baselineResults
+            .Select(r => CalculateCost(r.HourlyData, r.UnitProduction, units))
+            .ToList();
+
+        double bestImpact = double.MaxValue;
+        int bestStartIndex = -1;
+        // list of units without the unit to put on downtime
+        var reducedUnits = units
+                .Where(u => u.Name != unitToDisable)
+                .ToList();
+
+        for (int start = 0; start <= data.Count - durationHours; start++)
+        {
+            double impact = 0;
+            bool isValid = true;
+        
+            for (int h = start; h < start + durationHours; h++)
+            {
+                try
+                {
+                    var distribution = DistributeHeatLoad(data[h], reducedUnits);
+
+                    double newCost = CalculateCost(data[h], distribution, reducedUnits);
+
+                    impact += (newCost - baselineCosts[h]);
+                }
+                catch
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (isValid && impact < bestImpact)
+            {
+                bestImpact = impact;
+                bestStartIndex = start;
+            }
+        }
+
+        if (bestStartIndex == -1)
+            return null;
+
+        return (
+            data[bestStartIndex].TimeFrom,
+            data[bestStartIndex + durationHours - 1].TimeTo,
+            bestImpact
+        );
+    }
     
+
+    private double CalculateCost(HourlyData data, List<UnitProduction> distribution, List<ProductionUnit> units)
+    {
+        double total = 0;
+
+        foreach (UnitProduction production in distribution)
+        {
+            ProductionUnit unit = units.First(u => u.Name == production.unitName);
+
+            double costPerMWh = unit.BaseProductionCostDKK;
+
+            if (unit.MaxElectricityMW != null)
+            {
+                double ratio = unit.MaxElectricityMW.Value / unit.MaxHeatMW;
+                costPerMWh -= ratio * data.ElectricityPriceDKK;
+            }
+
+            total += costPerMWh * production.heatProduced;
+        }
+
+        return total;
+    }
 }
 
 public class UnitProductionCost {
