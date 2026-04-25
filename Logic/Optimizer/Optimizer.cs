@@ -108,7 +108,134 @@ public class Optimizer
 
         return results;
     }
+
+
+    private (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<HourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
+    {
+        if (!units.Any(u => u.Name == unitToDisable))
+        {
+            throw new Exception("Specified unit does not exist in the units!");
+        }
+
+        List<IResultData> baselineResults = OptimizeMany(data, units);
+        var baselineCosts = baselineResults
+            .Select(r => CalculateCost(r.HourlyData, r.UnitProduction, units))
+            .ToList();
+
+        double bestImpact = double.MaxValue;
+        int bestStartIndex = -1;
+        List<UnitProduction> productionDstribution = [];
+
+        // list of units without the unit to put on downtime
+        var reducedUnits = units
+                .Where(u => u.Name != unitToDisable)
+                .ToList();
+
+        for (int start = 0; start <= data.Count - durationHours; start++)
+        {
+            double impact = 0;
+            bool isValid = true;
+            List<UnitProduction> distribution = [];
+        
+            for (int h = start; h < start + durationHours; h++)
+            {
+                try
+                {
+                    distribution = DistributeHeatLoad(data[h], reducedUnits);
+
+                    double newCost = CalculateCost(data[h], distribution, reducedUnits);
+
+                    impact += (newCost - baselineCosts[h]);
+                }
+                catch
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (isValid && impact < bestImpact)
+            {
+                bestImpact = impact;
+                bestStartIndex = start;
+                productionDstribution = distribution;
+            }
+        }
+
+        if (bestStartIndex == -1)
+            return null;
+
+        
+
+        return (
+            data[bestStartIndex].TimeFrom,
+            data[bestStartIndex + durationHours - 1].TimeTo,
+            bestImpact,
+            OptimizeMany(data.GetRange(bestStartIndex, durationHours), reducedUnits)
+        );
+    }
     
+
+    private double CalculateCost(HourlyData data, List<UnitProduction> distribution, List<ProductionUnit> units)
+    {
+        double total = 0;
+
+        foreach (UnitProduction production in distribution)
+        {
+            ProductionUnit unit = units.First(u => u.Name == production.unitName);
+
+            double costPerMWh = unit.BaseProductionCostDKK;
+
+            if (unit.MaxElectricityMW != null)
+            {
+                double ratio = unit.MaxElectricityMW.Value / unit.MaxHeatMW;
+                costPerMWh -= ratio * data.ElectricityPriceDKK;
+            }
+
+            total += costPerMWh * production.heatProduced;
+        }
+
+        return total;
+    }
+
+    // costImpact is how much it costs to have a downtime 
+    public (List<IResultData>, double costImpact) OptimizeWithMaintenance(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits, string unitToDisable, int durationHours)
+    {
+        List<IResultData> results = OptimizeMany(hourlyDataList, productionUnits);
+        // find the window
+        var maintenanceResult = FindMaintenanceWindow(hourlyDataList, productionUnits, unitToDisable, durationHours);
+
+        if (maintenanceResult == null)
+        {
+            throw new Exception("Could not optimize for a maintenance window, heat demand cannot be met with current unit configuration!");
+        }
+
+        // replace matching time window in results
+        var (from, to, costImpact, optimizedWindow) = maintenanceResult.Value;
+
+        var startIndex = results.FindIndex(r => r.HourlyData.TimeFrom == from);
+        var endIndex = results.FindIndex(r => r.HourlyData.TimeFrom == to);
+
+        if (startIndex == -1 || endIndex == -1)
+        {
+            throw new Exception("Maintenance window does not exist in optimization results.");
+        }
+
+        int windowSize = endIndex - startIndex + 1;
+
+        if (optimizedWindow.Count != windowSize)
+        {
+            throw new Exception("Optimized window size does not match target slice size.");
+        }
+
+        results.RemoveRange(startIndex, windowSize);
+        results.InsertRange(startIndex, optimizedWindow);
+
+        return (
+            results, 
+            costImpact
+        );
+    }
 }
 
 public class UnitProductionCost {
