@@ -104,16 +104,9 @@ public class CsvResultRepository : IResultRepository
 
     public async Task<List<IResultData>> GetByTimeRangeAsync(DateTime timeFrom, DateTime timeTo)
     {
-        var allResults = await GetAllAsync();
-    
-        return allResults
-            .Where(
-                r => 
-                r.HourlyData.TimeFrom >= timeFrom 
-                && 
-                r.HourlyData.TimeTo <= timeTo
-            )
-            .ToList();
+        List<IResultData> Data = await GetAllAsync();
+
+        return Data.Where(r => r.HourlyData.TimeFrom < timeTo && r.HourlyData.TimeTo > timeFrom).ToList();
     }
 
 
