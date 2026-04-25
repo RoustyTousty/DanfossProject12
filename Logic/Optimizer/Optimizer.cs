@@ -110,7 +110,7 @@ public class Optimizer
     }
 
 
-    public (DateTime from, DateTime to, double costImpact)? FindMaintenanceWindow(List<HourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
+    public (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<HourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
     {
         List<IResultData> baselineResults = OptimizeMany(data, units);
         var baselineCosts = baselineResults
@@ -119,6 +119,8 @@ public class Optimizer
 
         double bestImpact = double.MaxValue;
         int bestStartIndex = -1;
+        List<UnitProduction> productionDstribution = [];
+
         // list of units without the unit to put on downtime
         var reducedUnits = units
                 .Where(u => u.Name != unitToDisable)
@@ -128,12 +130,13 @@ public class Optimizer
         {
             double impact = 0;
             bool isValid = true;
+            List<UnitProduction> distribution = [];
         
             for (int h = start; h < start + durationHours; h++)
             {
                 try
                 {
-                    var distribution = DistributeHeatLoad(data[h], reducedUnits);
+                    distribution = DistributeHeatLoad(data[h], reducedUnits);
 
                     double newCost = CalculateCost(data[h], distribution, reducedUnits);
 
@@ -150,16 +153,20 @@ public class Optimizer
             {
                 bestImpact = impact;
                 bestStartIndex = start;
+                productionDstribution = distribution;
             }
         }
 
         if (bestStartIndex == -1)
             return null;
 
+        
+
         return (
             data[bestStartIndex].TimeFrom,
             data[bestStartIndex + durationHours - 1].TimeTo,
-            bestImpact
+            bestImpact,
+            OptimizeMany(data.GetRange(bestStartIndex, durationHours), reducedUnits)
         );
     }
     
@@ -184,6 +191,44 @@ public class Optimizer
         }
 
         return total;
+    }
+
+    public (List<IResultData>, double costImpact) OptimizeWithMaintenance(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits, string unitToDisable, int durationHours)
+    {
+        List<IResultData> results = OptimizeMany(hourlyDataList, productionUnits);
+        // find the window
+        var maintenanceResult = FindMaintenanceWindow(hourlyDataList, productionUnits, unitToDisable, durationHours);
+
+        if (maintenanceResult == null)
+        {
+            throw new Exception("Could not optimize for a maintenance window, heat demand cannot be met with current unit configuration!");
+        }
+
+        // replace matching time window in results
+        var (from, to, costImpact, optimizedWindow) = maintenanceResult.Value;
+
+        var startIndex = results.FindIndex(r => r.HourlyData.TimeFrom == from);
+        var endIndex = results.FindIndex(r => r.HourlyData.TimeFrom == to);
+
+        if (startIndex == -1 || endIndex == -1)
+        {
+            throw new Exception("Maintenance window does not exist in optimization results.");
+        }
+
+        int windowSize = endIndex - startIndex + 1;
+
+        if (optimizedWindow.Count != windowSize)
+        {
+            throw new Exception("Optimized window size does not match target slice size.");
+        }
+
+        results.RemoveRange(startIndex, windowSize);
+        results.InsertRange(startIndex, optimizedWindow);
+
+        return (
+            results, 
+            costImpact
+        );
     }
 }
 
