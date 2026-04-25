@@ -110,7 +110,7 @@ public class Optimizer
     }
 
 
-    public (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<HourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
+    private (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<HourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
     {
         List<IResultData> baselineResults = OptimizeMany(data, units);
         var baselineCosts = baselineResults
