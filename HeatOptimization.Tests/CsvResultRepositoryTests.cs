@@ -35,8 +35,8 @@ public class CsvResultRepositoryTests
         // Assert
         Assert.Equal(2, result.Count);
 
-        Assert.Contains(result, r => r.TimeFrom == new DateTime(2026, 1, 5, 0, 0, 0));
-        Assert.Contains(result, r => r.TimeFrom == new DateTime(2026, 1, 5, 1, 0, 0));
+        Assert.Contains(result, r => r.HourlyData.TimeFrom == new DateTime(2026, 1, 5, 0, 0, 0));
+        Assert.Contains(result, r => r.HourlyData.TimeFrom == new DateTime(2026, 1, 5, 1, 0, 0));
 
         // Cleanup
         File.Delete(tempFile);
