@@ -112,6 +112,11 @@ public class Optimizer
 
     private (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<HourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
     {
+        if (!units.Any(u => u.Name == unitToDisable))
+        {
+            throw new Exception("Specified unit does not exist in the units!");
+        }
+
         List<IResultData> baselineResults = OptimizeMany(data, units);
         var baselineCosts = baselineResults
             .Select(r => CalculateCost(r.HourlyData, r.UnitProduction, units))
