@@ -1,7 +1,7 @@
 Name,Type,Max Heat (MW),Max Electricity (MW),Production Cost (DKK),CO2 (kg),Gas consumption (MWh),Oil consumption (MWh)
-GB1,Gas Boiler,3.0,232,510,132,1.05,4
-GB2,Gas Boiler,2.0,,540,134,1.08,
-GB3,Gas Boiler,4.0,,580,136,1.09,
-OB1,Oil Boiler,6.0,,690,147,,1.18
-GM1,Gas Motor,5.3,3.9,975,227,1.82,
-EB1,Electric Boiler,6.0,-6.0,15,,,
+GB1,GasBoiler,3.0,232,510,132,1.05,4
+GB2,GasBoiler,2.0,,540,134,1.08,
+GB3,GasBoiler,4.0,,580,136,1.09,
+OB1,OilBoiler,6.0,,690,147,,1.18
+GM1,GasMotor,5.3,3.9,975,227,1.82,
+EB1,ElectricBoiler,6.0,-6.0,15,,,

@@ -12,7 +12,6 @@ public partial class HeatOptimizationViewModel : ViewModelBase
 {
     private readonly AssetManager _assetManager;
     private readonly OptimizationService _optimizationService;
-    private readonly ChartService _chartService;
 
     public override string Title => "Dashboard";
     public override Bitmap Icon => LoadAsset("opti-icon.png");
@@ -53,11 +52,11 @@ public partial class HeatOptimizationViewModel : ViewModelBase
         { "USD", 0.15 }
     };
 
-    public HeatOptimizationViewModel(AssetManager assetManager, OptimizationService optimizationService, ChartService chartService)
+    public HeatOptimizationViewModel(AssetManager assetManager, OptimizationService optimizationService)
     {
         _assetManager = assetManager;
         _optimizationService = optimizationService;
-        _chartService = chartService; 
+       
         var units = _assetManager.GetProductionUnits();
 
         List<IResultData> results = new();
