@@ -3,7 +3,8 @@
              xmlns:vm="using:HeatOptimization.Presentation.ViewModels"
              x:Class="HeatOptimization.Presentation.Views.HomeView"
              x:DataType="vm:HomeViewModel">
-    
-    <TextBlock Text="This is the Home View!" />
+
+	<Image Source="avares://Presentation/Assets/HomePage.png"
+		   Stretch="UniformToFill"/>
 
 </UserControl>

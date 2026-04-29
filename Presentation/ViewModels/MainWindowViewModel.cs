@@ -9,7 +9,6 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     public override string Title => "Main"; 
     public override Bitmap Icon => LoadAsset("danfoss-logo.png");
-
     public AssetManager AssetManager { get; }
     public OptimizationService OptimizationService { get; }
     public ResultService ResultService { get; }
