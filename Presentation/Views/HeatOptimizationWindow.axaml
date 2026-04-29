@@ -37,7 +37,6 @@
 								<Border Background="#3A4048" CornerRadius="20" Padding="15" Margin="0,0,0,10">
 									<Grid ColumnDefinitions="120,*">
                                         <Border Grid.Column="0" Width="100" Height="100" Background="#D9D9D9" CornerRadius="10">
-											<!-- More detailed vector boiler icon drawn with shapes -->
 											<Viewbox Stretch="Uniform">
 												<Image Source="avares://Presentation/Assets/BoilerIcon.png"/>
 											</Viewbox>
@@ -59,25 +58,29 @@
 													   Foreground="White"
 													   TextWrapping="Wrap"/>
 
-											<TextBlock Text="{Binding MaxElectricityMW, StringFormat='Max Electricity (MW) : {0}', TargetNullValue='Max Electricity (MW) : N/A', FallbackValue='Max Electricity (MW) : N/A'}"
+											<TextBlock Text="{Binding MaxElectricityMW, StringFormat='Max Electricity (MW) : {0}'}"
+														IsVisible="{Binding MaxElectricityMW, Converter={x:Static ObjectConverters.IsNotNull}}"
+														Foreground="White"
+														TextWrapping="Wrap"/>
+
+											<TextBlock Text="{Binding DisplayBaseProductionCost, StringFormat='Base Production cost :      {0}', TargetNullValue='Base Production cost : N/A', FallbackValue='Base Production cost : N/A'}"
 													   Foreground="White"
 													   TextWrapping="Wrap"/>
 
-											<TextBlock Text="{Binding DisplayBaseProductionCost, StringFormat='Production cost : {0}', TargetNullValue='Production cost : N/A', FallbackValue='Production cost : N/A'}"
-													   Foreground="White"
-													   TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding CO2EmissionsKg, StringFormat='CO2 Emissions (Kg) : {0}'}"
+														 IsVisible="{Binding CO2EmissionsKg, Converter={x:Static ObjectConverters.IsNotNull}}"
+														Foreground="White"
+														TextWrapping="Wrap"/>
 
-											<TextBlock Text="{Binding CO2EmissionsKg, StringFormat='CO2 Emissions (Kg) : {0}', TargetNullValue='CO2 Emissions (Kg) : N/A', FallbackValue='CO2 Emissions (Kg) : N/A'}"
-													   Foreground="White"
-													   TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding GasConsumptionMWh, StringFormat='Gas Consumption (MWh) : {0}'}"
+												 IsVisible="{Binding GasConsumptionMWh, Converter={x:Static ObjectConverters.IsNotNull}}"
+															Foreground="White"
+																TextWrapping="Wrap"/>
 
-											<TextBlock Text="{Binding GasConsumptionMWh, StringFormat='Gas Consumption (MWh) : {0}', TargetNullValue='Gas Consumption (MWh) : N/A', FallbackValue='Gas Consumption (MWh) : N/A'}"
-													   Foreground="White"
-													   TextWrapping="Wrap"/>
-
-											<TextBlock Text="{Binding OilConsumptionMWh, StringFormat='Oil Consumption (MWh) : {0}', TargetNullValue='Oil Consumption (MWh) : N/A', FallbackValue='Oil Consumption (MWh) : N/A'}"
-													   Foreground="White"
-													   TextWrapping="Wrap"/>
+											<TextBlock Text="{Binding OilConsumptionMWh, StringFormat='Oil Consumption (MWh) : {0}'}"
+														IsVisible="{Binding OilConsumptionMWh, Converter={x:Static ObjectConverters.IsNotNull}}"
+														Foreground="White"
+														TextWrapping="Wrap"/>
 										</StackPanel>
 									</Grid>
 								</Border>
