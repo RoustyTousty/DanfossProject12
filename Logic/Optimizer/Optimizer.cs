@@ -1,9 +1,13 @@
+using Microsoft.VisualBasic;
+
 namespace HeatOptimization.Logic;
 
 public class Optimizer
 {
+    double fractionCosts = 0.2;
+    double fractionCO2 = 0.8;
 
-    private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data, List<ProductionUnit> units)
+    private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data, List<ProductionUnit> units) 
     {
         List<UnitProductionCost> costs = [];
         foreach (ProductionUnit unit in units)
@@ -22,9 +26,9 @@ public class Optimizer
     }
 
 
-    private List<UnitProduction> DistributeHeatLoad(HourlyData data, List<ProductionUnit> units)
+    private List<UnitProduction> DistributeHeatLoad(HourlyData data, List<ProductionUnit> units, double fraction)
     {
-        double remainingDemand = data.HeatDemandMWh;
+        double remainingDemand = data.HeatDemandMWh * fraction;
         
         
         List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data, units)
@@ -68,7 +72,7 @@ public class Optimizer
 
         foreach (HourlyData data in hourlyDataList)
         {
-            List<UnitProduction> distribution = DistributeHeatLoad(data, productionUnits);
+            List<UnitProduction> distribution = DistributeHeatLoad(data, productionUnits, fractionCosts);
 
             double totalCO2 = 0;
             double totalElectricityProduced = 0;
@@ -107,6 +111,54 @@ public class Optimizer
         }
 
         return results;
+    }
+
+    private List<UnitProductionCost> GetUnitCO2Ranking(HourlyData data, List<ProductionUnit> units)
+    {           
+        List<UnitProductionCost> result = [];
+
+        foreach (ProductionUnit unit in units)
+        {
+            double co2 = unit.CO2EmissionsKg ?? 0;
+
+            result.Add(new UnitProductionCost(data, unit, co2));
+        }
+
+        return result;
+    }
+
+
+    private List<UnitProduction> DistributeHeatLoadByCO2(HourlyData data, List<ProductionUnit> units, double fraction)
+    {
+        double remainingDemand = data.HeatDemandMWh * fraction;
+
+        var ordered = GetUnitCO2Ranking(data, units)
+            .OrderBy(x => x.ProductionCostDKK)
+            .ToList();
+
+        List<UnitProduction> result = new();
+
+        foreach (var entry in ordered)
+        {
+            if (remainingDemand <= 0)
+                break;
+
+            double heatProduced = Math.Min(entry.Unit.MaxHeatMW, remainingDemand);
+
+            result.Add(new UnitProduction {
+                unitName = entry.Unit.Name,
+                heatProduced = heatProduced
+            });
+
+            remainingDemand -= heatProduced;
+        }
+
+        if (remainingDemand > 0)
+        {
+            throw new Exception($"Cannot meet demand. Missing {remainingDemand} MWh.");
+        }
+
+        return result;
     }
     
 }
