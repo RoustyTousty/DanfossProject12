@@ -28,11 +28,10 @@ public partial class App : Application
             
             AssetManager assetManager = new AssetManager(
                 new HourlyChartProvider(),
-                new ProductionUnitLibraryProvider(),
-                [ "GB1", "GB2", "GB3", "OB1", "GM1", "EB1" ]
-            );
+                new ProductionUnitLibraryProvider());
 
-            var optimizationService = new OptimizationService(assetManager);
+            var assetService = new AssetService(assetManager);
+            var optimizationService = new OptimizationService(assetService);
             var resultRepository = new CsvResultRepository("result.csv");
 
             var resultService = new ResultService(optimizationService, resultRepository);
@@ -42,7 +41,7 @@ public partial class App : Application
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(assetManager, optimizationService, resultService, chartService),
+                DataContext = new MainWindowViewModel(assetService, optimizationService, resultService, chartService),
             };
         }
 

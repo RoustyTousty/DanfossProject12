@@ -9,7 +9,7 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     public override string Title => "Main"; 
     public override Bitmap Icon => LoadAsset("danfoss-logo.png");
-    public AssetManager AssetManager { get; }
+    public AssetService AssetService { get; }
     public OptimizationService OptimizationService { get; }
     public ResultService ResultService { get; }
     public ChartService ChartService { get; }
@@ -20,9 +20,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<ViewModelBase> Pages { get; }
 
-    public MainWindowViewModel(AssetManager assetManager, OptimizationService optimizationService, ResultService resultService, ChartService chartService) 
+    public MainWindowViewModel(AssetService assetService, OptimizationService optimizationService, ResultService resultService, ChartService chartService) 
     {  
-        AssetManager = assetManager;
+        AssetService = assetService;
         OptimizationService = optimizationService;
         ResultService = resultService;
         ChartService = chartService;
@@ -30,7 +30,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Pages = new ObservableCollection<ViewModelBase>
         {
             new HomeViewModel(),
-            new HeatOptimizationViewModel(AssetManager, OptimizationService),
+            new HeatOptimizationViewModel(AssetService),
             new PriceDataViewModel(ResultService, ChartService),
             new AboutUsViewModel()
         };
