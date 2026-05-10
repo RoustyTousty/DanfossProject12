@@ -4,14 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia.Media.Imaging;
 using HeatOptimization.Logic;
-using HeatOptimization.Presentation;
 
 namespace HeatOptimization.Presentation.ViewModels;
 
 public partial class HeatOptimizationViewModel : ViewModelBase
 {
-    private readonly AssetManager _assetManager;
-    private readonly OptimizationService _optimizationService;
+    private readonly AssetService _assetService;
+
 
     public override string Title => "Dashboard";
     public override Bitmap Icon => LoadAsset("opti-icon.png");
@@ -52,30 +51,13 @@ public partial class HeatOptimizationViewModel : ViewModelBase
         { "USD", 0.15 }
     };
 
-    public HeatOptimizationViewModel(AssetManager assetManager, OptimizationService optimizationService)
+    public HeatOptimizationViewModel(AssetService assetService)
     {
-        _assetManager = assetManager;
-        _optimizationService = optimizationService;
-       
-        var units = _assetManager.GetProductionUnits();
-
-        List<IResultData> results = new();
-        try
-        {
-            results = _optimizationService.Optimize();
-        }
-        catch
-        {
-           
-        }
+        _assetService = assetService;       
+        var units = _assetService.GetProductionUnits();
 
         foreach (var unit in units)
         {
-            double totalProduced = 0;
-            if (results?.Count > 0)
-            {
-                totalProduced = results.Sum(r => r.UnitProduction.FirstOrDefault(u => u.unitName == unit.Name)?.heatProduced ?? 0);
-            }
 
             Boilers.Add(new BoilerItemViewModel
             {
@@ -94,7 +76,6 @@ public partial class HeatOptimizationViewModel : ViewModelBase
                 CO2EmissionsKg = unit.CO2EmissionsKg,
                 GasConsumptionMWh = unit.GasConsumptionMWh,
                 OilConsumptionMWh = unit.OilConsumptionMWh,
-                TotalHeatProduced = totalProduced
             });
         }
 

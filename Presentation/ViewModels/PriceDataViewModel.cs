@@ -23,9 +23,13 @@ public partial class PriceDataViewModel : ViewModelBase
 
     public async Task LoadAsync()
     {
-        var results = await _resultService.RunAndSaveAsync();
+        (var results, var costImpact) = await _resultService.RunAndSaveAsync();
+
+        Console.WriteLine("Received data from resultService");
 
         var unitSeries = _chartService.BuildUnitSeries(results);
+
+        
 
         Series = unitSeries.Select(unit =>
             new StackedColumnSeries<double>
@@ -42,6 +46,8 @@ public partial class PriceDataViewModel : ViewModelBase
         XAxes = [ new Axis { Labels = labels } ];
 
         YAxes = [ new Axis { Name = "Energy (MWh)" } ];
+                
+
     }
     
     public PriceDataViewModel(ResultService resultService, ChartService chartService)

@@ -56,6 +56,7 @@ public class CsvResultRepository : IResultRepository
         }
         catch (IOException ex)
         {
+            Console.WriteLine(ex);
             throw new Exception($"Failed to write multiple results to CSV file: {_filePath}", ex);
         }
 

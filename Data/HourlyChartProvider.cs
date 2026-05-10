@@ -6,9 +6,9 @@ using System.IO;
 
 public class HourlyChartProvider : IHourlyChartProvider
 {
-    public List<HourlyData> GetHourlyData(string fname)
+    public List<IHourlyData> GetHourlyData(string fname)
     {
-        List<HourlyData> hourlyData = new();
+        List<IHourlyData> hourlyData = new();
         
 
         string path = Path.Combine(

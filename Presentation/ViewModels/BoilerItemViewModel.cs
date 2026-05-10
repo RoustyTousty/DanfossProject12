@@ -28,8 +28,6 @@ public class BoilerItemViewModel : ObservableObject
     private double? _oilConsumptionMWh;
     public double? OilConsumptionMWh { get => _oilConsumptionMWh; set => SetProperty(ref _oilConsumptionMWh, value); }
 
-    private double _totalHeatProduced;
-    public double TotalHeatProduced { get => _totalHeatProduced; set => SetProperty(ref _totalHeatProduced, value); }
 
     private string _displayMaxHeat = "";
     public string DisplayMaxHeat { get => _displayMaxHeat; set => SetProperty(ref _displayMaxHeat, value); }
