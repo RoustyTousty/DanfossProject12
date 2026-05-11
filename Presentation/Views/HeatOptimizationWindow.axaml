@@ -124,12 +124,13 @@
 								Foreground="White"
 								VerticalAlignment="Center"/>
 				
+					<!--Unbinded for now-->
+
 					<Button Content="Upload File"
 							Background="#3E4452"
 							Foreground="White"
 							CornerRadius="8"
-							Padding="8,4"
-							Click=""/>
+							Padding="8,4"/>
 
 				</StackPanel>
 
