@@ -35,7 +35,7 @@ public class OptimizerTests
         var data = new List<IHourlyData> { GetSampleHourlyData() };
 
         // Act
-        var results = _optimizer.OptimizeMany(data, units);
+        var results = _optimizer.OptimizeWithoutMaintenance(data, units);
 
         // Assert
         Assert.Single(results);
@@ -58,7 +58,7 @@ public class OptimizerTests
         };
 
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeMany(data, units));
+        var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithoutMaintenance(data, units));
         Assert.Contains("cannot be met", exception.Message);
     }
 
