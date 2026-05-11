@@ -130,7 +130,13 @@
 							Background="#3E4452"
 							Foreground="White"
 							CornerRadius="8"
-							Padding="8,4"/>
+							Padding="8,4"
+							Click="OnUploadClick"/>
+
+					<TextBlock x:Name="StatusText" 
+							   Text="No file selected" 
+							   Foreground="Gray" 
+							   FontSize="12"/>
 
 				</StackPanel>
 
