@@ -12,7 +12,7 @@ public class OptimizerTests
             new() { Name = "GB1", Type = UnitType.GasBoiler, MaxHeatMW = 3.0, BaseProductionCostDKK = 510, CO2EmissionsKg = 132 },
             new() { Name = "GB2", Type = UnitType.GasBoiler, MaxHeatMW = 2.0, BaseProductionCostDKK = 540, CO2EmissionsKg = 134 },
             new() { Name = "EB1", Type = UnitType.ElectricBoiler, MaxHeatMW = 6.0, BaseProductionCostDKK = 15, MaxElectricityMW = -6.0, CO2EmissionsKg = 0 },
-            new() { Name = "GM1", Type = UnitType.GasMotor, MaxHeatMW = 5.3, MaxElectricityMW = 3.9, BaseProductionCostDKK = 975, CO2EmissionsKg = 227 }
+            new() { Name = "GM1", Type = UnitType.GasMotor, MaxHeatMW = 3.3, MaxElectricityMW = 3.9, BaseProductionCostDKK = 975, CO2EmissionsKg = 227 }
         ];
     }
 
@@ -22,7 +22,7 @@ public class OptimizerTests
         {
             TimeFrom = DateTime.Now.AddHours(hourOffset),
             TimeTo = DateTime.Now.AddHours(hourOffset + 1),
-            HeatDemandMWh = 8.27,
+            HeatDemandMWh = 8.47,
             ElectricityPriceDKK = 690.58
         };
     }
@@ -40,7 +40,7 @@ public class OptimizerTests
         // Assert
         Assert.Single(results);
         var result = results.First();
-        Assert.Equal(8.27, result.UnitProduction.Sum(up => up.heatProduced));
+        Assert.Equal(8.47, Math.Round(result.UnitProduction.Sum(up => up.heatProduced), 2));
         Assert.True(result.CO2ProductionKG > 0);
     }
 
