@@ -4,18 +4,21 @@
         
         x:Class="HeatOptimization.Presentation.Views.Config"
         
-        Title="Configuration" Width="420" Height="650">
+        Title="Configuration" Width="450" Height="700">
+    
 
     <Border Padding="30">
         <StackPanel Spacing="25">
-            
+
             <TextBlock Text="Configure the optimization" 
                        FontSize="22" FontWeight="Bold" 
                        HorizontalAlignment="Center" 
                        Margin="0,0,0,10"/>
 
             <DockPanel>
-                <TextBlock Text="Pick a file with hourly data:" VerticalAlignment="Center"/>
+                <TextBlock Text="Pick a file with hourly data:"
+                           FontSize="15" FontWeight="Bold" 
+                           VerticalAlignment="Center"/>
 
                 <Button Content="Select" Name="FileSelectBtn" 
                         HorizontalAlignment="Right"
@@ -27,13 +30,157 @@
 
             </DockPanel>
 
-            <StackPanel Spacing="10">
-                <DockPanel>
-                    <TextBlock Text="Pick a unit to put on maintenance:"/>
+            <StackPanel>
+
+                <!-- I want to make this prettier by making placeholders
+                     for styles, so it doesn't take so much space. -->
+
+                <TextBlock Text="Active Units"
+                           FontSize="17" FontWeight="Bold"
+                           Margin="0,0,0,15"/>
+
+                <WrapPanel Orientation="Horizontal" Margin="0,0,0,16">
+
+                    <Border Margin="0,0,10,10"
+                            Background="#FFFFFF"
+                            CornerRadius="8"
+                            Padding="16,7">
+
+                        <TextBlock Text="EB1"
+                                   Foreground="#1A1A1A"
+                                   FontSize="13"
+                                   FontWeight="Medium"/>
+                    </Border>
+
+                    <Border Margin="0,0,10,10"
+                            Background="#FFFFFF"
+                            CornerRadius="8"
+                            Padding="16,7">
+
+                        <TextBlock Text="EB2"
+                                   Foreground="#1A1A1A"
+                                   FontSize="13"
+                                   FontWeight="Medium"/>
+                    </Border>
+
+                    <Border Margin="0,0,10,10"
+                            Background="#FFFFFF"
+                            CornerRadius="8"
+                            Padding="16,7">
+
+                        <TextBlock Text="EB3"
+                                   Foreground="#1A1A1A"
+                                   FontSize="13"
+                                   FontWeight="Medium"/>
+                    </Border>
+
+                    <Border Margin="0,0,10,10"
+                            Background="#FFFFFF"
+                            CornerRadius="8"
+                            Padding="16,7">
+
+                        <TextBlock Text="EB4"
+                                   Foreground="#1A1A1A"
+                                   FontSize="13"
+                                   FontWeight="Medium"/>
+                    </Border>
+
+                    <Border Margin="0,0,10,10"
+                            Background="#FFFFFF"
+                            CornerRadius="8"
+                            Padding="16,7">
+
+                        <TextBlock Text="EB5"
+                                   Foreground="#1A1A1A"
+                                   FontSize="13"
+                                   FontWeight="Medium"/>
+                    </Border>
+
+                    <Border Margin="0,0,10,10"
+                            Background="#FFFFFF"
+                            CornerRadius="8"
+                            Padding="16,7">
+
+                        <TextBlock Text="EB6"
+                                   Foreground="#1A1A1A"
+                                   FontSize="13"
+                                   FontWeight="Medium"/>
+                    </Border>
                     
-                    <!-- There will be active and inactive units -->
+                </WrapPanel>
+
+                <TextBlock Text="Inactive Units"
+                           FontSize="17" FontWeight="Bold"
+                           Margin="0,0,0,15"/>
+
+                <WrapPanel Orientation="Horizontal">
+
+                    <Border Margin="0,0,10,10"
+                            Background="#3A3A3A"
+                            CornerRadius="8"
+                            Padding="16,7">
+
+                        <TextBlock Text="EB7"
+                                Foreground="#888888"
+                                FontSize="13"
+                                FontWeight="Medium"/>
+                    </Border>
+
+                    <Border Margin="0,0,10,10"
+                            Background="#3A3A3A"
+                            CornerRadius="8"
+                            Padding="16,7">
+
+                        <TextBlock Text="EB8"
+                                Foreground="#888888"
+                                FontSize="13"
+                                FontWeight="Medium"/>
+                    </Border>
+
+                </WrapPanel>
+
+            </StackPanel>
+
+            <StackPanel Spacing="10">
+
+                <DockPanel LastChildFill="False">
+                    <TextBlock DockPanel.Dock="Left" Text="Put a unit on a maintenance :" 
+                               VerticalAlignment="Center"
+                               FontSize="15"/>
+                    
+                    <ToggleSwitch DockPanel.Dock="Right" 
+                                  VerticalAlignment="Center"
+                                  OnContent="" OffContent=""/>
 
                 </DockPanel>
+
+                <DockPanel LastChildFill="False">
+                   
+                    <TextBlock DockPanel.Dock="Left" Text="Pick a unit to put on maintenance:" 
+                               VerticalAlignment="Center"
+                               FontSize="15"/>
+                    
+                    <ComboBox DockPanel.Dock="Right"
+                              SelectedIndex="0"
+                              Background="#FFFFFF"
+                              Foreground="#2E2E2E"
+                              BorderBrush="#555555" BorderThickness="1"
+                              CornerRadius="8"
+                              Padding="10,6">
+                              
+
+                        <ComboBoxItem Content="Value"/>
+                        <ComboBoxItem Content="EB1"/>
+                        <ComboBoxItem Content="EB2"/>
+                        <ComboBoxItem Content="EB3"/>
+                        <ComboBoxItem Content="EB4"/>
+                        <ComboBoxItem Content="EB5"/>
+                        <ComboBoxItem Content="EB6"/>
+                        
+                    </ComboBox>
+
+                </DockPanel>
+
 
                 <TextBlock Text="Maintenace time (30-60h):" FontSize="12"/>
 
