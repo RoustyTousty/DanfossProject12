@@ -10,32 +10,16 @@ public partial class HeatOptimizationView : UserControl
 {
     public HeatOptimizationView() => InitializeComponent();
     
-    private async void OnUploadClick(object sender, RoutedEventArgs e)
+    private async void OnOptimizeBtnClick(object sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel == null) return;
 
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        if (topLevel is Window mainWindow)
         {
-            Title = "Select Heat Data File",
-            AllowMultiple = false
-        });
+            var configWindow = new Config();
 
-        // if (files != null && files.Any())
-        // {
-        //     var selectedFile = files[0];
-            
-        //     var configWindow = new ConfigWindow(selectedFile.Name);
-            
-        //     if (topLevel is Window mainWindow)
-        //     {
-        //         var result = await configWindow.ShowDialog<ConfigResult>(mainWindow);
-
-        //         if (result != null)
-        //         {
-        //             this.FindControl<TextBlock>("StatusText").Text = $"Uploaded: {selectedFile.Name}";
-        //         }
-        //     }
-        // }
+            var result = await configWindow.ShowDialog<ConfigResult>(mainWindow);
+        }
     }
+      
 }

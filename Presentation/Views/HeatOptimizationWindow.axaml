@@ -114,29 +114,21 @@
 
 				<!-- File uploading-->
 
-				<TextBlock Text="Selected file"
+				<TextBlock Text="File Settings"
 						Foreground="White"
 						FontWeight="Bold"/>
 
 				<StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-
-					<TextBlock Text="File: "
-								Foreground="White"
-								VerticalAlignment="Center"/>
 				
-					<!--Unbinded for now-->
+					<!-- This button will activate the so called config window, where 
+					 	 file will be uploaded-->
 
-					<Button Content="Upload File"
+					<Button Content="Select file and optimize"
 							Background="#3E4452"
 							Foreground="White"
 							CornerRadius="8"
 							Padding="8,4"
-							Click="OnUploadClick"/>
-
-					<TextBlock x:Name="StatusText" 
-							   Text="No file selected" 
-							   Foreground="Gray" 
-							   FontSize="12"/>
+							Click="OnOptimizeBtnClick"/>
 
 				</StackPanel>
 
