@@ -70,8 +70,8 @@
         
         <Style Selector="Button.dateSelect">
             <Setter Property="Background" Value="White"/>
-            <Setter Property="Width" Value="30"/>
-            <Setter Property="Height" Value="25"/>
+            <Setter Property="Width" Value="35"/>
+            <Setter Property="Height" Value="35"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Margin" Value="30,0,0,0"/>
         </Style>
@@ -268,11 +268,10 @@
 
                         <TextBox Grid.Column="3" Watermark="YYYY" 
                                  Classes="dateBox"/>
-
-                        <!-- Need to add icon (calendar) -->
                         
                         <Button Grid.Column="4" Classes="dateSelect">
-                            <PathIcon  Foreground="Black" Width="18" Height="18"/>
+                            <Image Source="avares://Presentation/Assets/calendarIcon.png"
+                                   Width="18" Height="18"/>
                         </Button>
 
                     </Grid>
@@ -298,12 +297,10 @@
 
                         <TextBox Grid.Column="3" Watermark="YYYY" 
                                 Classes="dateBox"/>
-
-
-                        <!-- Need to add icon (calendar) -->
                         
                         <Button Grid.Column="4" Classes="dateSelect">
-                            <PathIcon  Foreground="Black" Width="18" Height="18"/>
+                            <Image Source="avares://Presentation/Assets/calendarIcon.png"
+                                   Width="18" Height="18"/>
                         </Button>
 
                     </Grid>
