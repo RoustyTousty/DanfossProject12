@@ -8,6 +8,8 @@
     
     <Window.Styles>
 
+        <!-- For active/inactive units -->
+
         <Style Selector="TextBlock.unitHeader">
             <Setter Property="FontSize" Value="17"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -51,8 +53,6 @@
             <Setter Property="BorderBrush" Value="Red" />
         </Style>
 
-        <!--  -->
-
         <!-- For date selector textboxes -->
 
         <Style Selector="TextBox.dateBox">
@@ -75,7 +75,6 @@
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Margin" Value="30,0,0,0"/>
         </Style>
-
 
     </Window.Styles>
     
