@@ -8,6 +8,12 @@
     
     <Window.Styles>
 
+        <Style Selector="TextBlock.unitHeader">
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
         <Style Selector="Border.activeUnit">
             <Setter Property="Margin" Value="0,0,10,10"/>
             <Setter Property="Background" Value="#FFFFFF"/>
@@ -66,8 +72,7 @@
                      for styles, so it doesn't take so much space. -->
 
                 <TextBlock Text="Active Units"
-                           FontSize="17" FontWeight="Bold"
-                           Margin="0,0,0,15"/>
+                           Classes="unitHeader"/>
 
                 <WrapPanel Orientation="Horizontal" Margin="0,0,0,16">
 
@@ -104,8 +109,7 @@
                 </WrapPanel>
 
                 <TextBlock Text="Inactive Units"
-                           FontSize="17" FontWeight="Bold"
-                           Margin="0,0,0,15"/>
+                           Classes="unitHeader"/>
 
                 <WrapPanel Orientation="Horizontal">
 
