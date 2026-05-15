@@ -6,6 +6,36 @@
         
         Title="Configuration" Width="450" Height="700">
     
+    <Window.Styles>
+
+        <Style Selector="Border.activeUnit">
+            <Setter Property="Margin" Value="0,0,10,10"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,7"/>
+        </Style>
+
+        <Style Selector="Border.inactiveUnit">
+            <Setter Property="Margin" Value="0,0,10,10"/>
+            <Setter Property="Background" Value="#3A3A3A"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,7"/>
+        </Style>
+
+        <Style Selector="TextBlock.activeUnitText">
+            <Setter Property="Foreground" Value="#1A1A1A"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+
+        <Style Selector="TextBlock.inactiveUnitText">
+            <Setter Property="Foreground" Value="#888888"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+
+    </Window.Styles>
+    
 
     <Border Padding="30">
         <StackPanel Spacing="25">
@@ -41,70 +71,34 @@
 
                 <WrapPanel Orientation="Horizontal" Margin="0,0,0,16">
 
-                    <Border Margin="0,0,10,10"
-                            Background="#FFFFFF"
-                            CornerRadius="8"
-                            Padding="16,7">
-
+                    <Border Classes="activeUnit">
                         <TextBlock Text="EB1"
-                                   Foreground="#1A1A1A"
-                                   FontSize="13"
-                                   FontWeight="Medium"/>
+                                   Classes="activeUnitText"/>
                     </Border>
 
-                    <Border Margin="0,0,10,10"
-                            Background="#FFFFFF"
-                            CornerRadius="8"
-                            Padding="16,7">
-
+                    <Border Classes="activeUnit">
                         <TextBlock Text="EB2"
-                                   Foreground="#1A1A1A"
-                                   FontSize="13"
-                                   FontWeight="Medium"/>
+                                   Classes="activeUnitText"/>
                     </Border>
 
-                    <Border Margin="0,0,10,10"
-                            Background="#FFFFFF"
-                            CornerRadius="8"
-                            Padding="16,7">
-
+                    <Border Classes="activeUnit">
                         <TextBlock Text="EB3"
-                                   Foreground="#1A1A1A"
-                                   FontSize="13"
-                                   FontWeight="Medium"/>
+                                   Classes="activeUnitText"/>
                     </Border>
 
-                    <Border Margin="0,0,10,10"
-                            Background="#FFFFFF"
-                            CornerRadius="8"
-                            Padding="16,7">
-
+                    <Border Classes="activeUnit">
                         <TextBlock Text="EB4"
-                                   Foreground="#1A1A1A"
-                                   FontSize="13"
-                                   FontWeight="Medium"/>
+                                   Classes="activeUnitText"/>
                     </Border>
 
-                    <Border Margin="0,0,10,10"
-                            Background="#FFFFFF"
-                            CornerRadius="8"
-                            Padding="16,7">
-
+                    <Border Classes="activeUnit">
                         <TextBlock Text="EB5"
-                                   Foreground="#1A1A1A"
-                                   FontSize="13"
-                                   FontWeight="Medium"/>
+                                   Classes="activeUnitText"/>
                     </Border>
 
-                    <Border Margin="0,0,10,10"
-                            Background="#FFFFFF"
-                            CornerRadius="8"
-                            Padding="16,7">
-
+                    <Border Classes="activeUnit">
                         <TextBlock Text="EB6"
-                                   Foreground="#1A1A1A"
-                                   FontSize="13"
-                                   FontWeight="Medium"/>
+                                   Classes="activeUnitText"/>
                     </Border>
                     
                 </WrapPanel>
@@ -115,26 +109,14 @@
 
                 <WrapPanel Orientation="Horizontal">
 
-                    <Border Margin="0,0,10,10"
-                            Background="#3A3A3A"
-                            CornerRadius="8"
-                            Padding="16,7">
-
+                    <Border Classes="inactiveUnit">
                         <TextBlock Text="EB7"
-                                Foreground="#888888"
-                                FontSize="13"
-                                FontWeight="Medium"/>
+                                   Classes="inactiveUnitText"/>
                     </Border>
 
-                    <Border Margin="0,0,10,10"
-                            Background="#3A3A3A"
-                            CornerRadius="8"
-                            Padding="16,7">
-
+                    <Border Classes="inactiveUnit">
                         <TextBlock Text="EB8"
-                                Foreground="#888888"
-                                FontSize="13"
-                                FontWeight="Medium"/>
+                                   Classes="inactiveUnitText"/>
                     </Border>
 
                 </WrapPanel>
@@ -184,11 +166,27 @@
 
                 <TextBlock Text="Maintenace time (30-60h):" FontSize="12"/>
 
-                <Grid>
+                <DockPanel LastChildFill="True">
 
-                    <!-- Slider for Maintenance time -->
+                    <Slider DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            Width="100"
+                            Minimum="30"
+                            Maximum="60"
+                            VerticalAlignment="Center"/>
+
+                    <TextBox DockPanel.Dock="Right"
+                             Text="Value"
+                             Background="#FFFFFF"
+                             Foreground="#2E2E2E"
+                             BorderBrush="#555555" BorderThickness="1"
+                             CornerRadius="8"
+                             Padding="10,6"
+                             VerticalAlignment="Center"/>
+
                     
-                </Grid>
+                    
+                </DockPanel>
 
             </StackPanel>
 
