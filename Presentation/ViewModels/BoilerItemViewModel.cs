@@ -1,5 +1,7 @@
 namespace HeatOptimization.Presentation.ViewModels;
 
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 public class BoilerItemViewModel : ObservableObject
@@ -34,4 +36,22 @@ public class BoilerItemViewModel : ObservableObject
 
     private string _displayBaseProductionCost = "";
     public string DisplayBaseProductionCost { get => _displayBaseProductionCost; set => SetProperty(ref _displayBaseProductionCost, value); }
+
+    public Bitmap ImagePath => Type switch
+    {
+        "Gas Boiler" => new Bitmap(AssetLoader.Open(
+            new Uri("avares://Presentation/Assets/GasBoiler.png"))),
+
+        "Oil Boiler" => new Bitmap(AssetLoader.Open(
+            new Uri("avares://Presentation/Assets/OilBoiler.png"))),
+
+        "Gas Motor" => new Bitmap(AssetLoader.Open(
+            new Uri("avares://Presentation/Assets/GasMotor.png"))),
+
+        "Electric Boiler" => new Bitmap(AssetLoader.Open(
+            new Uri("avares://Presentation/Assets/ElectricBoiler.png"))),
+
+        _ => new Bitmap(AssetLoader.Open(
+            new Uri("avares://Presentation/Assets/Default.png")))
+    };
 }
