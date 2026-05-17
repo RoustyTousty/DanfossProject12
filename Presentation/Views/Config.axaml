@@ -1,9 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:HeatOptimization.Presentation.ViewModels"
         xmlns:views="using:HeatOptimization.Presentation.Views"
         
         x:Class="HeatOptimization.Presentation.Views.Config"
-        
+        x:DataType="vm:ConfigViewModel"
         Title="Configuration" Width="450" Height="915">
     
     <Window.Styles>
@@ -221,7 +222,7 @@
                         x:Name="maintenanceSlider"
                         Minimum="30"
                         Maximum="60"
-                        Value="30"
+                        Value="{Binding MaintenanceHours}"
                         TickFrequency="1"
                         IsSnapToTickEnabled="True"
                         VerticalAlignment="Center"
@@ -367,7 +368,8 @@
                 </Grid>
 
             </StackPanel>
-
+            <TextBox Text="{Binding MaintenanceHours}" />
+            
             <Button Content="Optimize" 
                     HorizontalAlignment="Center" 
                     Padding="40,10" 
@@ -375,7 +377,7 @@
                     FontWeight="Bold" CornerRadius="8"
                     Margin="0,20,0,0"
                     Click="OnOptimizeClick"/>
-
+            
         </StackPanel>
 
     </Border>

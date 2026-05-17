@@ -1,6 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using HeatOptimization.Logic;
+using HeatOptimization.Presentation.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,15 +12,19 @@ namespace HeatOptimization.Presentation.Views
     {
         private string? _selectedFilePath;
 
+
+
         public Config()
         {
             InitializeComponent();
         }
 
-        // public Config(string fileName) : this()
-        // {
+        public Config(AssetService assetService, OptimizationService optimizationService)
+        {
+            InitializeComponent();
+            DataContext = new ConfigViewModel(assetService, optimizationService);
+        }
 
-        // }
 
         private async void OnFileSelectClick(object sender, RoutedEventArgs e)
         {
