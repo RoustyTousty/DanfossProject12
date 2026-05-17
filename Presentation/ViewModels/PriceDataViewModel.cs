@@ -24,11 +24,11 @@ public partial class PriceDataViewModel : ViewModelBase
     private readonly Dictionary<string, string> _unitColorMap = new()
     {
         ["GM1"] = "#3FA9F5",
-        ["GB1"] = "#FF8BB5",
-        ["GB2"] = "#C6F0A0",
+        ["GB1"] = "#fd4388",
+        ["GB2"] = "#7adb26",
         ["GB3"] = "#e2e616",
-        ["EB1"] = "#9F92F8",
-        ["EB2"] = "#9C4AFF",
+        ["EB1"] = "#861654",
+        ["EB2"] = "#6f06f0",
         ["EB3"] = "#00C2A3",
         ["EB4"] = "#F48C2A",
     };
