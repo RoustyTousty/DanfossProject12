@@ -111,77 +111,77 @@
                 <TextBlock Text="Active Units"
                            Classes="unitHeader"/>
 
-                <WrapPanel Orientation="Horizontal" Margin="0,0,0,16">
+                <ItemsControl ItemsSource="{Binding ActiveUnits}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" Margin="0,0,0,16"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding $parent[ItemsControl].DataContext.ToggleUnitStatusCommand}"
+                                    CommandParameter="{Binding .}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="0"
+                                    Cursor="Hand">
+                                <Border Classes="activeUnit">
+                                    <TextBlock Text="{Binding Name}"
+                                               Classes="activeUnitText"/>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-                    <Border Classes="activeUnit">
-                        <TextBlock Text="EB1"
-                                   Classes="activeUnitText"/>
-                    </Border>
-
-                    <Border Classes="activeUnit">
-                        <TextBlock Text="EB2"
-                                   Classes="activeUnitText"/>
-                    </Border>
-
-                    <Border Classes="activeUnit">
-                        <TextBlock Text="EB3"
-                                   Classes="activeUnitText"/>
-                    </Border>
-
-                    <Border Classes="activeUnit">
-                        <TextBlock Text="EB4"
-                                   Classes="activeUnitText"/>
-                    </Border>
-
-                    <Border Classes="activeUnit">
-                        <TextBlock Text="EB5"
-                                   Classes="activeUnitText"/>
-                    </Border>
-
-                    <Border Classes="activeUnit">
-                        <TextBlock Text="EB6"
-                                   Classes="activeUnitText"/>
-                    </Border>
-                    
-                </WrapPanel>
-
-                <!-- InActive Units -->
+                <!-- Disabled Units -->
 
                 <TextBlock Text="Inactive Units"
                            Classes="unitHeader"/>
 
-                <WrapPanel Orientation="Horizontal">
-
-                    <Border Classes="inactiveUnit">
-                        <TextBlock Text="EB7"
-                                   Classes="inactiveUnitText"/>
-                    </Border>
-
-                    <Border Classes="inactiveUnit">
-                        <TextBlock Text="EB8"
-                                   Classes="inactiveUnitText"/>
-                    </Border>
-
-                </WrapPanel>
+                <ItemsControl ItemsSource="{Binding DisabledUnits}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding $parent[ItemsControl].DataContext.ToggleUnitStatusCommand}"
+                                    CommandParameter="{Binding .}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="0"
+                                    Cursor="Hand">
+                                <Border Classes="inactiveUnit">
+                                    <TextBlock Text="{Binding Name}"
+                                               Classes="inactiveUnitText"/>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
             </StackPanel>
 
             <!-- Section to choose to put unit for maintenance -->
 
-            <StackPanel Spacing="10">
-
-
-                <DockPanel LastChildFill="False">
-                    <TextBlock DockPanel.Dock="Left" Text="Put a unit on a maintenance :" 
-                               VerticalAlignment="Center"
-                               FontSize="15"/>
-                    
-                    <ToggleSwitch DockPanel.Dock="Right" 
-                                  VerticalAlignment="Center"
-                                  OnContent="" OffContent=""/>
-
-                </DockPanel>
-
+            
+            
+            <DockPanel LastChildFill="False">
+                <TextBlock DockPanel.Dock="Left" Text="Put a unit on a maintenance :" 
+                VerticalAlignment="Center"
+                FontSize="15"/>
+                
+                <ToggleSwitch x:Name="maintenanceToggle"
+                DockPanel.Dock="Right" 
+                VerticalAlignment="Center"
+                OnContent="" OffContent=""/>
+                
+            </DockPanel>
+            
+            <StackPanel Spacing="10"
+                IsVisible="{Binding #maintenanceToggle.IsChecked}">
                 <DockPanel LastChildFill="False">
                    
                     <TextBlock DockPanel.Dock="Left" Text="Pick a unit to put on maintenance:" 
@@ -189,22 +189,18 @@
                                FontSize="15"/>
                     
                     <ComboBox DockPanel.Dock="Right"
+                              ItemsSource="{Binding ActiveUnits}"
                               SelectedIndex="0"
                               Background="#FFFFFF"
                               Foreground="#2E2E2E"
                               BorderBrush="#555555" BorderThickness="1"
                               CornerRadius="8"
                               Padding="10,6">
-                              
-
-                        <ComboBoxItem Content="Value"/>
-                        <ComboBoxItem Content="EB1"/>
-                        <ComboBoxItem Content="EB2"/>
-                        <ComboBoxItem Content="EB3"/>
-                        <ComboBoxItem Content="EB4"/>
-                        <ComboBoxItem Content="EB5"/>
-                        <ComboBoxItem Content="EB6"/>
-                        
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                     </ComboBox>
 
                 </DockPanel>

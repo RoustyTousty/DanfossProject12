@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using Avalonia.Media.Imaging;
 using HeatOptimization.Logic;
@@ -10,8 +11,9 @@ public partial class ConfigViewModel : ViewModelBase
     private AssetService _assetService;
     private OptimizationService _optimizationService;
 
-    public ObservableCollection<ProductionUnit> ActiveUnits = [];
-    public ObservableCollection<ProductionUnit> DisabledUnits = [];
+    public ObservableCollection<ProductionUnit> ActiveUnits { get; set; } = [];
+
+public ObservableCollection<ProductionUnit> DisabledUnits { get; set; } = [];
 
     [ObservableProperty]
     private int maintenanceHours = 30;
@@ -22,6 +24,25 @@ public partial class ConfigViewModel : ViewModelBase
     public ConfigViewModel(AssetService assetService, OptimizationService optimizationService)
     {
         _assetService = assetService;
+        List<ProductionUnit> units = _assetService.GetProductionUnits();
+        foreach (ProductionUnit unit in units) {
+            ActiveUnits.Add(unit);
+        }
         _optimizationService = optimizationService;
+    }
+
+    [RelayCommand]
+    public void ToggleUnitStatus(ProductionUnit unit)
+    {
+        if (ActiveUnits.Contains(unit))
+        {
+            ActiveUnits.Remove(unit);
+            DisabledUnits.Add(unit);
+        }
+        else if (DisabledUnits.Contains(unit))
+        {
+            DisabledUnits.Remove(unit);
+            ActiveUnits.Add(unit);
+        }
     }
 }
