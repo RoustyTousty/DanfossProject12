@@ -67,7 +67,10 @@ public partial class ConfigViewModel : ViewModelBase
         if (!string.IsNullOrEmpty(localPath))
         {
             SelectedFilePath = localPath; 
-            FileButtonText = System.IO.Path.GetFileName(localPath);
+
+            _assetService.UpdateHourlyDatas(SelectedFilePath);
+            Console.WriteLine(_assetService.HourlyData[0].TimeFrom);
+            FileButtonText = Path.GetFileName(localPath);
         }
     }
 

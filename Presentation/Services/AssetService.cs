@@ -15,9 +15,11 @@ public class AssetService
         _assetManager = assetManager;
     }
 
-    public List<IHourlyData> UpdateHourlyDatas()
+    public List<IHourlyData> UpdateHourlyDatas(string fpath)
     {
-        return _assetManager.GetHourlyDatas();
+        List<IHourlyData> data =  _assetManager.GetHourlyDatas(fpath);
+        HourlyData = data;
+        return data;
     }
 
     public List<ProductionUnit> GetProductionUnits()
