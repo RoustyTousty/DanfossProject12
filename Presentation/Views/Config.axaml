@@ -219,7 +219,6 @@
                         VerticalAlignment="Center">
 
                     <Slider Grid.Column="0"
-                        x:Name="maintenanceSlider"
                         Minimum="30"
                         Maximum="60"
                         Value="{Binding MaintenanceHours}"
@@ -234,7 +233,7 @@
                         CornerRadius="8"
                         Height="30">
 
-                    <TextBox Text="{Binding #maintenanceSlider.Value, Mode=TwoWay}"
+                    <TextBox Text="{Binding MaintenanceHours}"
                         Background="Transparent"
                         BorderThickness="0"
                         Foreground="#2E2E2E"
@@ -368,7 +367,6 @@
                 </Grid>
 
             </StackPanel>
-            <TextBox Text="{Binding MaintenanceHours}" />
             
             <Button Content="Optimize" 
                     HorizontalAlignment="Center" 

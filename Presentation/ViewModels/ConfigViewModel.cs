@@ -14,7 +14,7 @@ public partial class ConfigViewModel : ViewModelBase
     public ObservableCollection<ProductionUnit> DisabledUnits = [];
 
     [ObservableProperty]
-    public int maintenanceHours = 30;
+    private int maintenanceHours = 30;
 
     public override string Title => "Configuration";
     public override Bitmap Icon => LoadAsset("config_icon.png");

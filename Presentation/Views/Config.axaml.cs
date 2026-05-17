@@ -17,6 +17,10 @@ namespace HeatOptimization.Presentation.Views
         public Config()
         {
             InitializeComponent();
+            if (App.AssetService != null && App.OptimizationService != null)
+            {
+                DataContext = new ConfigViewModel(App.AssetService, App.OptimizationService);
+            }
         }
 
         public Config(AssetService assetService, OptimizationService optimizationService)
