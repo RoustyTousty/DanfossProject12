@@ -191,7 +191,7 @@
                     
                     <ComboBox DockPanel.Dock="Right"
                               ItemsSource="{Binding ActiveUnits}"
-                              SelectedItem="{Binding UnitToputOnMaintenance}"
+                              SelectedItem="{Binding UnitToPutOnMaintenance}"
                               Background="#FFFFFF"
                               Foreground="#2E2E2E"
                               BorderBrush="#555555" BorderThickness="1"
@@ -244,7 +244,7 @@
             </StackPanel>
 
             <!-- Date choice - where date can be choosen -->
-
+            <!--             
             <StackPanel Spacing="15">
 
                 <StackPanel Spacing="5">
@@ -305,7 +305,7 @@
                 </StackPanel>
    
             
-            </StackPanel>
+            </StackPanel> -->
 
             <!-- Slider for prioritization -->
 
@@ -366,11 +366,14 @@
             </StackPanel>
             
             <Button Content="Optimize"
+                    IsEnabled="{Binding IsFileSelected}"
                     HorizontalAlignment="Center" 
                     Padding="40,10" 
                     Background="White" Foreground="Black" 
                     FontWeight="Bold" CornerRadius="8"
-                    Margin="0,20,0,0"/>
+                    Margin="0,20,0,0"
+                    Command="{Binding OptimizeCommand}"
+                    CommandParameter="{Binding $parent[Window]}"/>
             
         </StackPanel>
 

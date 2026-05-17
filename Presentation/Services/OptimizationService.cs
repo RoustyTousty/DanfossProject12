@@ -14,19 +14,19 @@ public class OptimizationService
 
     public void Optimize(string? unitToDisable, int? maintenanceTime)
     {
-        var data = _assetService.HourlyData;
+        var data = _assetService.HourlyData.Cast<IHourlyData>().ToList();
         var units = _assetService.GetProductionUnits();
         
-        if (unitToDisable != null)
+        if (unitToDisable != null && unitToDisable != "")
         {
             (List<IResultData> res, double impact) = _optimizer.OptimizeWithMaintenance(data, units, unitToDisable, maintenanceTime ?? 30);
-            _assetService.ResultData = res;
+            _assetService.ResultData = new(res);
             _assetService.CostImpact = impact;
 
         } else
         {
             List<IResultData> res = _optimizer.OptimizeWithoutMaintenance(data, units);
-            _assetService.ResultData = res;
+            _assetService.ResultData = new(res);
             _assetService.CostImpact = 0;
         }
         
