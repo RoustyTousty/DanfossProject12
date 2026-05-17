@@ -93,13 +93,13 @@
                            FontSize="15" FontWeight="Bold" 
                            VerticalAlignment="Center"/>
 
-                <Button Content="Select" Name="FileSelectBtn" 
+                <Button Content="{Binding FileButtonText}" Name="FileSelectBtn" 
                         HorizontalAlignment="Right"
                         Padding="15,5" 
                         CornerRadius="8"
                         Background="Transparent" 
                         BorderBrush="White" BorderThickness="1"
-                        Click="OnFileSelectClick"/>
+                        Command="{Binding SelectFileCommand}"/>
 
             </DockPanel>
 
@@ -365,13 +365,12 @@
 
             </StackPanel>
             
-            <Button Content="Optimize" 
+            <Button Content="Optimize"
                     HorizontalAlignment="Center" 
                     Padding="40,10" 
                     Background="White" Foreground="Black" 
                     FontWeight="Bold" CornerRadius="8"
-                    Margin="0,20,0,0"
-                    Click="OnOptimizeClick"/>
+                    Margin="0,20,0,0"/>
             
         </StackPanel>
 
