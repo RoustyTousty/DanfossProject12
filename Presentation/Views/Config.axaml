@@ -1,0 +1,382 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:HeatOptimization.Presentation.Views"
+        
+        x:Class="HeatOptimization.Presentation.Views.Config"
+        
+        Title="Configuration" Width="450" Height="915">
+    
+    <Window.Styles>
+
+        <!-- For active/inactive units -->
+
+        <Style Selector="TextBlock.unitHeader">
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <Style Selector="Border.activeUnit">
+            <Setter Property="Margin" Value="0,0,10,10"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,7"/>
+        </Style>
+
+        <Style Selector="Border.inactiveUnit">
+            <Setter Property="Margin" Value="0,0,10,10"/>
+            <Setter Property="Background" Value="#3A3A3A"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,7"/>
+        </Style>
+
+        <Style Selector="TextBlock.activeUnitText">
+            <Setter Property="Foreground" Value="#1A1A1A"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+
+        <Style Selector="TextBlock.inactiveUnitText">
+            <Setter Property="Foreground" Value="#888888"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+
+        <!-- This is added so radio buttons are red( Matches Theme color ) -->
+
+        <Style Selector="RadioButton:checked /template/ Ellipse#CheckGlyph">
+            <Setter Property="Fill" Value="Red" />
+        </Style>
+
+        <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
+            <Setter Property="Background" Value="Red" />
+            <Setter Property="BorderBrush" Value="Red" />
+        </Style>
+
+        <!-- For date selector textboxes -->
+
+        <Style Selector="TextBox.dateBox">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <!-- For date selector Calendar button -->
+        
+        <Style Selector="Button.dateSelect">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Width" Value="35"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="30,0,0,0"/>
+        </Style>
+
+    </Window.Styles>
+    
+
+    <Border Padding="30">
+        <StackPanel Spacing="25">
+
+            <TextBlock Text="Configure the optimization" 
+                       FontSize="22" FontWeight="Bold" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,10"/>
+
+            <DockPanel>
+                <TextBlock Text="Pick a file with hourly data:"
+                           FontSize="15" FontWeight="Bold" 
+                           VerticalAlignment="Center"/>
+
+                <Button Content="Select" Name="FileSelectBtn" 
+                        HorizontalAlignment="Right"
+                        Padding="15,5" 
+                        CornerRadius="8"
+                        Background="Transparent" 
+                        BorderBrush="White" BorderThickness="1"
+                        Click="OnFileSelectClick"/>
+
+            </DockPanel>
+
+
+            <StackPanel>
+
+            <!-- Active Units -->
+
+                <TextBlock Text="Active Units"
+                           Classes="unitHeader"/>
+
+                <WrapPanel Orientation="Horizontal" Margin="0,0,0,16">
+
+                    <Border Classes="activeUnit">
+                        <TextBlock Text="EB1"
+                                   Classes="activeUnitText"/>
+                    </Border>
+
+                    <Border Classes="activeUnit">
+                        <TextBlock Text="EB2"
+                                   Classes="activeUnitText"/>
+                    </Border>
+
+                    <Border Classes="activeUnit">
+                        <TextBlock Text="EB3"
+                                   Classes="activeUnitText"/>
+                    </Border>
+
+                    <Border Classes="activeUnit">
+                        <TextBlock Text="EB4"
+                                   Classes="activeUnitText"/>
+                    </Border>
+
+                    <Border Classes="activeUnit">
+                        <TextBlock Text="EB5"
+                                   Classes="activeUnitText"/>
+                    </Border>
+
+                    <Border Classes="activeUnit">
+                        <TextBlock Text="EB6"
+                                   Classes="activeUnitText"/>
+                    </Border>
+                    
+                </WrapPanel>
+
+                <!-- InActive Units -->
+
+                <TextBlock Text="Inactive Units"
+                           Classes="unitHeader"/>
+
+                <WrapPanel Orientation="Horizontal">
+
+                    <Border Classes="inactiveUnit">
+                        <TextBlock Text="EB7"
+                                   Classes="inactiveUnitText"/>
+                    </Border>
+
+                    <Border Classes="inactiveUnit">
+                        <TextBlock Text="EB8"
+                                   Classes="inactiveUnitText"/>
+                    </Border>
+
+                </WrapPanel>
+
+            </StackPanel>
+
+            <!-- Section to choose to put unit for maintenance -->
+
+            <StackPanel Spacing="10">
+
+
+                <DockPanel LastChildFill="False">
+                    <TextBlock DockPanel.Dock="Left" Text="Put a unit on a maintenance :" 
+                               VerticalAlignment="Center"
+                               FontSize="15"/>
+                    
+                    <ToggleSwitch DockPanel.Dock="Right" 
+                                  VerticalAlignment="Center"
+                                  OnContent="" OffContent=""/>
+
+                </DockPanel>
+
+                <DockPanel LastChildFill="False">
+                   
+                    <TextBlock DockPanel.Dock="Left" Text="Pick a unit to put on maintenance:" 
+                               VerticalAlignment="Center"
+                               FontSize="15"/>
+                    
+                    <ComboBox DockPanel.Dock="Right"
+                              SelectedIndex="0"
+                              Background="#FFFFFF"
+                              Foreground="#2E2E2E"
+                              BorderBrush="#555555" BorderThickness="1"
+                              CornerRadius="8"
+                              Padding="10,6">
+                              
+
+                        <ComboBoxItem Content="Value"/>
+                        <ComboBoxItem Content="EB1"/>
+                        <ComboBoxItem Content="EB2"/>
+                        <ComboBoxItem Content="EB3"/>
+                        <ComboBoxItem Content="EB4"/>
+                        <ComboBoxItem Content="EB5"/>
+                        <ComboBoxItem Content="EB6"/>
+                        
+                    </ComboBox>
+
+                </DockPanel>
+
+
+                <TextBlock Text="Maintenace time (30-60h):"
+                           FontSize="15"
+                           Margin="0,0,0,-8"/>
+
+                <Grid ColumnDefinitions="*,80"
+                        ColumnSpacing="16"
+                        VerticalAlignment="Center">
+
+                    <Slider Grid.Column="0"
+                        x:Name="maintenanceSlider"
+                        Minimum="30"
+                        Maximum="60"
+                        Value="30"
+                        TickFrequency="1"
+                        IsSnapToTickEnabled="True"
+                        VerticalAlignment="Center"
+                        Height="40"
+                        Margin="0,0,0,6"/>
+                    
+                    <Border Grid.Column="1"
+                        Background="#F2F2F2"
+                        CornerRadius="8"
+                        Height="30">
+
+                    <TextBox Text="{Binding #maintenanceSlider.Value, Mode=TwoWay}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="#2E2E2E"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"/>
+
+                    </Border>
+
+                </Grid>
+
+            </StackPanel>
+
+            <!-- Date choice - where date can be choosen -->
+
+            <StackPanel Spacing="15">
+
+                <StackPanel Spacing="5">
+
+                    <TextBlock Text="From (default earliest in data set)" FontSize="14" 
+                               Foreground="White"
+                               Margin="0,0,0,8"/>
+
+                    <Grid ColumnDefinitions="*,*,*,*,Auto" ColumnSpacing="15">
+                        <TextBox Grid.Column="0" Watermark="HH"  
+                                 Classes="dateBox"/>
+
+                        <TextBox Grid.Column="1" Watermark="DD"  
+                                 Classes="dateBox"/>
+
+                        <TextBox Grid.Column="2" Watermark="MM" 
+                                 Classes="dateBox"/>
+
+                        <TextBox Grid.Column="3" Watermark="YYYY" 
+                                 Classes="dateBox"/>
+                        
+                        <Button Grid.Column="4" Classes="dateSelect">
+                            <Image Source="avares://Presentation/Assets/calendarIcon.png"
+                                   Width="18" Height="18"/>
+                        </Button>
+
+                    </Grid>
+
+                </StackPanel>
+
+                <StackPanel Spacing="5">
+
+                    <TextBlock Text="Until (default latest in data set)" FontSize="14"
+                               Foreground="White"
+                               Margin="0,0,0,8"/>
+                    
+                    <Grid ColumnDefinitions="*,*,*,*,Auto" ColumnSpacing="15">
+
+                        <TextBox Grid.Column="0" Watermark="HH"  
+                                Classes="dateBox"/>
+
+                        <TextBox Grid.Column="1" Watermark="DD"  
+                                Classes="dateBox"/>
+
+                        <TextBox Grid.Column="2" Watermark="MM" 
+                                Classes="dateBox"/>
+
+                        <TextBox Grid.Column="3" Watermark="YYYY" 
+                                Classes="dateBox"/>
+                        
+                        <Button Grid.Column="4" Classes="dateSelect">
+                            <Image Source="avares://Presentation/Assets/calendarIcon.png"
+                                   Width="18" Height="18"/>
+                        </Button>
+
+                    </Grid>
+
+                </StackPanel>
+   
+            
+            </StackPanel>
+
+            <!-- Slider for prioritization -->
+
+            <StackPanel Spacing="10">
+
+                <TextBlock Text="Prioritize optimization for (%):"
+                            FontSize="15"
+                            Margin="0,0,0,-8"/>
+
+                <Grid ColumnDefinitions="*,80"
+                        ColumnSpacing="16"
+                        VerticalAlignment="Top">
+
+                    <StackPanel Grid.Column="0">
+                        <Slider x:Name="prioritizationSlider"
+                                Minimum="1"
+                                Maximum="100"
+                                Value="1"
+                                TickFrequency="1"
+                                IsSnapToTickEnabled="True"
+                                VerticalAlignment="Center"
+                                Height="40"
+                                Margin="0,0,0,-10"/> 
+                                
+                        <DockPanel LastChildFill="False" Margin="2,10">
+
+                            <TextBlock DockPanel.Dock="Left" 
+                                        Text="Price" 
+                                        FontSize="12" 
+                                        Foreground="#888888"/>
+
+                            <TextBlock DockPanel.Dock="Right" 
+                                        Text="CO2 Em." 
+                                        FontSize="12" 
+                                        Foreground="#888888"/>
+                        </DockPanel>
+
+                    </StackPanel>
+
+                    <Border Grid.Column="1"
+                            Background="#F2F2F2"
+                            CornerRadius="8"
+                            Height="30"
+                            VerticalAlignment="Top"
+                            Margin="0,4,0,0">
+
+                    <TextBox Text="{Binding #prioritizationSlider.Value, Mode=TwoWay}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="#2E2E2E"
+                             HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Center"/>
+
+                    </Border>
+
+                </Grid>
+
+            </StackPanel>
+
+            <Button Content="Optimize" 
+                    HorizontalAlignment="Center" 
+                    Padding="40,10" 
+                    Background="White" Foreground="Black" 
+                    FontWeight="Bold" CornerRadius="8"
+                    Margin="0,20,0,0"
+                    Click="OnOptimizeClick"/>
+
+        </StackPanel>
+
+    </Border>
+</Window>

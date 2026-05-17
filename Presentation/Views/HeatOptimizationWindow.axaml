@@ -102,17 +102,38 @@
                            Foreground="White"
                            FontWeight="Bold"/>
 
-                  <StackPanel Orientation="Horizontal" Spacing="10">
-						<TextBlock Text="Currency" Foreground="White"/>
-                      <ComboBox Width="120" ItemsSource="{Binding CurrencyOptions}" SelectedItem="{Binding SelectedCurrencyOption}" />
-					</StackPanel>
+				<StackPanel Orientation="Horizontal" Spacing="10">
+					<TextBlock Text="Currency" Foreground="White"/>
+					<ComboBox Width="120" ItemsSource="{Binding CurrencyOptions}" SelectedItem="{Binding SelectedCurrencyOption}" />
+				</StackPanel>
 
-					<StackPanel Orientation="Horizontal" Spacing="10">
-						<TextBlock Text="Units" Foreground="White"/>
-                      <ComboBox Width="120" ItemsSource="{Binding UnitOptions}" SelectedItem="{Binding SelectedUnitOption}" />
-					</StackPanel>
+				<StackPanel Orientation="Horizontal" Spacing="10">
+					<TextBlock Text="Units" Foreground="White"/>
+					<ComboBox Width="120" ItemsSource="{Binding UnitOptions}" SelectedItem="{Binding SelectedUnitOption}" />
+				</StackPanel>
+
+				<!-- File uploading-->
+
+				<TextBlock Text="File Settings"
+						Foreground="White"
+						FontWeight="Bold"/>
+
+				<StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+				
+					<!-- This button will activate the so called config window, where 
+					 	 file will be uploaded-->
+
+					<Button Content="Select file and optimize"
+							Background="#3E4452"
+							Foreground="White"
+							CornerRadius="8"
+							Padding="8,4"
+							Click="OnOptimizeBtnClick"/>
 
 				</StackPanel>
+
+			</StackPanel>
+
 		</Border>
 
      </Grid>
