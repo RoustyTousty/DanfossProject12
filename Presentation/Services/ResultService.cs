@@ -21,14 +21,14 @@ public class ResultService
     public async Task RunAndSaveAsync(string unitToDisable, int maintenanceTime)
     {
         _optimizationService.Optimize(unitToDisable, maintenanceTime);
-        await _repository.SaveManyAsync(_assetService.ResultData);
+        await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList());
     }
 
     public async Task RunAndSaveAsync()
     {
         _optimizationService.Optimize(null, null);
         
-        await _repository.SaveManyAsync(_assetService.ResultData);
+        await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList());
         Console.WriteLine("Saved the file");
     }
 }

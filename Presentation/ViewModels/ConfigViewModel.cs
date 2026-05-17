@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using Avalonia.Media.Imaging;
 using HeatOptimization.Logic;
+using Avalonia.Controls;
 
 namespace HeatOptimization.Presentation.ViewModels;
 
@@ -19,7 +20,7 @@ public partial class ConfigViewModel : ViewModelBase
     [ObservableProperty]
     private int maintenanceHours = 30;
     [ObservableProperty]
-    private ProductionUnit? unitToputOnMaintenance;
+    private string unitToPutOnMaintenance = "";
     [ObservableProperty]
     private bool isPutOnMaintenance = false;
     [ObservableProperty]
@@ -30,7 +31,9 @@ public partial class ConfigViewModel : ViewModelBase
 
     [ObservableProperty]
     private string fileButtonText = "Select";
+    private List<IHourlyData> NewHourlyData = [];
 
+    public bool IsFileSelected => !string.IsNullOrEmpty(SelectedFilePath);
 
     public override string Title => "Configuration";
     public override Bitmap Icon => LoadAsset("config_icon.png");
@@ -53,6 +56,7 @@ public partial class ConfigViewModel : ViewModelBase
         }
     }
 
+    // command to select the file
     [RelayCommand]
     private async Task SelectFileAsync(){
 
@@ -64,11 +68,20 @@ public partial class ConfigViewModel : ViewModelBase
         {
             SelectedFilePath = localPath; 
 
-            _assetService.UpdateHourlyDatas(SelectedFilePath);
+            NewHourlyData = _assetService.GetHourlyDatasWithoutUpdate(SelectedFilePath);
+
             FileButtonText = Path.GetFileName(localPath);
         }
     }
 
+    // update isFileSelected whenever user selects a file in the UI
+    partial void OnSelectedFilePathChanged(string? value)
+    {
+        OnPropertyChanged(nameof(IsFileSelected));
+    }
+
+
+    // command that moves active unit to inactive and vice versa
     [RelayCommand]
     public void ToggleUnitStatus(ProductionUnit unit)
     {
@@ -82,6 +95,17 @@ public partial class ConfigViewModel : ViewModelBase
             DisabledUnits.Remove(unit);
             ActiveUnits.Add(unit);
         }
+    }
+
+    [RelayCommand]
+    public async Task Optimize(Window? window) {
+        _assetService.HourlyData = new(NewHourlyData);
+        if (IsPutOnMaintenance) {
+            _optimizationService.Optimize(null, null);
+        } else {
+            _optimizationService.Optimize(UnitToPutOnMaintenance, MaintenanceHours);
+        }
+        window?.Close();
     }
 
 }

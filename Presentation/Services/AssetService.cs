@@ -1,12 +1,16 @@
 namespace HeatOptimization.Presentation;
 
+using System.Collections.ObjectModel;
 using HeatOptimization.Logic;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-public class AssetService
+public partial class AssetService : ObservableObject
 {
     private AssetManager _assetManager;
-    public List<IHourlyData> HourlyData = [];
-    public List<IResultData> ResultData = [];
+    [ObservableProperty]
+    private ObservableCollection<IHourlyData> hourlyData = [];
+    [ObservableProperty]
+    private ObservableCollection<IResultData> resultData = [];
     public double CostImpact = 0;
 
 
@@ -17,9 +21,16 @@ public class AssetService
 
     public List<IHourlyData> UpdateHourlyDatas(string fpath)
     {
-        List<IHourlyData> data =  _assetManager.GetHourlyDatas(fpath);
-        HourlyData = data;
+        List<IHourlyData> data = _assetManager.GetHourlyDatas(fpath);
+        HourlyData = new(data);
         return data;
+    }
+
+    
+
+    public List<IHourlyData> GetHourlyDatasWithoutUpdate(string fpath)
+    {
+        return _assetManager.GetHourlyDatas(fpath);
     }
 
     public List<ProductionUnit> GetProductionUnits()
