@@ -3,10 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using Avalonia.Media.Imaging;
 using HeatOptimization.Logic;
-using Avalonia.Platform.Storage;
-using Avalonia.Interactivity;
-using Avalonia.Controls;
-using System.IO;
 
 namespace HeatOptimization.Presentation.ViewModels;
 
@@ -69,7 +65,6 @@ public partial class ConfigViewModel : ViewModelBase
             SelectedFilePath = localPath; 
 
             _assetService.UpdateHourlyDatas(SelectedFilePath);
-            Console.WriteLine(_assetService.HourlyData[0].TimeFrom);
             FileButtonText = Path.GetFileName(localPath);
         }
     }
