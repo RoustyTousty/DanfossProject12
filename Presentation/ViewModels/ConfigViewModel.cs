@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using Avalonia.Media.Imaging;
 using HeatOptimization.Logic;
+using Avalonia.Controls;
 
 namespace HeatOptimization.Presentation.ViewModels;
 
