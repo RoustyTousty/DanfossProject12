@@ -249,7 +249,9 @@
                         CornerRadius="8"
                         Height="30">
 
-                    <TextBox Text="{Binding MaintenanceHours}"
+                    <TextBox Text="{Binding MaintenanceHours, TargetNullValue='30', FallbackValue='30'}"
+                        Tag="30"
+                        LostFocus="TextBox_LostFocus"
                         Background="Transparent"
                         BorderThickness="0"
                         Foreground="#2E2E2E"
@@ -371,7 +373,9 @@
                             VerticalAlignment="Top"
                             Margin="0,4,0,0">
 
-                    <TextBox Text="{Binding CostToCO2Ratio}"
+                    <TextBox Text="{Binding CostToCO2Ratio, TargetNullValue='0', FallbackValue='0'}"
+                             Tag="0"
+                             LostFocus="TextBox_LostFocus"
                              Background="Transparent"
                              BorderThickness="0"
                              Foreground="#2E2E2E"
