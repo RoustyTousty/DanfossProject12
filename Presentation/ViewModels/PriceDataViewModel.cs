@@ -72,9 +72,9 @@ public partial class PriceDataViewModel : ViewModelBase
 
     public async Task LoadAsync()
     {
-        var results = (await _resultService.RunAndSaveAsync())
-            .OrderBy(r => r.HourlyData.TimeFrom)
-            .ToList();
+        (var results, var costImpact) = await _resultService.RunAndSaveAsync();
+        results = results.OrderBy(r => r.HourlyData.TimeFrom).ToList();
+            
 
         _allResults.Clear();
         _allResults.AddRange(results);
@@ -85,6 +85,8 @@ public partial class PriceDataViewModel : ViewModelBase
         DateTo = results.LastOrDefault() is { } last
             ? new DateTimeOffset(last.HourlyData.TimeTo)
             : null;
+
+        Console.WriteLine("Received data from resultService");
 
         var totalHeat = results.Sum(r => r.UnitProduction.Sum(u => u.heatProduced));
         var totalCO2Value = results.Sum(r => r.CO2ProductionKG);
@@ -127,6 +129,8 @@ public partial class PriceDataViewModel : ViewModelBase
     private void UpdateChartAndHourlyRows(List<IResultData> filteredResults)
     {
         var unitSeries = _chartService.BuildUnitSeries(filteredResults);
+
+        
 
         Series = unitSeries.Select(unit =>
             new StackedColumnSeries<double>

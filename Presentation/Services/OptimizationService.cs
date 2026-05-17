@@ -4,19 +4,27 @@ using HeatOptimization.Logic;
 
 public class OptimizationService
 {
-    private readonly AssetManager _assetManager;
+    private readonly AssetService _assetService;
+    Optimizer _optimizer = new();
 
-    public OptimizationService(AssetManager assetManager)
+    public OptimizationService(AssetService assetService)
     {
-        _assetManager = assetManager;
+        _assetService = assetService;
     }
 
-    public List<IResultData> Optimize()
+    public (List<IResultData> result, double costImpact) Optimize(string? unitToDisable, int? maintenanceTime)
     {
-        var data = _assetManager.GetHourlyDatas();
-        var units = _assetManager.GetProductionUnits();
+        var data = _assetService.GetHourlyDatas();
+        var units = _assetService.GetProductionUnits();
+        
+        if (unitToDisable != null)
+        {
+            return _optimizer.OptimizeWithMaintenance(data, units, unitToDisable, maintenanceTime ?? 30);
 
-        var optimizer = new Optimizer();
-        return optimizer.OptimizeMany(data, units);
+        } else
+        {
+            return (_optimizer.OptimizeWithoutMaintenance(data, units), 0);
+        }
+        
     }
 }

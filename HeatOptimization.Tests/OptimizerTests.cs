@@ -31,29 +31,34 @@ public class OptimizerTests
     public void OptimizeMany_ShouldDistributeHeatCorrectly()
     {
         // Arrange
-        List<ProductionUnit> units = GetSampleUnits();
-        List<HourlyData> data = [GetSampleHourlyData()];
-        Optimizer optimizer = new();
+        var units = GetSampleUnits();
+        var data = new List<IHourlyData> { GetSampleHourlyData() };
 
         // Act
-        var results = optimizer.OptimizeMany(data, units);
+        var results = _optimizer.OptimizeWithoutMaintenance(data, units);
 
         // Assert
         Assert.Single(results);
         var result = results.First();
         Assert.Equal(8.27, result.UnitProduction.Sum(up => up.heatProduced));
+        Assert.True(result.CO2ProductionKG > 0);
     }
 
     [Fact]
     public void OptimizeMany_ShouldThrowWhenDemandCannotBeMet()
     {
         // Arrange
-        List<ProductionUnit> units = [ new() { Name = "SmallBoiler", Type = UnitType.GasBoiler, MaxHeatMW = 5, BaseProductionCostDKK = 100 } ];
-        List<HourlyData> data = [ new() { TimeFrom = DateTime.Now, TimeTo = DateTime.Now.AddHours(1), HeatDemandMWh = 10, ElectricityPriceDKK = 0.5 }];
-        Optimizer optimizer = new();
+        var units = new List<ProductionUnit>
+        {
+            new() { Name = "SmallBoiler", Type = UnitType.GasBoiler, MaxHeatMW = 5, BaseProductionCostDKK = 100 }
+        };
+        var data = new List<IHourlyData>
+        {
+            new HourlyData() { TimeFrom = DateTime.Now, TimeTo = DateTime.Now.AddHours(1), HeatDemandMWh = 10, ElectricityPriceDKK = 0.5 }
+        };
 
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => optimizer.OptimizeMany(data, units));
+        var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithoutMaintenance(data, units));
         Assert.Contains("cannot be met", exception.Message);
     }
 
@@ -61,12 +66,16 @@ public class OptimizerTests
     public void OptimizeWithMaintenance_ShouldOptimizeWithMaintenanceWindow()
     {
         // Arrange
-        List<ProductionUnit> units = GetSampleUnits();
-        List<HourlyData> data = [ GetSampleHourlyData(0), GetSampleHourlyData(1), GetSampleHourlyData(2)];
-        Optimizer optimizer = new();
+        var units = GetSampleUnits();
+        var data = new List<IHourlyData>
+        {
+            GetSampleHourlyData(0),
+            GetSampleHourlyData(1),
+            GetSampleHourlyData(2)
+        };
 
         // Act
-        var (results, costImpact) = optimizer.OptimizeWithMaintenance(data, units, "GB1", 1);
+        var (results, costImpact) = _optimizer.OptimizeWithMaintenance(data, units, "GB1", 1);
 
         // Assert
         Assert.Equal(3, results.Count);
@@ -82,14 +91,14 @@ public class OptimizerTests
             new() { Name = "Unit1", Type = UnitType.GasBoiler, MaxHeatMW = 6, BaseProductionCostDKK = 100 },
             new() { Name = "Unit2", Type = UnitType.GasBoiler, MaxHeatMW = 6, BaseProductionCostDKK = 100 }
         };
-        var data = new List<HourlyData>
+        var data = new List<IHourlyData>
         {
-            new() { TimeFrom = DateTime.Now, TimeTo = DateTime.Now.AddHours(1), HeatDemandMWh = 10, ElectricityPriceDKK = 0.5 }
+            new HourlyData { TimeFrom = DateTime.Now, TimeTo = DateTime.Now.AddHours(1), HeatDemandMWh = 10, ElectricityPriceDKK = 0.5 }
         };
-        var optimizer = new Optimizer();
+
 
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => optimizer.OptimizeWithMaintenance(data, units, "Unit1", 1));
+        var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithMaintenance(data, units, "Unit1", 1));
         Assert.Contains("Could not optimize", exception.Message);
     }
 
@@ -98,11 +107,10 @@ public class OptimizerTests
     {
         // Arrange
         var units = GetSampleUnits();
-        var data = new List<HourlyData> { GetSampleHourlyData() };
-        var optimizer = new Optimizer();
+        var data = new List<IHourlyData> { GetSampleHourlyData() };
 
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => optimizer.OptimizeWithMaintenance(data, units, "NonExistentUnit", 1));
+        var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithMaintenance(data, units, "NonExistentUnit", 1));
         Assert.Contains("Specified unit does not exist", exception.Message);
     }
 }

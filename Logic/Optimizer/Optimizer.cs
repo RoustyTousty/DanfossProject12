@@ -3,7 +3,7 @@ namespace HeatOptimization.Logic;
 public class Optimizer
 {
 
-    private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data, List<ProductionUnit> units)
+    private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(IHourlyData data, List<ProductionUnit> units)
     {
         List<UnitProductionCost> costs = [];
         foreach (ProductionUnit unit in units)
@@ -22,7 +22,7 @@ public class Optimizer
     }
 
 
-    private List<UnitProduction> DistributeHeatLoad(HourlyData data, List<ProductionUnit> units)
+    private List<UnitProduction> DistributeHeatLoad(IHourlyData data, List<ProductionUnit> units)
     {
         double remainingDemand = data.HeatDemandMWh;
         
@@ -62,11 +62,11 @@ public class Optimizer
     }
 
 
-    public List<IResultData> OptimizeMany(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits) 
+    private List<IResultData> OptimizeMany(List<IHourlyData> hourlyDataList, List<ProductionUnit> productionUnits) 
      {
         List<IResultData> results = new();
 
-        foreach (HourlyData data in hourlyDataList)
+        foreach (IHourlyData data in hourlyDataList)
         {
             List<UnitProduction> distribution = DistributeHeatLoad(data, productionUnits);
 
@@ -110,7 +110,7 @@ public class Optimizer
     }
 
 
-    private (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<HourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
+    private (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<IHourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
     {
         if (!units.Any(u => u.Name == unitToDisable))
         {
@@ -176,7 +176,7 @@ public class Optimizer
     }
     
 
-    private double CalculateCost(HourlyData data, List<UnitProduction> distribution, List<ProductionUnit> units)
+    private double CalculateCost(IHourlyData data, List<UnitProduction> distribution, List<ProductionUnit> units)
     {
         double total = 0;
 
@@ -199,7 +199,7 @@ public class Optimizer
     }
 
     // costImpact is how much it costs to have a downtime 
-    public (List<IResultData>, double costImpact) OptimizeWithMaintenance(List<HourlyData> hourlyDataList, List<ProductionUnit> productionUnits, string unitToDisable, int durationHours)
+    public (List<IResultData>, double costImpact) OptimizeWithMaintenance(List<IHourlyData> hourlyDataList, List<ProductionUnit> productionUnits, string unitToDisable, int durationHours)
     {
         List<IResultData> results = OptimizeMany(hourlyDataList, productionUnits);
         // find the window
@@ -214,7 +214,7 @@ public class Optimizer
         var (from, to, costImpact, optimizedWindow) = maintenanceResult.Value;
 
         var startIndex = results.FindIndex(r => r.HourlyData.TimeFrom == from);
-        var endIndex = results.FindIndex(r => r.HourlyData.TimeFrom == to);
+        var endIndex = results.FindIndex(r => r.HourlyData.TimeTo == to);
 
         if (startIndex == -1 || endIndex == -1)
         {
@@ -236,14 +236,19 @@ public class Optimizer
             costImpact
         );
     }
+
+    public List<IResultData> OptimizeWithoutMaintenance(List<IHourlyData> data, List<ProductionUnit> units)
+    {
+        return OptimizeMany(data, units);
+    }
 }
 
 public class UnitProductionCost {
-    public HourlyData HourlyData;
+    public IHourlyData HourlyData;
     public ProductionUnit Unit { get; set; }
     public double ProductionCostDKK {get; set; }
 
-    public UnitProductionCost(HourlyData hourlyData, ProductionUnit unit, double productionCostDKK)
+    public UnitProductionCost(IHourlyData hourlyData, ProductionUnit unit, double productionCostDKK)
     {
         Unit = unit;
         ProductionCostDKK = productionCostDKK;

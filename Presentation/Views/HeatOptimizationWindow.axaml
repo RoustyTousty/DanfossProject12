@@ -53,10 +53,7 @@
 											<TextBlock Text="{Binding DisplayMaxHeat, StringFormat='Max Heat: {0}', TargetNullValue='Max Heat: N/A', FallbackValue='Max Heat: N/A'}"
 													   Foreground="White"
 													   TextWrapping="Wrap"/>
-
-											<TextBlock Text="{Binding TotalHeatProduced, StringFormat='Total Heat Produced (MWh) : {0:F2}', TargetNullValue='Total Heat Produced (MWh) : N/A', FallbackValue='Total Heat Produced (MWh) : N/A'}"
-													   Foreground="White"
-													   TextWrapping="Wrap"/>
+			
 
 											<TextBlock Text="{Binding MaxElectricityMW, StringFormat='Max Electricity (MW) : {0}'}"
 														IsVisible="{Binding MaxElectricityMW, Converter={x:Static ObjectConverters.IsNotNull}}"

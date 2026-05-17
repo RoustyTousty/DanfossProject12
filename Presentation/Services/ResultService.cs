@@ -15,12 +15,22 @@ public class ResultService
         _repository = repository;
     }
 
-    public async Task<List<IResultData>> RunAndSaveAsync()
+    public async Task<(List<IResultData>, double costImpact)> RunAndSaveAsync(string unitToDisable, int maintenanceTime)
     {
-        var results = _optimizationService.Optimize();
-
+        
+        
+        (List<IResultData> results, double costImpact) = _optimizationService.Optimize(unitToDisable, maintenanceTime);
         await _repository.SaveManyAsync(results);
 
-        return results;
+        return (results, costImpact);
+    }
+
+    public async Task<(List<IResultData>, double costImpact)> RunAndSaveAsync()
+    {
+        (List<IResultData> results, _) = _optimizationService.Optimize(null, null);
+        
+        await _repository.SaveManyAsync(results);
+        Console.WriteLine("Saved the file");
+        return (results, 0);
     }
 }
