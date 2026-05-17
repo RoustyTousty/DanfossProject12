@@ -9,7 +9,7 @@ public partial class PriceDataViewModel : ViewModelBase
 {
     public override string Title => "Price Data";
     public override Bitmap Icon => LoadAsset("price-icon.png");
-    private readonly ResultService _resultService;
+    private readonly AssetService _assetService;
     private readonly ChartService _chartService;
 
     [ObservableProperty]
@@ -23,11 +23,7 @@ public partial class PriceDataViewModel : ViewModelBase
 
     public async Task LoadAsync()
     {
-        (var results, var costImpact) = await _resultService.RunAndSaveAsync();
-
-        Console.WriteLine("Received data from resultService");
-
-        var unitSeries = _chartService.BuildUnitSeries(results);
+        var unitSeries = _chartService.BuildUnitSeries();
 
         
 
@@ -39,7 +35,7 @@ public partial class PriceDataViewModel : ViewModelBase
             }
         ).ToArray();
 
-        var labels = results
+        var labels = _assetService.ResultData
             .Select(r => r.HourlyData.TimeFrom.ToString("yyyy-MM-dd HH:mm"))
             .ToArray();
 
@@ -50,9 +46,9 @@ public partial class PriceDataViewModel : ViewModelBase
 
     }
     
-    public PriceDataViewModel(ResultService resultService, ChartService chartService)
+    public PriceDataViewModel(AssetService assetService, ChartService chartService)
     {
-        _resultService = resultService;
+        _assetService = assetService;
         _chartService = chartService;
 
         _ = LoadAsync(); // TEMP TEST ONLY
