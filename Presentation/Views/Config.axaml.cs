@@ -38,6 +38,20 @@ namespace HeatOptimization.Presentation.Views
 
             return files?.FirstOrDefault()?.Path.LocalPath;
         }
+
+
+        private void TextBox_LostFocus(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                if (string.IsNullOrWhiteSpace(textBox.Text))
+                {
+                    string fallbackValue = textBox.Tag?.ToString() ?? "0";
+                    textBox.Text = fallbackValue;
+                }
+            }
+        }
+
     }
 
     public class ConfigResult

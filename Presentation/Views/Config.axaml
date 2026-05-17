@@ -5,7 +5,12 @@
         
         x:Class="HeatOptimization.Presentation.Views.Config"
         x:DataType="vm:ConfigViewModel"
-        Title="Configuration" Width="450" Height="915">
+        Title="Configuration" Width="450" Height="765">
+
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="ComboBoxDropDownGlyphForeground">#2E2E2E</SolidColorBrush>
+    </Window.Resources>
     
     <Window.Styles>
 
@@ -52,6 +57,20 @@
         <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
             <Setter Property="Background" Value="Red" />
             <Setter Property="BorderBrush" Value="Red" />
+        </Style>
+
+        <!-- ComboBox arrow color changes when pointerover -->
+
+        <Style Selector="ComboBox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#FFFFFF" />
+        </Style>
+
+        <Style Selector="ComboBox:pointerover /template/ :is(TemplatedControl)">
+            <Setter Property="Foreground" Value="#FFFFFF" />
+        </Style>
+
+        <Style Selector="ComboBox:pointerover /template/ Path">
+            <Setter Property="Fill" Value="#FFFFFF" />
         </Style>
 
         <!-- For date selector textboxes -->
@@ -230,7 +249,9 @@
                         CornerRadius="8"
                         Height="30">
 
-                    <TextBox Text="{Binding MaintenanceHours}"
+                    <TextBox Text="{Binding MaintenanceHours, TargetNullValue='30', FallbackValue='30'}"
+                        Tag="30"
+                        LostFocus="TextBox_LostFocus"
                         Background="Transparent"
                         BorderThickness="0"
                         Foreground="#2E2E2E"
@@ -243,9 +264,9 @@
 
             </StackPanel>
 
-            <!-- Date choice - where date can be choosen -->
-            <!--             
-            <StackPanel Spacing="15">
+            <!-- Date choice - where date can be choosen (Commented out as not necessary) -->
+
+            <!-- <StackPanel Spacing="15">
 
                 <StackPanel Spacing="5">
 
@@ -352,7 +373,9 @@
                             VerticalAlignment="Top"
                             Margin="0,4,0,0">
 
-                    <TextBox Text="{Binding CostToCO2Ratio}"
+                    <TextBox Text="{Binding CostToCO2Ratio, TargetNullValue='0', FallbackValue='0'}"
+                             Tag="0"
+                             LostFocus="TextBox_LostFocus"
                              Background="Transparent"
                              BorderThickness="0"
                              Foreground="#2E2E2E"
