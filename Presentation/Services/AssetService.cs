@@ -11,7 +11,8 @@ public partial class AssetService : ObservableObject
     private ObservableCollection<IHourlyData> hourlyData = [];
     [ObservableProperty]
     private ObservableCollection<IResultData> resultData = [];
-    public double CostImpact = 0;
+    [ObservableProperty]
+    public double costImpact = 0;
 
 
     public AssetService(AssetManager assetManager)

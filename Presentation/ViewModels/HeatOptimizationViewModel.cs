@@ -82,6 +82,7 @@ public partial class HeatOptimizationViewModel : ViewModelBase
         UpdateDisplayValues();
     }
 
+  
     private void UpdateDisplayValues()
     {
         foreach (var b in Boilers)

@@ -10,8 +10,6 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="280" />
 		</Grid.ColumnDefinitions>
-
-           <!-- LEFT -->
 			<Grid Grid.Column="0">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -36,10 +34,16 @@
 							<DataTemplate x:DataType="vm:BoilerItemViewModel">
 								<Border Background="#3A4048" CornerRadius="20" Padding="15" Margin="0,0,0,10">
 									<Grid ColumnDefinitions="120,*">
-                                        <Border Grid.Column="0" Width="100" Height="100" Background="#D9D9D9" CornerRadius="10">
-											<Viewbox Stretch="Uniform">
-												<Image Source="avares://Presentation/Assets/BoilerIcon.png"/>
-											</Viewbox>
+										<Border Grid.Column="0"
+													Width="100"
+													Height="100"
+													Background="#D9D9D9"
+													CornerRadius="10"
+													ClipToBounds="True">
+
+											<Image Source="{Binding ImagePath}"
+												   Stretch="Fill"/>
+
 										</Border>
 										<StackPanel Grid.Column="1" Spacing="5">
 											<TextBlock Text="{Binding Name, TargetNullValue='N/A', FallbackValue='N/A'}"
@@ -89,7 +93,6 @@
 
 			</Grid>
 
-		<!-- RIGHT -->
 		<Border Grid.Column="1"
                 Background="#11161C"
                 CornerRadius="20"

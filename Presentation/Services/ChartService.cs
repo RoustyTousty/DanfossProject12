@@ -6,9 +6,9 @@ public class ChartService(AssetService assetService)
 {
     private readonly AssetService _assetService = assetService;
 
-    public Dictionary<string, List<double>> BuildUnitSeries()
+    public Dictionary<string, List<double>> BuildUnitSeries(List<IResultData> filteredResults)
     {
-        var unitNames = _assetService.ResultData
+        var unitNames = filteredResults
             .SelectMany(r => r.UnitProduction)
             .Select(u => u.unitName)
             .Distinct();
