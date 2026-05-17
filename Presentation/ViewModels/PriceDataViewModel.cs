@@ -132,12 +132,19 @@ public partial class PriceDataViewModel : ViewModelBase
         
 
         Series = unitSeries.Select(unit =>
-            new StackedColumnSeries<double>
+        {
+            var colorHex = _unitColorMap.TryGetValue(unit.Key, out var hex) ? hex : "#FFFFFF";
+
+            var paint = new SolidColorPaint(SKColor.Parse(colorHex));
+
+            return new StackedColumnSeries<double>
             {
                 Name = unit.Key,
-                Values = unit.Value
-            }
-        ).ToArray();
+                Values = unit.Value,
+                Fill = paint,
+                Stroke = paint
+            };
+        }).ToArray();
 
         var labels = filteredResults.Select(r => r.HourlyData.TimeFrom.ToString("yyyy-MM-dd HH:mm")).ToArray();
         XAxes = [new Axis { Labels = labels }];
