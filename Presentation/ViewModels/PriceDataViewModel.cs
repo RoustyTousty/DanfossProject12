@@ -19,6 +19,7 @@ public partial class PriceDataViewModel : ViewModelBase
     public override Bitmap Icon => LoadAsset("price-icon.png");
     private readonly ResultService _resultService;
     private readonly ChartService _chartService;
+    private readonly OptimizationService _optimizationService;
     private readonly List<IResultData> _allResults = new();
 
     private readonly Dictionary<string, string> _unitColorMap = new()
@@ -95,7 +96,19 @@ public partial class PriceDataViewModel : ViewModelBase
         TotalHeatProduced = $"{totalHeat:N1} MW";
         TotalCO2 = $"{totalCO2Value:N0} kg";
         TotalCost = $"{totalCostValue:N0} DKK";
-        MaintenanceCost = "N/A";
+
+        var maintenanceUnit = _optimizationService.GetDefaultMaintenanceUnit();
+        if (!string.IsNullOrWhiteSpace(maintenanceUnit))
+        {
+            var maintenanceImpact = _optimizationService.CalculateMaintenanceCostImpact(maintenanceUnit, 30);
+            MaintenanceCost = maintenanceImpact.HasValue
+                ? $"{maintenanceImpact.Value:N0} DKK"
+                : "N/A";
+        }
+        else
+        {
+            MaintenanceCost = "N/A";
+        }
 
         ApplyDateRange();
     }
@@ -214,10 +227,11 @@ public partial class PriceDataViewModel : ViewModelBase
         ApplyHourlyFilter(HourlySearch);
     }
 
-    public PriceDataViewModel(ResultService resultService, ChartService chartService)
+    public PriceDataViewModel(ResultService resultService, ChartService chartService, OptimizationService optimizationService)
     {
         _resultService = resultService;
         _chartService = chartService;
+        _optimizationService = optimizationService;
 
         _ = LoadAsync(); // TEMP TEST ONLY
     }

@@ -31,7 +31,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             new HomeViewModel(),
             new HeatOptimizationViewModel(AssetService),
-            new PriceDataViewModel(ResultService, ChartService),
+            new PriceDataViewModel(ResultService, ChartService, OptimizationService),
             new AboutUsViewModel()
         };
 
