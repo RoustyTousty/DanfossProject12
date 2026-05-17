@@ -1,6 +1,7 @@
 namespace HeatOptimization.Data;
 
 using HeatOptimization.Logic;
+using System.Globalization;
 
 public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
 {
@@ -47,7 +48,7 @@ public class ProductionUnitLibraryProvider : IProductionUnitLibraryProvider
                     {
                         Name = valueArr[0],
                         Type = type,
-                        MaxHeatMW = double.Parse(valueArr[2]),
+                        MaxHeatMW = double.Parse(valueArr[2], CultureInfo.InvariantCulture),
                         MaxElectricityMW = string.IsNullOrWhiteSpace(valueArr[3])
                             ? null
                             : double.Parse(valueArr[3], System.Globalization.CultureInfo.InvariantCulture),

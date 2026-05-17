@@ -13,6 +13,9 @@ namespace HeatOptimization.Presentation;
 
 public partial class App : Application
 {
+    public static AssetService? AssetService { get; private set; }
+    public static OptimizationService? OptimizationService { get; private set; }
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -34,8 +37,11 @@ public partial class App : Application
             var optimizationService = new OptimizationService(assetService);
             var resultRepository = new CsvResultRepository("result.csv");
 
-            var resultService = new ResultService(optimizationService, resultRepository);
-            var chartService = new ChartService();
+            AssetService = assetService;
+            OptimizationService = optimizationService;
+
+            var resultService = new ResultService(assetService, optimizationService, resultRepository);
+            var chartService = new ChartService(assetService);
 
         
 

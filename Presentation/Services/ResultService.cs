@@ -5,32 +5,27 @@ using HeatOptimization.Logic;
 public class ResultService
 {
     private readonly IResultRepository _repository;
+    private readonly AssetService _assetService;
     private readonly OptimizationService _optimizationService;
 
     public ResultService(
+        AssetService assetService,
         OptimizationService optimizationService,
         IResultRepository repository)
     {
         _optimizationService = optimizationService;
         _repository = repository;
+        _assetService = assetService;
     }
 
-    public async Task<(List<IResultData>, double costImpact)> RunAndSaveAsync(string unitToDisable, int maintenanceTime)
+    public async Task SaveAsync(string unitToDisable, int maintenanceTime)
     {
-        
-        
-        (List<IResultData> results, double costImpact) = _optimizationService.Optimize(unitToDisable, maintenanceTime);
-        await _repository.SaveManyAsync(results);
-
-        return (results, costImpact);
+        await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList());
     }
 
-    public async Task<(List<IResultData>, double costImpact)> RunAndSaveAsync()
+    public async Task SaveAsync()
     {
-        (List<IResultData> results, _) = _optimizationService.Optimize(null, null);
-        
-        await _repository.SaveManyAsync(results);
+        await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList());
         Console.WriteLine("Saved the file");
-        return (results, 0);
     }
 }

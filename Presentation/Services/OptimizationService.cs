@@ -12,18 +12,22 @@ public class OptimizationService
         _assetService = assetService;
     }
 
-    public (List<IResultData> result, double costImpact) Optimize(string? unitToDisable, int? maintenanceTime)
+    public void Optimize(string? unitToDisable, int? maintenanceTime, List<ProductionUnit> activeUnits)
     {
-        var data = _assetService.GetHourlyDatas();
-        var units = _assetService.GetProductionUnits();
+        var data = _assetService.HourlyData.Cast<IHourlyData>().ToList();
+        var units = _assetService.GetProductionUnits().Where(unit => activeUnits.Any(active => active.Name == unit.Name)).ToList();
         
-        if (unitToDisable != null)
+        if (unitToDisable != null && unitToDisable != "")
         {
-            return _optimizer.OptimizeWithMaintenance(data, units, unitToDisable, maintenanceTime ?? 30);
+            (List<IResultData> res, double impact) = _optimizer.OptimizeWithMaintenance(data, units, unitToDisable, maintenanceTime ?? 30);
+            _assetService.ResultData = new(res);
+            _assetService.CostImpact = impact;
 
         } else
         {
-            return (_optimizer.OptimizeWithoutMaintenance(data, units), 0);
+            List<IResultData> res = _optimizer.OptimizeWithoutMaintenance(data, units);
+            _assetService.ResultData = new(res);
+            _assetService.CostImpact = 0;
         }
         
     }

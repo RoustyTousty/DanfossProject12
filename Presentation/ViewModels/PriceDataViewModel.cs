@@ -2,10 +2,10 @@
 using Avalonia.Media.Imaging;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,18 +17,18 @@ public partial class PriceDataViewModel : ViewModelBase
 {
     public override string Title => "Price Data";
     public override Bitmap Icon => LoadAsset("price-icon.png");
-    private readonly ResultService _resultService;
+    private readonly AssetService _assetService;
     private readonly ChartService _chartService;
     private readonly List<IResultData> _allResults = new();
 
     private readonly Dictionary<string, string> _unitColorMap = new()
     {
         ["GM1"] = "#3FA9F5",
-        ["GB1"] = "#FF8BB5",
-        ["GB2"] = "#C6F0A0",
-        ["GB3"] = "#61D8F0",
-        ["EB1"] = "#9F92F8",
-        ["EB2"] = "#9C4AFF",
+        ["GB1"] = "#fd4388",
+        ["GB2"] = "#7adb26",
+        ["GB3"] = "#e2e616",
+        ["EB1"] = "#861654",
+        ["EB2"] = "#6f06f0",
         ["EB3"] = "#00C2A3",
         ["EB4"] = "#F48C2A",
     };
@@ -65,16 +65,15 @@ public partial class PriceDataViewModel : ViewModelBase
     private string totalCost = "VALUE";
 
     [ObservableProperty]
-    private string maintenanceCost = "VALUE";
+    private double maintenanceCost = 0;
 
     [ObservableProperty]
     private string totalHeatProduced = "VALUE";
 
     public async Task LoadAsync()
     {
-        (var results, var costImpact) = await _resultService.RunAndSaveAsync();
-        results = results.OrderBy(r => r.HourlyData.TimeFrom).ToList();
-            
+        List<IResultData> results = _assetService.ResultData.Cast<IResultData>().OrderBy(r => r.HourlyData.TimeFrom).ToList();
+        double costImpact = _assetService.CostImpact;
 
         _allResults.Clear();
         _allResults.AddRange(results);
@@ -95,7 +94,7 @@ public partial class PriceDataViewModel : ViewModelBase
         TotalHeatProduced = $"{totalHeat:N1} MW";
         TotalCO2 = $"{totalCO2Value:N0} kg";
         TotalCost = $"{totalCostValue:N0} DKK";
-        MaintenanceCost = "N/A";
+        MaintenanceCost = costImpact;
 
         ApplyDateRange();
     }
@@ -133,16 +132,23 @@ public partial class PriceDataViewModel : ViewModelBase
         
 
         Series = unitSeries.Select(unit =>
-            new StackedColumnSeries<double>
+        {
+            var colorHex = _unitColorMap.TryGetValue(unit.Key, out var hex) ? hex : "#FFFFFF";
+
+            var paint = new SolidColorPaint(SKColor.Parse(colorHex));
+
+            return new StackedColumnSeries<double>
             {
                 Name = unit.Key,
-                Values = unit.Value
-            }
-        ).ToArray();
+                Values = unit.Value,
+                Fill = paint,
+                Stroke = paint
+            };
+        }).ToArray();
 
         var labels = filteredResults.Select(r => r.HourlyData.TimeFrom.ToString("yyyy-MM-dd HH:mm")).ToArray();
-        XAxes = new Axis[] { new Axis { Labels = labels } };
-        YAxes = new Axis[] { new Axis { Name = "Energy (MWh)" } };
+        XAxes = [new Axis { Labels = labels }];
+        YAxes = [new Axis { Name = "Energy (MWh)" }];
 
         DateRange = filteredResults.Any()
             ? $"{filteredResults.First().HourlyData.TimeFrom:dd.MM.yyyy} - {filteredResults.Last().HourlyData.TimeTo:dd.MM.yyyy}"
@@ -214,12 +220,23 @@ public partial class PriceDataViewModel : ViewModelBase
         ApplyHourlyFilter(HourlySearch);
     }
 
-    public PriceDataViewModel(ResultService resultService, ChartService chartService)
+    private void AssetService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+{
+    Console.WriteLine($"PropertyChanged fired: {e.PropertyName}");
+
+    if (e.PropertyName == nameof(AssetService.ResultData))
     {
-        _resultService = resultService;
+        Console.WriteLine("ResultData changed → reloading chart");
+        _ = LoadAsync();
+    }
+}
+    
+    public PriceDataViewModel(AssetService assetService, ChartService chartService)
+    {
+        _assetService = assetService;
         _chartService = chartService;
 
-        _ = LoadAsync(); // TEMP TEST ONLY
+         _assetService.PropertyChanged += AssetService_PropertyChanged;
     }
 
     partial void OnHourlySearchChanged(string value)

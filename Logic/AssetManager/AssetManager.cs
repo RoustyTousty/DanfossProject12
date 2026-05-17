@@ -51,8 +51,9 @@ public class AssetManager
         }
     }
 
-    public List<IHourlyData> GetHourlyDatas()
+    public List<IHourlyData> GetHourlyDatas(string fpath)
     {
+        _hourlyData = _hourlyChartProvider.GetHourlyData(fpath);
         return _hourlyData;
     }
     public List<ProductionUnit> GetProductionUnits()

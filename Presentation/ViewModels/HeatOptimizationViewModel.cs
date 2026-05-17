@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using HeatOptimization.Logic;
 
 namespace HeatOptimization.Presentation.ViewModels;
@@ -16,7 +17,6 @@ public partial class HeatOptimizationViewModel : ViewModelBase
     public override Bitmap Icon => LoadAsset("opti-icon.png");
 
     public ObservableCollection<BoilerItemViewModel> Boilers { get; } = new();
-
     public ObservableCollection<string> UnitOptions { get; } = new() { "MW", "kW" };
     public ObservableCollection<string> CurrencyOptions { get; } = new() { "DKK", "EUR", "USD" };
 

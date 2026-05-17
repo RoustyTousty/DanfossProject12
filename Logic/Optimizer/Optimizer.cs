@@ -114,7 +114,8 @@ public class Optimizer
     {
         if (!units.Any(u => u.Name == unitToDisable))
         {
-            throw new Exception("Specified unit does not exist in the units!");
+            Console.WriteLine();
+            throw new Exception($"Specified unit does not exist in the units!\nUnit to disable: {unitToDisable}.");
         }
 
         List<IResultData> baselineResults = OptimizeMany(data, units);
