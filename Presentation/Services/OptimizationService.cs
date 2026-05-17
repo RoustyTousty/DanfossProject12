@@ -12,10 +12,10 @@ public class OptimizationService
         _assetService = assetService;
     }
 
-    public void Optimize(string? unitToDisable, int? maintenanceTime)
+    public void Optimize(string? unitToDisable, int? maintenanceTime, List<ProductionUnit> activeUnits)
     {
         var data = _assetService.HourlyData.Cast<IHourlyData>().ToList();
-        var units = _assetService.GetProductionUnits();
+        var units = _assetService.GetProductionUnits().Where(unit => activeUnits.Any(active => active.Name == unit.Name)).ToList();
         
         if (unitToDisable != null && unitToDisable != "")
         {

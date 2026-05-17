@@ -26,7 +26,7 @@ public partial class PriceDataViewModel : ViewModelBase
         ["GM1"] = "#3FA9F5",
         ["GB1"] = "#FF8BB5",
         ["GB2"] = "#C6F0A0",
-        ["GB3"] = "#61D8F0",
+        ["GB3"] = "#e2e616",
         ["EB1"] = "#9F92F8",
         ["EB2"] = "#9C4AFF",
         ["EB3"] = "#00C2A3",

@@ -95,15 +95,26 @@ public partial class ConfigViewModel : ViewModelBase
             DisabledUnits.Remove(unit);
             ActiveUnits.Add(unit);
         }
+        Console.WriteLine("Active units:");
+        foreach (var u in ActiveUnits)
+        {
+            Console.WriteLine(u.Name);
+        }
+
+        Console.WriteLine("Inactive units:");
+        foreach (var u in DisabledUnits)
+        {
+            Console.WriteLine(u.Name);
+        }
     }
 
     [RelayCommand]
     public async Task Optimize(Window? window) {
         _assetService.HourlyData = new(NewHourlyData);
         if (IsPutOnMaintenance) {
-            _optimizationService.Optimize(null, null);
+            _optimizationService.Optimize(null, null, ActiveUnits.Cast<ProductionUnit>().ToList());
         } else {
-            _optimizationService.Optimize(UnitToPutOnMaintenance, MaintenanceHours);
+            _optimizationService.Optimize(UnitToPutOnMaintenance, MaintenanceHours, ActiveUnits.Cast<ProductionUnit>().ToList());
         }
         window?.Close();
     }

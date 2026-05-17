@@ -18,16 +18,13 @@ public class ResultService
         _assetService = assetService;
     }
 
-    public async Task RunAndSaveAsync(string unitToDisable, int maintenanceTime)
+    public async Task SaveAsync(string unitToDisable, int maintenanceTime)
     {
-        _optimizationService.Optimize(unitToDisable, maintenanceTime);
         await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList());
     }
 
-    public async Task RunAndSaveAsync()
+    public async Task SaveAsync()
     {
-        _optimizationService.Optimize(null, null);
-        
         await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList());
         Console.WriteLine("Saved the file");
     }
