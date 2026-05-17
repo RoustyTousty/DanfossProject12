@@ -9,7 +9,10 @@
 
 
     <Window.Resources>
+        <!-- Combobox -->
+
         <SolidColorBrush x:Key="ComboBoxDropDownGlyphForeground">#2E2E2E</SolidColorBrush>
+
     </Window.Resources>
     
     <Window.Styles>
@@ -48,16 +51,6 @@
             <Setter Property="FontWeight" Value="Medium"/>
         </Style>
 
-        <!-- This is added so radio buttons are red( Matches Theme color ) -->
-
-        <Style Selector="RadioButton:checked /template/ Ellipse#CheckGlyph">
-            <Setter Property="Fill" Value="Red" />
-        </Style>
-
-        <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
-            <Setter Property="Background" Value="Red" />
-            <Setter Property="BorderBrush" Value="Red" />
-        </Style>
 
         <!-- ComboBox arrow color changes when pointerover -->
 
