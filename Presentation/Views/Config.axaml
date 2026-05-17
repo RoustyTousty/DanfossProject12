@@ -243,9 +243,9 @@
 
             </StackPanel>
 
-            <!-- Date choice - where date can be choosen -->
+            <!-- Date choice - where date can be choosen (Commented out as not necessary) -->
 
-            <StackPanel Spacing="15">
+            <!-- <StackPanel Spacing="15">
 
                 <StackPanel Spacing="5">
 
@@ -305,7 +305,7 @@
                 </StackPanel>
    
             
-            </StackPanel>
+            </StackPanel> -->
 
             <!-- Slider for prioritization -->
 
