@@ -17,6 +17,12 @@ public ObservableCollection<ProductionUnit> DisabledUnits { get; set; } = [];
 
     [ObservableProperty]
     private int maintenanceHours = 30;
+    [ObservableProperty]
+    private ProductionUnit? unitToputOnMaintenance;
+    [ObservableProperty]
+    private bool isPutOnMaintenance = false;
+    [ObservableProperty]
+    private int costToCO2Ratio = 5;
 
     public override string Title => "Configuration";
     public override Bitmap Icon => LoadAsset("config_icon.png");

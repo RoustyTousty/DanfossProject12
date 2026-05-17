@@ -174,14 +174,15 @@
                 FontSize="15"/>
                 
                 <ToggleSwitch x:Name="maintenanceToggle"
-                DockPanel.Dock="Right" 
-                VerticalAlignment="Center"
-                OnContent="" OffContent=""/>
+                              IsChecked="{Binding IsPutOnMaintenance}"
+                              DockPanel.Dock="Right" 
+                              VerticalAlignment="Center"
+                              OnContent="" OffContent=""/>
                 
             </DockPanel>
             
             <StackPanel Spacing="10"
-                IsVisible="{Binding #maintenanceToggle.IsChecked}">
+                IsVisible="{Binding IsPutOnMaintenance}">
                 <DockPanel LastChildFill="False">
                    
                     <TextBlock DockPanel.Dock="Left" Text="Pick a unit to put on maintenance:" 
@@ -190,7 +191,7 @@
                     
                     <ComboBox DockPanel.Dock="Right"
                               ItemsSource="{Binding ActiveUnits}"
-                              SelectedIndex="0"
+                              SelectedItem="{Binding UnitToputOnMaintenance}"
                               Background="#FFFFFF"
                               Foreground="#2E2E2E"
                               BorderBrush="#555555" BorderThickness="1"
@@ -319,11 +320,11 @@
                         VerticalAlignment="Top">
 
                     <StackPanel Grid.Column="0">
-                        <Slider x:Name="prioritizationSlider"
-                                Minimum="1"
+                        <Slider 
+                                Minimum="0"
                                 Maximum="100"
-                                Value="1"
-                                TickFrequency="1"
+                                Value="{Binding CostToCO2Ratio}"
+                                TickFrequency="5"
                                 IsSnapToTickEnabled="True"
                                 VerticalAlignment="Center"
                                 Height="40"
@@ -351,7 +352,7 @@
                             VerticalAlignment="Top"
                             Margin="0,4,0,0">
 
-                    <TextBox Text="{Binding #prioritizationSlider.Value, Mode=TwoWay}"
+                    <TextBox Text="{Binding CostToCO2Ratio}"
                              Background="Transparent"
                              BorderThickness="0"
                              Foreground="#2E2E2E"
