@@ -55,7 +55,7 @@ public class Optimizer
 
         if (remainingDemand > 0)
         {
-            throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {data.HeatDemandMWh - remainingDemand} MWh heat can be produced with existing generators.");
+            throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {data.HeatDemandMWh - remainingDemand} MWh heat can be produced with existing generators at {data.TimeFrom}.");
         }
 
         return result;
@@ -208,7 +208,7 @@ public class Optimizer
 
         if (maintenanceResult == null)
         {
-            throw new Exception("Could not optimize for a maintenance window, heat demand cannot be met with current unit configuration!");
+            throw new MissingMaxProductionException("Could not optimize for a maintenance window, heat demand cannot be met with current unit configuration!");
         }
 
         // replace matching time window in results
@@ -255,4 +255,19 @@ public class UnitProductionCost {
         ProductionCostDKK = productionCostDKK;
         HourlyData = hourlyData;
     }
+}
+
+[Serializable]
+public class MissingMaxProductionException : Exception
+{
+    public MissingMaxProductionException ()
+    {}
+
+    public MissingMaxProductionException (string message) 
+        : base(message)
+    {}
+
+    public MissingMaxProductionException (string message, Exception innerException)
+        : base (message, innerException)
+    {}    
 }

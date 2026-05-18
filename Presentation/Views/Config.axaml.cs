@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using HeatOptimization.Logic;
 using HeatOptimization.Presentation.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;

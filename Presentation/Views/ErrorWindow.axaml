@@ -1,0 +1,22 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="HeatOptimization.Presentation.Views.ErrorWindow"
+        Width="400"
+        Height="180"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        x:CompileBindings="False"
+        Title="Error">
+
+    <StackPanel Margin="20" Spacing="20">
+
+        <TextBlock Text="{Binding ErrorMessage}"
+                   TextWrapping="Wrap"
+                   FontSize="16"/>
+
+        <Button Content="OK"
+                HorizontalAlignment="Center"
+                Width="100"
+                Click="Ok_Click"/>
+    </StackPanel>
+</Window>
