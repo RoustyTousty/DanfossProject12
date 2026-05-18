@@ -29,23 +29,4 @@ public class OptimizationService
         
     }
 
-    public string? GetDefaultMaintenanceUnit()
-    {
-        var units = _assetService.GetProductionUnits();
-        return units.FirstOrDefault(u => u.Type != UnitType.ElectricBoiler)?.Name
-            ?? units.FirstOrDefault()?.Name;
-    }
-
-    public double? CalculateMaintenanceCostImpact(string unitToDisable, int maintenanceTime)
-    {
-        try
-        {
-            var (_, costImpact) = Optimize(unitToDisable, maintenanceTime);
-            return costImpact;
-        }
-        catch
-        {
-            return null;
-        }
-    }
 }
