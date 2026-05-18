@@ -1,6 +1,7 @@
 namespace HeatOptimization.Presentation;
 
 using HeatOptimization.Logic;
+using System.Linq;
 
 public class OptimizationService
 {
@@ -31,4 +32,5 @@ public class OptimizationService
         }
         
     }
+
 }
