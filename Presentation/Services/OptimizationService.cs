@@ -20,7 +20,6 @@ public class OptimizationService
         if (!string.IsNullOrWhiteSpace(unitToDisable))
         {
             (List<IResultData> res, double impact) = _optimizer.OptimizeWithMaintenance(data, units, unitToDisable, maintenanceTime ?? 30);
-            Console.WriteLine(impact);
             _assetService.ResultData = new(res);
             _assetService.CostImpact = impact;
 
