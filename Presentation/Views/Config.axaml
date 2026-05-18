@@ -138,7 +138,7 @@
                                     Padding="0"
                                     Cursor="Hand">
                                 <Border Classes="activeUnit">
-                                    <TextBlock Text="{Binding Name}"
+                                    <TextBlock Text="{Binding .}"
                                                Classes="activeUnitText"/>
                                 </Border>
                             </Button>
@@ -166,7 +166,7 @@
                                     Padding="0"
                                     Cursor="Hand">
                                 <Border Classes="inactiveUnit">
-                                    <TextBlock Text="{Binding Name}"
+                                    <TextBlock Text="{Binding .}"
                                                Classes="inactiveUnitText"/>
                                 </Border>
                             </Button>
@@ -208,13 +208,8 @@
                               Foreground="#2E2E2E"
                               BorderBrush="#555555" BorderThickness="1"
                               CornerRadius="8"
-                              Padding="10,6">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                              Padding="10,6"/>
+
 
                 </DockPanel>
 

@@ -11,20 +11,20 @@ public class HourlyChartProvider : IHourlyChartProvider
         List<IHourlyData> hourlyData = new();
         
 
-        string path = Path.Combine(
-            AppContext.BaseDirectory,
-            "Data",
-            "InputData",
-            "HourlyData",
-            fname
-        );
+        // string path = Path.Combine(
+        //     AppContext.BaseDirectory,
+        //     "Data",
+        //     "InputData",
+        //     "HourlyData",
+        //     fname
+        // );
 
-        if (!File.Exists(path))
-        {
-            throw new FileNotFoundException($"Input file not found: {path}");
-        }
+        // if (!File.Exists(path))
+        // {
+        //     throw new FileNotFoundException($"Input file not found: {path}");
+        // }
 
-        using StreamReader reader = new(path);
+        using StreamReader reader = new(fname);
 
         reader.ReadLine(); 
         int lineNumber = 1;

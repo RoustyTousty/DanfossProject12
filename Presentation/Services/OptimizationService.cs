@@ -13,12 +13,12 @@ public class OptimizationService
         _assetService = assetService;
     }
 
-    public void Optimize(string? unitToDisable, int? maintenanceTime, List<ProductionUnit> activeUnits)
+    public void Optimize(string? unitToDisable, int? maintenanceTime, List<string> activeUnits)
     {
         var data = _assetService.HourlyData.Cast<IHourlyData>().ToList();
-        var units = _assetService.GetProductionUnits().Where(unit => activeUnits.Any(active => active.Name == unit.Name)).ToList();
-        
-        if (unitToDisable != null && unitToDisable != "")
+        var units = _assetService.GetProductionUnits().Where(unit => activeUnits.Any(active => active == unit.Name)).ToList();
+            
+        if (!string.IsNullOrWhiteSpace(unitToDisable))
         {
             (List<IResultData> res, double impact) = _optimizer.OptimizeWithMaintenance(data, units, unitToDisable, maintenanceTime ?? 30);
             _assetService.ResultData = new(res);
@@ -30,7 +30,8 @@ public class OptimizationService
             _assetService.ResultData = new(res);
             _assetService.CostImpact = 0;
         }
-        
+    
+
     }
 
 }

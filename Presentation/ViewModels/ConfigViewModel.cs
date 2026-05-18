@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using Avalonia.Media.Imaging;
 using HeatOptimization.Logic;
 using Avalonia.Controls;
+using HeatOptimization.Presentation.Views;
 
 namespace HeatOptimization.Presentation.ViewModels;
 
@@ -13,14 +14,14 @@ public partial class ConfigViewModel : ViewModelBase
     private OptimizationService _optimizationService;
     private readonly Func<Task<string?>>? _filePickerService;
 
-    public ObservableCollection<ProductionUnit> ActiveUnits { get; set; } = [];
+    public ObservableCollection<string> ActiveUnits { get; set; } = [];
 
-    public ObservableCollection<ProductionUnit> DisabledUnits { get; set; } = [];
+    public ObservableCollection<string> DisabledUnits { get; set; } = [];
 
     [ObservableProperty]
     private int maintenanceHours = 30;
     [ObservableProperty]
-    private string unitToPutOnMaintenance = "";
+    private string? unitToPutOnMaintenance;
     [ObservableProperty]
     private bool isPutOnMaintenance = false;
     [ObservableProperty]
@@ -51,7 +52,7 @@ public partial class ConfigViewModel : ViewModelBase
         if (units != null){
 
             foreach (var unit in units){
-                ActiveUnits.Add(unit);
+                ActiveUnits.Add(unit.Name);
             }
         }
     }
@@ -83,7 +84,7 @@ public partial class ConfigViewModel : ViewModelBase
 
     // command that moves active unit to inactive and vice versa
     [RelayCommand]
-    public void ToggleUnitStatus(ProductionUnit unit)
+    public void ToggleUnitStatus(string unit)
     {
         if (ActiveUnits.Contains(unit))
         {
@@ -95,28 +96,23 @@ public partial class ConfigViewModel : ViewModelBase
             DisabledUnits.Remove(unit);
             ActiveUnits.Add(unit);
         }
-        Console.WriteLine("Active units:");
-        foreach (var u in ActiveUnits)
-        {
-            Console.WriteLine(u.Name);
-        }
-
-        Console.WriteLine("Inactive units:");
-        foreach (var u in DisabledUnits)
-        {
-            Console.WriteLine(u.Name);
-        }
     }
 
     [RelayCommand]
-    public async Task Optimize(Window? window) {
+    public async Task Optimize(Window window) {
         _assetService.HourlyData = new(NewHourlyData);
-        if (IsPutOnMaintenance) {
-            _optimizationService.Optimize(null, null, ActiveUnits.Cast<ProductionUnit>().ToList());
-        } else {
-            _optimizationService.Optimize(UnitToPutOnMaintenance, MaintenanceHours, ActiveUnits.Cast<ProductionUnit>().ToList());
+        try {
+            if (IsPutOnMaintenance && UnitToPutOnMaintenance != null) {
+                _optimizationService.Optimize(UnitToPutOnMaintenance, MaintenanceHours, ActiveUnits.Cast<string>().ToList());
+            } else {
+                _optimizationService.Optimize(null, null, ActiveUnits.Cast<string>().ToList());
+            }
+            window?.Close();
+        } catch (Exception e) {
+            var errorWindow = new ErrorWindow(e.Message);
+
+            await errorWindow.ShowDialog(window);
         }
-        window?.Close();
     }
 
 }
