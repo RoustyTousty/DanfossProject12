@@ -65,7 +65,7 @@ public partial class PriceDataViewModel : ViewModelBase
     private string totalCost = "VALUE";
 
     [ObservableProperty]
-    private double maintenanceCost = 0;
+    private string maintenanceCost = "VALUE";
 
     [ObservableProperty]
     private string totalHeatProduced = "VALUE";
@@ -74,7 +74,7 @@ public partial class PriceDataViewModel : ViewModelBase
     {
         List<IResultData> results = _assetService.ResultData.Cast<IResultData>().OrderBy(r => r.HourlyData.TimeFrom).ToList();
         double costImpact = _assetService.CostImpact;
-
+        
         _allResults.Clear();
         _allResults.AddRange(results);
 
@@ -94,7 +94,7 @@ public partial class PriceDataViewModel : ViewModelBase
         TotalHeatProduced = $"{totalHeat:N1} MW";
         TotalCO2 = $"{totalCO2Value:N0} kg";
         TotalCost = $"{totalCostValue:N0} DKK";
-        MaintenanceCost = costImpact;
+        MaintenanceCost = $"{Math.Round(costImpact, 0).ToString()} DKK";
 
         ApplyDateRange();
     }
@@ -222,7 +222,6 @@ public partial class PriceDataViewModel : ViewModelBase
 
     private void AssetService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 {
-    Console.WriteLine($"PropertyChanged fired: {e.PropertyName}");
 
     if (e.PropertyName == nameof(AssetService.ResultData))
     {
