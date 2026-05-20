@@ -4,8 +4,8 @@ namespace HeatOptimization.Logic;
 
 public class Optimizer
 {
-    double fractionCosts = 0.2;
-    double fractionCO2 = 0.8;
+    double fractionCosts = 0.8;
+    double fractionCO2 = 0.2;
 
     private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(HourlyData data, List<ProductionUnit> units) 
     {
@@ -72,7 +72,22 @@ public class Optimizer
 
         foreach (HourlyData data in hourlyDataList)
         {
-            List<UnitProduction> distribution = DistributeHeatLoad(data, productionUnits, fractionCosts);
+            List<UnitProduction> distributionPrice = DistributeHeatLoad(data, productionUnits, fractionCosts);  // Distribute heat load based on production costs
+            List<UnitProduction> distributionCO2 = DistributeHeatLoadByCO2(data, productionUnits, fractionCO2);  // Distribute heat load based on CO2 emissions
+
+            List<UnitProduction> distribution;  // Final distribution based on the specified fractions
+
+            if (fractionCosts > 0 && fractionCO2 > 0)
+            {
+                distribution = distributionPrice.Concat(distributionCO2).ToList();
+            } else if (fractionCO2 == 0)
+            {
+                distribution = distributionPrice;
+            } else
+            {
+                distribution = distributionCO2;
+            }
+
 
             double totalCO2 = 0;
             double totalElectricityProduced = 0;
