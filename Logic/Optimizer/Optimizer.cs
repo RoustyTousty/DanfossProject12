@@ -1,8 +1,9 @@
+using Microsoft.VisualBasic;
+
 namespace HeatOptimization.Logic;
 
 public class Optimizer
 {
-
     private List<UnitProductionCost> GetUnitHourlyProdutionCostsForOneMWh(IHourlyData data, List<ProductionUnit> units)
     {
         List<UnitProductionCost> costs = [];
@@ -22,9 +23,9 @@ public class Optimizer
     }
 
 
-    private List<UnitProduction> DistributeHeatLoad(IHourlyData data, List<ProductionUnit> units)
+    private List<UnitProduction> DistributeHeatLoad(IHourlyData data, List<ProductionUnit> units, double fraction)
     {
-        double remainingDemand = data.HeatDemandMWh;
+        double remainingDemand = data.HeatDemandMWh * fraction;
         
         
         List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data, units)
@@ -62,13 +63,30 @@ public class Optimizer
     }
 
 
-    private List<IResultData> OptimizeMany(List<IHourlyData> hourlyDataList, List<ProductionUnit> productionUnits) 
+    private List<IResultData> OptimizeMany(List<IHourlyData> hourlyDataList, List<ProductionUnit> productionUnits, int percentCosts) 
      {
+        double fractionCosts = percentCosts * 0.01;
+        double fractionCO2 = 1 - fractionCosts;
         List<IResultData> results = new();
 
         foreach (IHourlyData data in hourlyDataList)
         {
-            List<UnitProduction> distribution = DistributeHeatLoad(data, productionUnits);
+            List<UnitProduction> distributionPrice = DistributeHeatLoad(data, productionUnits, fractionCosts);  // Distribute heat load based on production costs
+            List<UnitProduction> distributionCO2 = DistributeHeatLoadByCO2(data, productionUnits, fractionCO2);  // Distribute heat load based on CO2 emissions
+
+            List<UnitProduction> distribution;  // Final distribution based on the specified fractions
+
+            if (fractionCosts > 0 && fractionCO2 > 0)
+            {
+                distribution = distributionPrice.Concat(distributionCO2).ToList();
+            } else if (fractionCO2 == 0)
+            {
+                distribution = distributionPrice;
+            } else
+            {
+                distribution = distributionCO2;
+            }
+
 
             double totalCO2 = 0;
             double totalElectricityProduced = 0;
@@ -110,7 +128,7 @@ public class Optimizer
     }
 
 
-    private (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<IHourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours)
+    private (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<IHourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours, int percentCosts)
     {
         if (!units.Any(u => u.Name == unitToDisable))
         {
@@ -118,7 +136,7 @@ public class Optimizer
             throw new Exception($"Specified unit does not exist in the units!\nUnit to disable: {unitToDisable}.");
         }
 
-        List<IResultData> baselineResults = OptimizeMany(data, units);
+        List<IResultData> baselineResults = OptimizeMany(data, units, percentCosts);
         var baselineCosts = baselineResults
             .Select(r => CalculateCost(r.HourlyData, r.UnitProduction, units))
             .ToList();
@@ -142,7 +160,7 @@ public class Optimizer
             {
                 try
                 {
-                    distribution = DistributeHeatLoad(data[h], reducedUnits);
+                    distribution = DistributeHeatLoad(data[h], reducedUnits, percentCosts);
 
                     double newCost = CalculateCost(data[h], distribution, reducedUnits);
 
@@ -172,8 +190,56 @@ public class Optimizer
             data[bestStartIndex].TimeFrom,
             data[bestStartIndex + durationHours - 1].TimeTo,
             bestImpact,
-            OptimizeMany(data.GetRange(bestStartIndex, durationHours), reducedUnits)
+            OptimizeMany(data.GetRange(bestStartIndex, durationHours), reducedUnits, percentCosts)
         );
+    }
+
+    private List<UnitProductionCost> GetUnitCO2Ranking(IHourlyData data, List<ProductionUnit> units)
+    {           
+        List<UnitProductionCost> result = [];
+
+        foreach (ProductionUnit unit in units)
+        {
+            double co2 = unit.CO2EmissionsKg ?? 0;
+
+            result.Add(new UnitProductionCost(data, unit, co2));
+        }
+
+        return result;
+    }
+
+
+    private List<UnitProduction> DistributeHeatLoadByCO2(IHourlyData data, List<ProductionUnit> units, double fraction)
+    {
+        double remainingDemand = data.HeatDemandMWh * fraction;
+
+        var ordered = GetUnitCO2Ranking(data, units)
+            .OrderBy(x => x.ProductionCostDKK)
+            .ToList();
+
+        List<UnitProduction> result = new();
+
+        foreach (var entry in ordered)
+        {
+            if (remainingDemand <= 0)
+                break;
+
+            double heatProduced = Math.Min(entry.Unit.MaxHeatMW, remainingDemand);
+
+            result.Add(new UnitProduction {
+                unitName = entry.Unit.Name,
+                heatProduced = heatProduced
+            });
+
+            remainingDemand -= heatProduced;
+        }
+
+        if (remainingDemand > 0)
+        {
+            throw new Exception($"Cannot meet demand. Missing {remainingDemand} MWh.");
+        }
+
+        return result;
     }
     
 
@@ -200,11 +266,11 @@ public class Optimizer
     }
 
     // costImpact is how much it costs to have a downtime 
-    public (List<IResultData>, double costImpact) OptimizeWithMaintenance(List<IHourlyData> hourlyDataList, List<ProductionUnit> productionUnits, string unitToDisable, int durationHours)
+    public (List<IResultData>, double costImpact) OptimizeWithMaintenance(List<IHourlyData> hourlyDataList, List<ProductionUnit> productionUnits, string unitToDisable, int durationHours, int percentCosts)
     {
-        List<IResultData> results = OptimizeMany(hourlyDataList, productionUnits);
+        List<IResultData> results = OptimizeMany(hourlyDataList, productionUnits, percentCosts);
         // find the window
-        var maintenanceResult = FindMaintenanceWindow(hourlyDataList, productionUnits, unitToDisable, durationHours);
+        var maintenanceResult = FindMaintenanceWindow(hourlyDataList, productionUnits, unitToDisable, durationHours, percentCosts);
 
         if (maintenanceResult == null)
         {
@@ -238,9 +304,9 @@ public class Optimizer
         );
     }
 
-    public List<IResultData> OptimizeWithoutMaintenance(List<IHourlyData> data, List<ProductionUnit> units)
+    public List<IResultData> OptimizeWithoutMaintenance(List<IHourlyData> data, List<ProductionUnit> units, int percentCosts)
     {
-        return OptimizeMany(data, units);
+        return OptimizeMany(data, units, percentCosts);
     }
 }
 
