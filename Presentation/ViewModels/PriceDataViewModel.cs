@@ -8,7 +8,10 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using HeatOptimization.Logic;
 
 namespace HeatOptimization.Presentation.ViewModels;
@@ -70,7 +73,7 @@ public partial class PriceDataViewModel : ViewModelBase
     [ObservableProperty]
     private string totalHeatProduced = "VALUE";
 
-    public async Task LoadAsync()
+    public Task LoadAsync()
     {
         List<IResultData> results = _assetService.ResultData.Cast<IResultData>().OrderBy(r => r.HourlyData.TimeFrom).ToList();
         
@@ -96,6 +99,46 @@ public partial class PriceDataViewModel : ViewModelBase
         MaintenanceCost = $"{Math.Round(_assetService.CostImpact, 0)} DKK";
 
         ApplyDateRange();
+        return Task.CompletedTask;
+    }
+
+    public async Task SaveResultsAsync(string filePath)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        var results = _allResults.Where(r =>
+            (!DateFrom.HasValue || r.HourlyData.TimeFrom.Date >= DateFrom.Value.Date) &&
+            (!DateTo.HasValue || r.HourlyData.TimeFrom.Date <= DateTo.Value.Date)
+        ).ToList();
+
+        await SaveResultsToCsvAsync(filePath, results);
+    }
+
+    private async Task SaveResultsToCsvAsync(string filePath, List<IResultData> results)
+    {
+        await using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+
+        await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG),UnitLoadDistribution(MWh)");
+
+        foreach (var resultData in results)
+        {
+            string unitsString = SerializeUnitProduction(resultData.UnitProduction);
+            string line = string.Join(',',
+                resultData.HourlyData.TimeFrom,
+                resultData.HourlyData.TimeTo,
+                resultData.HourlyData.HeatDemandMWh,
+                resultData.HourlyData.ElectricityPriceDKK,
+                resultData.ElectricityProductionMWh,
+                resultData.ElectricityConsumptionMWh,
+                resultData.CO2ProductionKG,
+                unitsString
+            );
+
+            await writer.WriteLineAsync(line);
+        }
     }
 
     public void ApplyDateRange()
@@ -274,6 +317,15 @@ public partial class PriceDataViewModel : ViewModelBase
         foreach (var m in matches) FilteredHourlyRows.Add(m);
     }
 
+    private string SerializeUnitProduction(List<UnitProduction> units)
+    {
+        if (units == null || !units.Any())
+        {
+            return string.Empty;
+        }
+
+        return string.Join("|", units.Select(u => $"{u.unitName}:{u.heatProduced}"));
+    }
 }
 public sealed class UnitDataRow
 {
