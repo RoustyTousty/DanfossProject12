@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Platform.Storage;
 using Avalonia;
 using HeatOptimization.Presentation.ViewModels;
 
@@ -48,6 +49,38 @@ public partial class PriceDataView : UserControl
         if (popup != null)
         {
             popup.IsOpen = false;
+        }
+    }
+
+    private async void SaveButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this) as Window;
+        if (topLevel == null) return;
+
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save price data",
+            SuggestedFileName = "price-data.csv",
+            FileTypeChoices = new[]
+            {
+                new FilePickerFileType("CSV Files") { Patterns = new[] { "*.csv" } }
+            }
+        });
+
+        if (file == null)
+        {
+            return;
+        }
+
+        var path = file.Path?.LocalPath;
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (DataContext is PriceDataViewModel vm)
+        {
+            await vm.SaveResultsAsync(path);
         }
     }
 
