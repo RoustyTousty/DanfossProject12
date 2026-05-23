@@ -120,7 +120,6 @@ public partial class PriceDataViewModel : ViewModelBase
         await _resultService.SaveAsync(filePath);
     }
 
-    public async Task SaveResultsAsync(string filePath) => await _resultService.SaveAsync(filePath);
 
     [RelayCommand]
     public void ApplyDateRange()
