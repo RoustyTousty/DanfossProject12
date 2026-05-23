@@ -40,7 +40,7 @@ public class Optimizer
                 break;
             }
 
-            double maxHeat = entry.Unit.MaxHeatMW;
+            double maxHeat = entry.Unit.MaxHeatMW * fraction;
 
             double heatProduced = Math.Min(maxHeat, remainingDemand);
 
@@ -226,7 +226,9 @@ public class Optimizer
             if (remainingDemand <= 0)
                 break;
 
-            double heatProduced = Math.Min(entry.Unit.MaxHeatMW, remainingDemand);
+            double maxHeat = entry.Unit.MaxHeatMW * fraction;
+
+            double heatProduced = Math.Min(maxHeat, remainingDemand);
 
             result.Add(new UnitProduction {
                 unitName = entry.Unit.Name,
