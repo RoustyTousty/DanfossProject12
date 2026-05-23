@@ -17,9 +17,9 @@ public class ResultService
     }
 
 
-    public async Task SaveAsync()
+    public async Task SaveAsync(string fpath)
     {
-        await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList());
+        await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList(), fpath);
         Console.WriteLine("Saved the file");
     }
 }
