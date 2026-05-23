@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
@@ -23,6 +24,8 @@ public partial class PriceDataViewModel : ViewModelBase
     private readonly AssetService _assetService;
     private readonly ChartService _chartService;
     private readonly ResultService _resultService;
+
+    public Func<Task<string?>>? SaveFilePickerService { get; set; }
 
     private readonly Dictionary<string, string> _unitColorMap = new()
     {
@@ -100,9 +103,26 @@ public partial class PriceDataViewModel : ViewModelBase
         return Task.CompletedTask;
     }
 
-    public async Task SaveResultsAsync(string filePath) => await _resultService.SaveAsync(filePath);
-    
+    [RelayCommand]
+    public async Task SaveAsync()
+    {
+        if (SaveFilePickerService == null)
+        {
+            return;
+        }
 
+        var filePath = await SaveFilePickerService.Invoke();
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        await _resultService.SaveAsync(filePath);
+    }
+
+    public async Task SaveResultsAsync(string filePath) => await _resultService.SaveAsync(filePath);
+
+    [RelayCommand]
     public void ApplyDateRange()
     {
         var filteredResults = _assetService.ResultData.Cast<IResultData>().Where(r =>
@@ -113,6 +133,7 @@ public partial class PriceDataViewModel : ViewModelBase
         UpdateChartAndHourlyRows(filteredResults);
     }
 
+    [RelayCommand]
     public void ResetDateRange()
     {
         if (_assetService.ResultData.Cast<IResultData>().Any())

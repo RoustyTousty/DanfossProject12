@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using HeatOptimization.Data;
 using HeatOptimization.Logic;
 using HeatOptimization.Presentation;
 using HeatOptimization.Presentation.ViewModels;
@@ -30,7 +31,8 @@ public class PriceDataViewModelTests
         };
 
         var chartService = new ChartService(assetService);
-        return new PriceDataViewModel(assetService, chartService);
+        var resultService = new ResultService(assetService, new CsvResultRepository());
+        return new PriceDataViewModel(assetService, chartService, resultService);
     }
 
     private static IResultData CreateResult(DateTime timeFrom, double heatProduced, double price, double co2)
