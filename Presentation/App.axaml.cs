@@ -35,12 +35,12 @@ public partial class App : Application
 
             var assetService = new AssetService(assetManager);
             var optimizationService = new OptimizationService(assetService);
-            var resultRepository = new CsvResultRepository("result.csv");
+            var resultRepository = new CsvResultRepository();
 
             AssetService = assetService;
             OptimizationService = optimizationService;
 
-            var resultService = new ResultService(assetService, optimizationService, resultRepository);
+            var resultService = new ResultService(assetService, resultRepository);
             var chartService = new ChartService(assetService);
 
         

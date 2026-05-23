@@ -332,7 +332,7 @@
                         <Slider 
                                 Minimum="0"
                                 Maximum="100"
-                                Value="{Binding CostToCO2Ratio}"
+                                Value="{Binding CO2toCostRatio}"
                                 TickFrequency="5"
                                 IsSnapToTickEnabled="True"
                                 VerticalAlignment="Center"
@@ -342,12 +342,12 @@
                         <DockPanel LastChildFill="False" Margin="2,10">
 
                             <TextBlock DockPanel.Dock="Left" 
-                                        Text="Price" 
+                                        Text="CO2 Em." 
                                         FontSize="12" 
                                         Foreground="#888888"/>
 
                             <TextBlock DockPanel.Dock="Right" 
-                                        Text="CO2 Em." 
+                                        Text="Price" 
                                         FontSize="12" 
                                         Foreground="#888888"/>
                         </DockPanel>
@@ -361,7 +361,7 @@
                             VerticalAlignment="Top"
                             Margin="0,4,0,0">
 
-                    <TextBox Text="{Binding CostToCO2Ratio, TargetNullValue='0', FallbackValue='0'}"
+                    <TextBox Text="{Binding CO2toCostRatio, TargetNullValue='0', FallbackValue='0'}"
                              Tag="0"
                              LostFocus="TextBox_LostFocus"
                              Background="Transparent"

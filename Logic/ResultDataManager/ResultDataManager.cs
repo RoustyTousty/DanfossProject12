@@ -9,26 +9,26 @@ public class ResultDataManager
         _repository = repository;
     }
 
-    public async Task StoreResultAsync(IResultData resultData)
+    public async Task StoreResultAsync(IResultData resultData, string filepath)
     {
-        await _repository.SaveAsync(resultData);
+        await _repository.SaveAsync(resultData, filepath);
     }
 
 
-    public async Task StoreResultsAsync(List<IResultData> resultDataList)
+    public async Task StoreResultsAsync(List<IResultData> resultDataList, string filepath)
     {
-        await _repository.SaveManyAsync(resultDataList);
+        await _repository.SaveManyAsync(resultDataList, filepath);
     }
 
 
-    public async Task<List<IResultData>> GetResultsAsync()
+    public async Task<List<IResultData>> GetResultsAsync(string filepath)
     {
-        return await _repository.GetAllAsync();
+        return await _repository.GetAllAsync(filepath);
     }
 
 
-    public async Task<List<IResultData>> GetResultsInPeriod(DateTime from, DateTime to)
+    public async Task<List<IResultData>> GetResultsInPeriod(DateTime from, DateTime to, string filepath)
     {
-        return await _repository.GetByTimeRangeAsync(from, to);
+        return await _repository.GetByTimeRangeAsync(from, to, filepath);
     }
 }

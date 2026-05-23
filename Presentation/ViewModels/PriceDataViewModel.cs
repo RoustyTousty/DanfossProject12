@@ -22,7 +22,7 @@ public partial class PriceDataViewModel : ViewModelBase
     public override Bitmap Icon => LoadAsset("price-icon.png");
     private readonly AssetService _assetService;
     private readonly ChartService _chartService;
-    private readonly List<IResultData> _allResults = new();
+    private readonly ResultService _resultService;
 
     private readonly Dictionary<string, string> _unitColorMap = new()
     {
@@ -77,8 +77,6 @@ public partial class PriceDataViewModel : ViewModelBase
     {
         List<IResultData> results = _assetService.ResultData.Cast<IResultData>().OrderBy(r => r.HourlyData.TimeFrom).ToList();
         
-        _allResults.Clear();
-        _allResults.AddRange(results);
 
         DateFrom = results.FirstOrDefault() is { } first
             ? new DateTimeOffset(first.HourlyData.TimeFrom)
@@ -102,48 +100,12 @@ public partial class PriceDataViewModel : ViewModelBase
         return Task.CompletedTask;
     }
 
-    public async Task SaveResultsAsync(string filePath)
-    {
-        if (string.IsNullOrWhiteSpace(filePath))
-        {
-            return;
-        }
-
-        var results = _allResults.Where(r =>
-            (!DateFrom.HasValue || r.HourlyData.TimeFrom.Date >= DateFrom.Value.Date) &&
-            (!DateTo.HasValue || r.HourlyData.TimeFrom.Date <= DateTo.Value.Date)
-        ).ToList();
-
-        await SaveResultsToCsvAsync(filePath, results);
-    }
-
-    private async Task SaveResultsToCsvAsync(string filePath, List<IResultData> results)
-    {
-        await using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
-
-        await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG),UnitLoadDistribution(MWh)");
-
-        foreach (var resultData in results)
-        {
-            string unitsString = SerializeUnitProduction(resultData.UnitProduction);
-            string line = string.Join(',',
-                resultData.HourlyData.TimeFrom,
-                resultData.HourlyData.TimeTo,
-                resultData.HourlyData.HeatDemandMWh,
-                resultData.HourlyData.ElectricityPriceDKK,
-                resultData.ElectricityProductionMWh,
-                resultData.ElectricityConsumptionMWh,
-                resultData.CO2ProductionKG,
-                unitsString
-            );
-
-            await writer.WriteLineAsync(line);
-        }
-    }
+    public async Task SaveResultsAsync(string filePath) => await _resultService.SaveAsync(filePath);
+    
 
     public void ApplyDateRange()
     {
-        var filteredResults = _allResults.Where(r =>
+        var filteredResults = _assetService.ResultData.Cast<IResultData>().Where(r =>
             (!DateFrom.HasValue || r.HourlyData.TimeFrom.Date >= DateFrom.Value.Date) &&
             (!DateTo.HasValue || r.HourlyData.TimeFrom.Date <= DateTo.Value.Date)
         ).ToList();
@@ -153,10 +115,10 @@ public partial class PriceDataViewModel : ViewModelBase
 
     public void ResetDateRange()
     {
-        if (_allResults.Any())
+        if (_assetService.ResultData.Cast<IResultData>().Any())
         {
-            DateFrom = new DateTimeOffset(_allResults.First().HourlyData.TimeFrom);
-            DateTo = new DateTimeOffset(_allResults.Last().HourlyData.TimeTo);
+            DateFrom = new DateTimeOffset(_assetService.ResultData.Cast<IResultData>().First().HourlyData.TimeFrom);
+            DateTo = new DateTimeOffset(_assetService.ResultData.Cast<IResultData>().Last().HourlyData.TimeTo);
         }
         else
         {
@@ -276,10 +238,11 @@ public partial class PriceDataViewModel : ViewModelBase
         }
     }
     
-    public PriceDataViewModel(AssetService assetService, ChartService chartService)
+    public PriceDataViewModel(AssetService assetService, ChartService chartService, ResultService resultService)
     {
         _assetService = assetService;
         _chartService = chartService;
+        _resultService = resultService;
 
          _assetService.PropertyChanged += AssetService_PropertyChanged;
     }

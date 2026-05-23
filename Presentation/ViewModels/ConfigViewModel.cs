@@ -25,7 +25,7 @@ public partial class ConfigViewModel : ViewModelBase
     [ObservableProperty]
     private bool isPutOnMaintenance = false;
     [ObservableProperty]
-    private int costToCO2Ratio = 5;
+    private int cO2toCostRatio = 100;
 
     [ObservableProperty]
     private string? _selectedFilePath;
@@ -103,9 +103,9 @@ public partial class ConfigViewModel : ViewModelBase
         _assetService.HourlyData = new(NewHourlyData);
         try {
             if (IsPutOnMaintenance && UnitToPutOnMaintenance != null) {
-                _optimizationService.Optimize(UnitToPutOnMaintenance, MaintenanceHours, ActiveUnits.Cast<string>().ToList());
+                _optimizationService.Optimize(UnitToPutOnMaintenance, MaintenanceHours, ActiveUnits.Cast<string>().ToList(), CO2toCostRatio);
             } else {
-                _optimizationService.Optimize(null, null, ActiveUnits.Cast<string>().ToList());
+                _optimizationService.Optimize(null, null, ActiveUnits.Cast<string>().ToList(), CO2toCostRatio);
             }
             window?.Close();
         } catch (Exception e) {
