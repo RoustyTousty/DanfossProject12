@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic;
-
 namespace HeatOptimization.Logic;
 
 public class Optimizer
@@ -78,7 +76,11 @@ public class Optimizer
 
             if (fractionCosts > 0 && fractionCO2 > 0)
             {
-                distribution = distributionPrice.Concat(distributionCO2).ToList();
+                distribution = distributionPrice.Concat(distributionCO2).GroupBy(x => x.unitName).Select(g => new UnitProduction
+                    {
+                        unitName = g.Key,
+                        heatProduced = g.Sum(x => x.heatProduced)
+                    }).ToList();
             } else if (fractionCO2 == 0)
             {
                 distribution = distributionPrice;
