@@ -36,6 +36,15 @@ public partial class PriceDataView : UserControl
 
                 return file?.Path?.LocalPath;
             };
+
+            vm.ClosePopupAction = () =>
+            {
+                var popup = this.FindControl<Popup>("DatePopup");
+                if (popup != null)
+                {
+                    popup.IsOpen = false;
+                }
+            };
         }
     }
 

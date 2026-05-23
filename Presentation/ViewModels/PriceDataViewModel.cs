@@ -25,7 +25,10 @@ public partial class PriceDataViewModel : ViewModelBase
     private readonly ChartService _chartService;
     private readonly ResultService _resultService;
 
-    public Func<Task<string?>>? SaveFilePickerService { get; set; }
+    [ObservableProperty]
+    private Func<Task<string?>>? saveFilePickerService;
+    [ObservableProperty]
+    private bool hasResults = false;
 
     private readonly Dictionary<string, string> _unitColorMap = new()
     {
@@ -130,6 +133,7 @@ public partial class PriceDataViewModel : ViewModelBase
         ).ToList();
 
         UpdateChartAndHourlyRows(filteredResults);
+        ClosePopup();
     }
 
     [RelayCommand]
@@ -147,6 +151,13 @@ public partial class PriceDataViewModel : ViewModelBase
         }
 
         ApplyDateRange();
+    }
+
+    public Action? ClosePopupAction { get; set; }
+
+    private void ClosePopup()
+    {
+        ClosePopupAction?.Invoke();
     }
 
     private void UpdateChartAndHourlyRows(List<IResultData> filteredResults)
@@ -250,6 +261,7 @@ public partial class PriceDataViewModel : ViewModelBase
         {
             Console.WriteLine("ResultData changed → reloading chart");
             _ = LoadAsync();
+            HasResults = _assetService.ResultData.Count > 0;
         }
         else if (e.PropertyName == nameof(AssetService.CostImpact))
         {
