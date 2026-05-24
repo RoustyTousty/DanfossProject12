@@ -24,13 +24,13 @@ public class CsvResultRepositoryTests
 
         await File.WriteAllLinesAsync(tempFile, lines);
 
-        var repo = new CsvResultRepository(tempFile);
+        var repo = new CsvResultRepository();
 
         var from = new DateTime(2026, 1, 5, 0, 30, 0);
         var to   = new DateTime(2026, 1, 5, 1, 30, 0);
 
         // Act
-        var result = await repo.GetByTimeRangeAsync(from, to);
+        var result = await repo.GetByTimeRangeAsync(from, to, tempFile);
 
         // Assert
         Assert.Equal(2, result.Count);

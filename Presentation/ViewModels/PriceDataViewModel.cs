@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
@@ -23,6 +24,11 @@ public partial class PriceDataViewModel : ViewModelBase
     private readonly AssetService _assetService;
     private readonly ChartService _chartService;
     private readonly ResultService _resultService;
+
+    [ObservableProperty]
+    private Func<Task<string?>>? saveFilePickerService;
+    [ObservableProperty]
+    private bool hasResults = false;
 
     private readonly Dictionary<string, string> _unitColorMap = new()
     {
@@ -100,9 +106,25 @@ public partial class PriceDataViewModel : ViewModelBase
         return Task.CompletedTask;
     }
 
-    public async Task SaveResultsAsync(string filePath) => await _resultService.SaveAsync(filePath);
-    
+    [RelayCommand]
+    public async Task SaveAsync()
+    {
+        if (SaveFilePickerService == null)
+        {
+            return;
+        }
 
+        var filePath = await SaveFilePickerService.Invoke();
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        await _resultService.SaveAsync(filePath);
+    }
+
+
+    [RelayCommand]
     public void ApplyDateRange()
     {
         var filteredResults = _assetService.ResultData.Cast<IResultData>().Where(r =>
@@ -111,8 +133,10 @@ public partial class PriceDataViewModel : ViewModelBase
         ).ToList();
 
         UpdateChartAndHourlyRows(filteredResults);
+        ClosePopup();
     }
 
+    [RelayCommand]
     public void ResetDateRange()
     {
         if (_assetService.ResultData.Cast<IResultData>().Any())
@@ -127,6 +151,13 @@ public partial class PriceDataViewModel : ViewModelBase
         }
 
         ApplyDateRange();
+    }
+
+    public Action? ClosePopupAction { get; set; }
+
+    private void ClosePopup()
+    {
+        ClosePopupAction?.Invoke();
     }
 
     private void UpdateChartAndHourlyRows(List<IResultData> filteredResults)
@@ -230,6 +261,7 @@ public partial class PriceDataViewModel : ViewModelBase
         {
             Console.WriteLine("ResultData changed → reloading chart");
             _ = LoadAsync();
+            HasResults = _assetService.ResultData.Count > 0;
         }
         else if (e.PropertyName == nameof(AssetService.CostImpact))
         {

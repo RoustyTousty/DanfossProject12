@@ -80,13 +80,13 @@
                                             Background="#2C2F36"
                                             Foreground="White"
                                             CornerRadius="8"
-                                            Click="ClearDateRange_Click"/>
+                                            Command="{Binding ResetDateRangeCommand}"/>
                                     <Button Content="Apply"
                                             Width="80"
                                             Background="#3E4452"
                                             Foreground="White"
                                             CornerRadius="8"
-                                            Click="ApplyDateRange_Click"/>
+                                            Command="{Binding ApplyDateRangeCommand}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
@@ -265,7 +265,8 @@
                     HorizontalAlignment="Right"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Click="SaveButton_Click"/>
+                    IsEnabled="{Binding HasResults}"
+                    Command="{Binding SaveCommand}"/>
         </Grid>
     </Grid>
 </UserControl>

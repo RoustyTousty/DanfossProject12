@@ -12,6 +12,40 @@ public partial class PriceDataView : UserControl
     {
         InitializeComponent();
         SetupScrollSync();
+        this.DataContextChanged += PriceDataView_DataContextChanged;
+    }
+
+    private void PriceDataView_DataContextChanged(object? sender, System.EventArgs e)
+    {
+        if (DataContext is PriceDataViewModel vm)
+        {
+            vm.SaveFilePickerService = async () =>
+            {
+                var topLevel = TopLevel.GetTopLevel(this) as Window;
+                if (topLevel == null) return null;
+
+                var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                {
+                    Title = "Save price data",
+                    SuggestedFileName = "price-data.csv",
+                    FileTypeChoices = new[]
+                    {
+                        new FilePickerFileType("CSV Files") { Patterns = new[] { "*.csv" } }
+                    }
+                });
+
+                return file?.Path?.LocalPath;
+            };
+
+            vm.ClosePopupAction = () =>
+            {
+                var popup = this.FindControl<Popup>("DatePopup");
+                if (popup != null)
+                {
+                    popup.IsOpen = false;
+                }
+            };
+        }
     }
 
     private void DateButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -24,65 +58,6 @@ public partial class PriceDataView : UserControl
         }
     }
 
-    private void ApplyDateRange_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (DataContext is PriceDataViewModel vm)
-        {
-            vm.ApplyDateRange();
-        }
-
-        var popup = this.FindControl<Popup>("DatePopup");
-        if (popup != null)
-        {
-            popup.IsOpen = false;
-        }
-    }
-
-    private void ClearDateRange_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (DataContext is PriceDataViewModel vm)
-        {
-            vm.ResetDateRange();
-        }
-
-        var popup = this.FindControl<Popup>("DatePopup");
-        if (popup != null)
-        {
-            popup.IsOpen = false;
-        }
-    }
-
-    private async void SaveButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        var topLevel = TopLevel.GetTopLevel(this) as Window;
-        if (topLevel == null) return;
-
-        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-        {
-            Title = "Save price data",
-            SuggestedFileName = "price-data.csv",
-            FileTypeChoices = new[]
-            {
-                new FilePickerFileType("CSV Files") { Patterns = new[] { "*.csv" } }
-            }
-        });
-
-        if (file == null)
-        {
-            return;
-        }
-
-        var path = file.Path?.LocalPath;
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-
-        if (DataContext is PriceDataViewModel vm)
-        {
-            await vm.SaveResultsAsync(path);
-        }
-    }
 
     private void DayButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
