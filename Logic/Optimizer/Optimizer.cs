@@ -1,3 +1,5 @@
+using Microsoft.VisualBasic;
+
 namespace HeatOptimization.Logic;
 
 public class Optimizer
@@ -27,7 +29,7 @@ public class Optimizer
         
         
         List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data, units)
-        .OrderBy(x => x.OptimizationParameter)
+        .OrderBy(x => x.ProductionCostDKK)
         .ToList();
 
         
@@ -40,7 +42,7 @@ public class Optimizer
                 break;
             }
 
-            double maxHeat = entry.Unit.MaxHeatMW * fraction;
+            double maxHeat = entry.Unit.MaxHeatMW;
 
             double heatProduced = Math.Min(maxHeat, remainingDemand);
 
@@ -76,11 +78,7 @@ public class Optimizer
 
             if (fractionCosts > 0 && fractionCO2 > 0)
             {
-                distribution = distributionPrice.Concat(distributionCO2).GroupBy(x => x.unitName).Select(g => new UnitProduction
-                    {
-                        unitName = g.Key,
-                        heatProduced = g.Sum(x => x.heatProduced)
-                    }).ToList();
+                distribution = distributionPrice.Concat(distributionCO2).ToList();
             } else if (fractionCO2 == 0)
             {
                 distribution = distributionPrice;
@@ -216,7 +214,7 @@ public class Optimizer
         double remainingDemand = data.HeatDemandMWh * fraction;
 
         var ordered = GetUnitCO2Ranking(data, units)
-            .OrderBy(x => x.OptimizationParameter)
+            .OrderBy(x => x.ProductionCostDKK)
             .ToList();
 
         List<UnitProduction> result = new();
@@ -226,9 +224,7 @@ public class Optimizer
             if (remainingDemand <= 0)
                 break;
 
-            double maxHeat = entry.Unit.MaxHeatMW * fraction;
-
-            double heatProduced = Math.Min(maxHeat, remainingDemand);
+            double heatProduced = Math.Min(entry.Unit.MaxHeatMW, remainingDemand);
 
             result.Add(new UnitProduction {
                 unitName = entry.Unit.Name,
@@ -317,12 +313,12 @@ public class Optimizer
 public class UnitProductionCost {
     public IHourlyData HourlyData;
     public ProductionUnit Unit { get; set; }
-    public double OptimizationParameter {get; set; }
+    public double ProductionCostDKK {get; set; }
 
-    public UnitProductionCost(IHourlyData hourlyData, ProductionUnit unit, double optimizationParameter)
+    public UnitProductionCost(IHourlyData hourlyData, ProductionUnit unit, double productionCostDKK)
     {
         Unit = unit;
-        OptimizationParameter = optimizationParameter;
+        ProductionCostDKK = productionCostDKK;
         HourlyData = hourlyData;
     }
 }
