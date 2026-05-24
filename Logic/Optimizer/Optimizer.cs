@@ -27,7 +27,7 @@ public class Optimizer
         
         
         List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data, units)
-        .OrderBy(x => x.ProductionCostDKK)
+        .OrderBy(x => x.OptimizationParameter)
         .ToList();
 
         
@@ -216,7 +216,7 @@ public class Optimizer
         double remainingDemand = data.HeatDemandMWh * fraction;
 
         var ordered = GetUnitCO2Ranking(data, units)
-            .OrderBy(x => x.ProductionCostDKK)
+            .OrderBy(x => x.OptimizationParameter)
             .ToList();
 
         List<UnitProduction> result = new();
@@ -317,12 +317,12 @@ public class Optimizer
 public class UnitProductionCost {
     public IHourlyData HourlyData;
     public ProductionUnit Unit { get; set; }
-    public double ProductionCostDKK {get; set; }
+    public double OptimizationParameter {get; set; }
 
-    public UnitProductionCost(IHourlyData hourlyData, ProductionUnit unit, double productionCostDKK)
+    public UnitProductionCost(IHourlyData hourlyData, ProductionUnit unit, double optimizationParameter)
     {
         Unit = unit;
-        ProductionCostDKK = productionCostDKK;
+        OptimizationParameter = optimizationParameter;
         HourlyData = hourlyData;
     }
 }
