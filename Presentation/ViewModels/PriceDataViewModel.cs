@@ -106,6 +106,16 @@ public partial class PriceDataViewModel : ViewModelBase
         return Task.CompletedTask;
     }
 
+    public async Task SaveResultsAsync(string filePath)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        await _resultService.SaveAsync(filePath);
+    }
+
     [RelayCommand]
     public async Task SaveAsync()
     {
@@ -120,7 +130,7 @@ public partial class PriceDataViewModel : ViewModelBase
             return;
         }
 
-        await _resultService.SaveAsync(filePath);
+        await SaveResultsAsync(filePath);
     }
 
 
