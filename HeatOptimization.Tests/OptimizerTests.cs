@@ -59,7 +59,7 @@ public class OptimizerTests
 
         // Act & Assert
         var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithoutMaintenance(data, units, 1));
-        Assert.Contains("cannot be met", exception.Message);
+        Assert.Contains("Cannot be met", exception.Message);
     }
 
     [Fact]
