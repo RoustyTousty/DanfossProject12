@@ -31,7 +31,7 @@ public class PriceDataViewModelTests
         };
 
         var chartService = new ChartService(assetService);
-        var resultService = new ResultService(assetService, new CsvResultRepository());
+        var resultService = new ResultService(assetService, new ResultDataManager(new CsvResultRepository()));
         return new PriceDataViewModel(assetService, chartService, resultService);
     }
 
