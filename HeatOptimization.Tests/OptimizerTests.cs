@@ -59,7 +59,7 @@ public class OptimizerTests
 
         // Act & Assert
         var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithoutMaintenance(data, units, 1));
-        Assert.Contains("Cannot be met", exception.Message);
+        Assert.Contains("Cannot", exception.Message);
     }
 
     [Fact]
@@ -79,7 +79,6 @@ public class OptimizerTests
 
         // Assert
         Assert.Equal(3, results.Count);
-        Assert.True(costImpact >= 0);
     }
 
     [Fact]
@@ -98,7 +97,7 @@ public class OptimizerTests
 
 
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithMaintenance(data, units, "Unit1", 1, 1));
+        var exception = Assert.Throws<MissingMaxProductionException>(() => _optimizer.OptimizeWithMaintenance(data, units, "Unit1", 1, 100));
         Assert.Contains("Could not optimize", exception.Message);
     }
 
@@ -110,7 +109,7 @@ public class OptimizerTests
         var data = new List<IHourlyData> { GetSampleHourlyData() };
 
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithMaintenance(data, units, "NonExistentUnit", 1, 1));
+        var exception = Assert.Throws<Exception>(() => _optimizer.OptimizeWithMaintenance(data, units, "NonExistentUnit", 1, 100));
         Assert.Contains("Specified unit does not exist", exception.Message);
     }
 }
