@@ -25,12 +25,10 @@ public class Optimizer
     {
         double remainingDemand = data.HeatDemandMWh * fraction;
         
-        
         List<UnitProductionCost> costs = GetUnitHourlyProdutionCostsForOneMWh(data, units)
         .OrderBy(x => x.OptimizationParameter)
         .ToList();
 
-        
         List<UnitProduction> result = new();
 
         foreach (UnitProductionCost entry in costs)
@@ -56,7 +54,6 @@ public class Optimizer
         {
             throw new Exception($"Heat demand: {data.HeatDemandMWh} MWh cannot be met, because only {data.HeatDemandMWh - remainingDemand} MWh heat can be produced with existing generators at {data.TimeFrom}.");
         }
-
         return result;
     }
 
