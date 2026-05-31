@@ -7,4 +7,5 @@ public interface IResultData
     public double CO2ProductionKG { get; set; }
     public double ElectricityProductionMWh { get; set; }
     public double ElectricityConsumptionMWh { get; set; }
+    public double TotalPrice { get; set; }
 }

@@ -4,22 +4,22 @@ using HeatOptimization.Logic;
 
 public class ResultService
 {
-    private readonly IResultRepository _repository;
+    private readonly ResultDataManager _resultDataManager;
     private readonly AssetService _assetService;
 
 
     public ResultService(
         AssetService assetService,
-        IResultRepository repository)
+        ResultDataManager resultDataManager)
     {
-        _repository = repository;
+        _resultDataManager = resultDataManager;
         _assetService = assetService;
     }
 
 
     public async Task SaveAsync(string fpath)
     {
-        await _repository.SaveManyAsync(_assetService.ResultData.Cast<IResultData>().ToList(), fpath);
+        await _resultDataManager.StoreResultsAsync(_assetService.ResultData.Cast<IResultData>().ToList(), fpath);
         Console.WriteLine("Saved the file");
     }
 }

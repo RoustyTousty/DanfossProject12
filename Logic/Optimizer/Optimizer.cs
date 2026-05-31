@@ -94,7 +94,7 @@ public class Optimizer
             foreach (UnitProduction production in distribution)
             {
                 var unit = productionUnits.First(u => u.Name == production.unitName);
-
+            
                 if (unit.CO2EmissionsKg != null)
                 {
                     totalCO2 += production.heatProduced * unit.CO2EmissionsKg.Value;
@@ -117,7 +117,8 @@ public class Optimizer
                 HourlyData = data,
                 CO2ProductionKG = totalCO2,
                 ElectricityProductionMWh = totalElectricityProduced,
-                ElectricityConsumptionMWh = totalElectricityConsumed
+                ElectricityConsumptionMWh = totalElectricityConsumed,
+                TotalPrice = CalculateCost(data, distribution, productionUnits),
             };
 
             results.Add(result);
