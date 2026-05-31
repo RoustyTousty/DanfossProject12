@@ -28,10 +28,10 @@ public class CsvResultRepository : IResultRepository
         {
             StreamWriter writer = new StreamWriter(filepath, true);
             
-            if (!File.Exists(filepath) || new FileInfo(filepath).Length == 0)
-            {
-                await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG),UnitLoadDistribution(MWh)");
-            }
+                if (!File.Exists(filepath) || new FileInfo(filepath).Length == 0)
+                {
+                    await writer.WriteLineAsync("Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG),TotalPrice (DKK),UnitLoadDistribution(MWh)");
+                }
 
             foreach (var resultData in resultDataList)
             {
@@ -45,6 +45,7 @@ public class CsvResultRepository : IResultRepository
                     resultData.ElectricityProductionMWh,
                     resultData.ElectricityConsumptionMWh,
                     resultData.CO2ProductionKG,
+                    resultData.TotalPrice,
                     unitsString
                 );
 
@@ -126,7 +127,8 @@ public class CsvResultRepository : IResultRepository
             ElectricityProductionMWh = double.Parse(values[4]),
             ElectricityConsumptionMWh = double.Parse(values[5]),
             CO2ProductionKG = double.Parse(values[6]),
-            UnitProduction = DeserializeUnitProduction(values.Length > 7 ? values[7] : "")
+            TotalPrice = values.Length > 7 && double.TryParse(values[7], out var totalPrice) ? totalPrice : 0,
+            UnitProduction = DeserializeUnitProduction(values.Length > 8 ? values[8] : "")
         };
     }
 

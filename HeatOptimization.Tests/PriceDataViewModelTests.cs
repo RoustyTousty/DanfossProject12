@@ -95,6 +95,8 @@ public class PriceDataViewModelTests
             CO2ProductionKG = co2,
             ElectricityProductionMWh = heatProduced,
             ElectricityConsumptionMWh = heatProduced
+            ,
+            TotalPrice = heatProduced * price
         };
     }
 
