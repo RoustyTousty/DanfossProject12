@@ -95,7 +95,7 @@ public partial class PriceDataViewModel : ViewModelBase
 
         var totalHeat = results.Sum(r => r.UnitProduction.Sum(u => u.heatProduced));
         var totalCO2Value = results.Sum(r => r.CO2ProductionKG);
-        var totalCostValue = results.Sum(r => r.UnitProduction.Sum(u => u.heatProduced * r.HourlyData.ElectricityPriceDKK));
+        var totalCostValue = results.Sum(r => r.TotalPrice);
 
         TotalHeatProduced = $"{totalHeat:N1} MW";
         TotalCO2 = $"{totalCO2Value:N0} kg";
@@ -201,7 +201,7 @@ public partial class PriceDataViewModel : ViewModelBase
 
         var totalHeat = filteredResults.Sum(r => r.UnitProduction.Sum(u => u.heatProduced));
         var totalCO2Value = filteredResults.Sum(r => r.CO2ProductionKG);
-        var totalCostValue = filteredResults.Sum(r => r.UnitProduction.Sum(u => u.heatProduced * r.HourlyData.ElectricityPriceDKK));
+        var totalCostValue = filteredResults.Sum(r => r.TotalPrice);
 
         TotalHeatProduced = $"{totalHeat:N1} MW";
         TotalCO2 = $"{totalCO2Value:N0} kg";
