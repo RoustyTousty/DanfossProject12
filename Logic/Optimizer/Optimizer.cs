@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic;
-
 namespace HeatOptimization.Logic;
 
 public class Optimizer
