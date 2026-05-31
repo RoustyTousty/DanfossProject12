@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using HeatOptimization.Data;
 using HeatOptimization.Logic;
 using HeatOptimization.Presentation;
 using HeatOptimization.Presentation.ViewModels;
@@ -22,6 +21,48 @@ public class PriceDataViewModelTests
         public List<ProductionUnit> GetProductionUnits() => new();
     }
 
+    private class DummyResultRepository : IResultRepository
+    {
+        private const string Header = "Time From (DK local time),Time To (DK local time),Heat Demand (MWh),Electricity Price (DKK/Mwh(el)),ElectricityProduction (MWh),ElectricityConsumption (MWh),CO2Production (KG),UnitLoadDistribution(MWh)";
+
+        public Task SaveAsync(IResultData result, string filepath)
+        {
+            return SaveManyAsync(new List<IResultData> { result }, filepath);
+        }
+
+        public async Task SaveManyAsync(List<IResultData> results, string filepath)
+        {
+            using var writer = new StreamWriter(filepath, false);
+            await writer.WriteLineAsync(Header);
+
+            foreach (var result in results)
+            {
+                var unitsString = SerializeUnitProduction(result.UnitProduction);
+                var line = string.Join(',',
+                    result.HourlyData.TimeFrom,
+                    result.HourlyData.TimeTo,
+                    result.HourlyData.HeatDemandMWh,
+                    result.HourlyData.ElectricityPriceDKK,
+                    result.ElectricityProductionMWh,
+                    result.ElectricityConsumptionMWh,
+                    result.CO2ProductionKG,
+                    unitsString
+                );
+                await writer.WriteLineAsync(line);
+            }
+        }
+
+        public Task<List<IResultData>> GetAllAsync(string filepath) => Task.FromResult(new List<IResultData>());
+        public Task<List<IResultData>> GetByTimeRangeAsync(DateTime from, DateTime to, string filepath) => Task.FromResult(new List<IResultData>());
+
+        private static string SerializeUnitProduction(List<UnitProduction> units)
+        {
+            return units == null || !units.Any()
+                ? string.Empty
+                : string.Join("|", units.Select(u => $"{u.unitName}:{u.heatProduced}"));
+        }
+    }
+
     private PriceDataViewModel CreateViewModel(IEnumerable<IResultData> results)
     {
         var assetManager = new AssetManager(new DummyHourlyChartProvider(), new DummyProductionUnitLibraryProvider());
@@ -31,7 +72,8 @@ public class PriceDataViewModelTests
         };
 
         var chartService = new ChartService(assetService);
-        var resultService = new ResultService(assetService, new ResultDataManager(new CsvResultRepository()));
+        var resultManager = new ResultDataManager(new DummyResultRepository());
+        var resultService = new ResultService(assetService, resultManager);
         return new PriceDataViewModel(assetService, chartService, resultService);
     }
 
@@ -128,7 +170,7 @@ public class PriceDataViewModelTests
     }
 
     [Fact]
-    public async Task SaveResultsAsync_WritesCsvFile()
+    public async Task SaveAsync_WritesCsvFile()
     {
         // Arrange
         var results = new[]
@@ -140,11 +182,12 @@ public class PriceDataViewModelTests
         await vm.LoadAsync();
 
         var tempFile = Path.GetTempFileName();
+        vm.SaveFilePickerService = () => Task.FromResult<string?>(tempFile);
 
         try
         {
             // Act
-            await vm.SaveResultsAsync(tempFile);
+            await vm.SaveAsync();
 
             // Assert
             var lines = await File.ReadAllLinesAsync(tempFile);
@@ -179,18 +222,19 @@ public class PriceDataViewModelTests
     }
 
     [Fact]
-    public async Task SaveResultsAsync_WithNoResults_WritesOnlyHeader()
+    public async Task SaveAsync_WithNoResults_WritesOnlyHeader()
     {
         // Arrange
         var vm = CreateViewModel(Array.Empty<IResultData>());
         await vm.LoadAsync();
 
         var tempFile = Path.GetTempFileName();
+        vm.SaveFilePickerService = () => Task.FromResult<string?>(tempFile);
 
         try
         {
             // Act
-            await vm.SaveResultsAsync(tempFile);
+            await vm.SaveAsync();
 
             // Assert
             var lines = await File.ReadAllLinesAsync(tempFile);
