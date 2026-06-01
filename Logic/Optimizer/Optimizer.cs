@@ -130,6 +130,8 @@ public class Optimizer
 
     private (DateTime from, DateTime to, double costImpact, List<IResultData> optimizedWindow)? FindMaintenanceWindow(List<IHourlyData> data, List<ProductionUnit> units, string unitToDisable, int durationHours, int percentCosts)
     {
+        double fractionCosts = percentCosts * 0.01;
+        double fractionCO2 = 1 - fractionCosts;
         if (!units.Any(u => u.Name == unitToDisable))
         {
             Console.WriteLine();
@@ -160,11 +162,23 @@ public class Optimizer
             {
                 try
                 {
-                    distribution = DistributeHeatLoad(data[h], reducedUnits, percentCosts);
+                    List<UnitProduction> distributionPrice = DistributeHeatLoad(data[h], reducedUnits, fractionCosts);
+                    List<UnitProduction> distributionCO2 = DistributeHeatLoadByCO2(data[h], reducedUnits, fractionCO2);  // Distribute heat load based on CO2h emissions
+
+                    
+
+                if (fractionCosts > 0 && fractionCO2 > 0)
+                {
+                    distribution = distributionPrice.Concat(distributionCO2).GroupBy(x => x.unitName).Select(g => new UnitProduction
+                        {
+                            unitName = g.Key,
+                            heatProduced = g.Sum(x => x.heatProduced)
+                        }).ToList();
 
                     double newCost = CalculateCost(data[h], distribution, reducedUnits);
 
                     impact += (newCost - baselineCosts[h]);
+                }
                 }
                 catch
                 {
