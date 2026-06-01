@@ -138,14 +138,11 @@ public class Optimizer
             throw new Exception($"Specified unit does not exist in the units!\nUnit to disable: {unitToDisable}.");
         }
 
-        List<IResultData> baselineResults = OptimizeMany(data, units, percentCosts);
-        var baselineCosts = baselineResults
-            .Select(r => CalculateCost(r.HourlyData, r.UnitProduction, units))
-            .ToList();
-
+        List<double> baselineCosts = OptimizeMany(data, units, percentCosts).Select(res => res.TotalPrice).ToList();
+        
         double bestImpact = double.MaxValue;
         int bestStartIndex = -1;
-        List<UnitProduction> productionDstribution = [];
+        List<UnitProduction> productionDistribution = [];
 
         // list of units without the unit to put on downtime
         var reducedUnits = units
@@ -176,22 +173,25 @@ public class Optimizer
                         }).ToList();
 
                     double newCost = CalculateCost(data[h], distribution, reducedUnits);
-
-                    impact += (newCost - baselineCosts[h]);
+                    double costDiff = newCost - baselineCosts[h];
+                    Console.WriteLine($"New: {newCost}, Cost diff: {costDiff}, base cost: {baselineCosts[h]}");
+                    impact = impact + newCost - baselineCosts[h];
                 }
                 }
                 catch
                 {
+                    // Console.WriteLine("Invalid impact, resetting");
                     isValid = false;
                     break;
                 }
             }
 
+            // Console.WriteLine("Done with the cycle, resetting");
             if (isValid && impact < bestImpact)
             {
                 bestImpact = impact;
                 bestStartIndex = start;
-                productionDstribution = distribution;
+                productionDistribution = distribution;
             }
         }
 
@@ -262,17 +262,17 @@ public class Optimizer
     private double CalculateCost(IHourlyData data, List<UnitProduction> distribution, List<ProductionUnit> units)
     {
         double total = 0;
+        double costPerMWh = 0;
 
         foreach (UnitProduction production in distribution)
         {
             ProductionUnit unit = units.First(u => u.Name == production.unitName);
 
-            double costPerMWh = unit.BaseProductionCostDKK;
 
             if (unit.MaxElectricityMW != null)
             {
                 double ratio = unit.MaxElectricityMW.Value / unit.MaxHeatMW;
-                costPerMWh -= ratio * data.ElectricityPriceDKK;
+                costPerMWh = unit.BaseProductionCostDKK - ratio * data.ElectricityPriceDKK;
             }
 
             total += costPerMWh * production.heatProduced;
